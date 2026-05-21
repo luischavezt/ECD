@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ruleta de Sorteo Interactiva</title>
+    <title>Sorteo Interactiva - ArcGIS Online</title>
     <style>
         * {
             box-sizing: border-box;
@@ -35,7 +35,6 @@
             width: 100%;
             max-width: 500px;
         }
-        /* Contenedor de la ruleta con indicador */
         .roulette-box {
             position: relative;
             width: 100%;
@@ -50,7 +49,6 @@
             box-shadow: 0 10px 30px rgba(0,0,0,0.5);
             background: #2a2a40;
         }
-        /* Flecha indicadora del ganador */
         .pointer {
             position: absolute;
             top: -15px;
@@ -80,14 +78,8 @@
             display: block;
             margin: 0 auto;
         }
-        button:active {
-            transform: scale(0.98);
-        }
-        button:disabled {
-            background: #555;
-            box-shadow: none;
-            cursor: not-allowed;
-        }
+        button:active { transform: scale(0.98); }
+        button:disabled { background: #555; box-shadow: none; cursor: not-allowed; }
         #winner-display {
             margin-top: 20px;
             font-size: 1.5rem;
@@ -101,7 +93,7 @@
 <body>
 
     <div class="container">
-        <h1>Sorteo en Vivo</h1>
+        <h1>Sorteo en Vivo (ArcGIS Survey123)</h1>
         <button id="btn-sync" onclick="fetchParticipants()" style="background: #3a3a55; font-size: 0.9rem; padding: 8px 20px; margin-bottom: 10px; width: auto;">🔄 Actualizar Lista</button>
          
         <div class="roulette-box">
@@ -110,34 +102,35 @@
         </div>
 
         <button id="btn-spin" onclick="spinWheel()">¡GIRAR RULETA!</button>
-        <div id="winner-display">Cargando participantes...</div>
+        <div id="winner-display">Cargando participantes de ArcGIS...</div>
     </div>
 
     <script>
-        // URL limpia de exportación directa apuntando a tu hoja actual de "Ana Perez"
-        const urlOriginal = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQMC1RyHNEhW8JyS2DBZOIgay4xuXOKD8q2vgXJCW4K5yNkng3KzKkqIJNuYBu4d-BJpj5kfbs3Jlx7/pub?gid=390326018&single=true&output=csv';
+        // ==========================================
+        // 🚨 CONFIGURACIÓN DE TU CAPA DE ARCGIS ONLINE
+        // ==========================================
+        // 1. Pega aquí abajo la URL de la capa de tu Survey123 (asegúrate de que termine en /0)
+        const ARCGIS_LAYER_URL = 'https://services8.arcgis.com/2qDHoDLqu6VOlf1y/arcgis/rest/services/survey123_33efe2aaf89243e6bf952c3dc96cce92/FeatureServer/0';
         
+        // 2. Coloca aquí el nombre interno exacto de la columna que guarda los nombres en tu encuesta (ej: 'nombre', 'nombres_apellidos', etc.)
+        const CAMPO_NOMBRE = 'nombres_y_apellidos'; 
+        // ==========================================
+
         let participants = ["Esperando datos..."];
         const canvas = document.getElementById('canvas');
         const ctx = canvas.getContext('2d');
         let currentAngle = 0;
         let isSpinning = false;
-
-        // Paleta de colores para los sectores de la ruleta
         const colors = ['#1abc9c', '#3498db', '#9b59b6', '#f1c40f', '#e67e22', '#e74c3c', '#2ecc71', '#34495e'];
 
-        // 1. Dibujar la ruleta en el Canvas
         function drawWheel() {
             const numSegments = participants.length;
             const anglePerSegment = (2 * Math.PI) / numSegments;
             const radius = canvas.width / 2;
-
             ctx.clearRect(0, 0, canvas.width, canvas.height);
 
             for (let i = 0; i < numSegments; i++) {
                 const segmentAngle = currentAngle + (i * anglePerSegment);
-                
-                // Dibujar sector
                 ctx.beginPath();
                 ctx.moveTo(radius, radius);
                 ctx.arc(radius, radius, radius, segmentAngle, segmentAngle + anglePerSegment);
@@ -148,7 +141,6 @@
                 ctx.lineWidth = 2;
                 ctx.stroke();
 
-                // Dibujar texto del participante
                 ctx.save();
                 ctx.translate(radius, radius);
                 ctx.rotate(segmentAngle + anglePerSegment / 2);
@@ -158,36 +150,29 @@
                 
                 let text = participants[i];
                 if(text.length > 12) text = text.substring(0, 10) + '...';
-                
                 ctx.fillText(text, radius - 20, 5);
                 ctx.restore();
             }
         }
 
-        // 2. Lógica del Giro de la Ruleta
         function spinWheel() {
             if (isSpinning || participants.length === 0 || participants.includes("Esperando datos...")) return;
-
             isSpinning = true;
             document.getElementById('btn-spin').disabled = true;
             document.getElementById('winner-display').innerText = "¡Girando...!";
 
             const spinAngleStart = Math.random() * 10 + 10;
             let spinTime = 0;
-            const spinTimeTotal = Math.random() * 2000 + 4000; // Duración del giro
+            const spinTimeTotal = Math.random() * 2000 + 4000;
 
             function easeOut(t, b, c, d) {
-                const ts = (t /= d) * t;
-                const tc = ts * t;
+                const ts = (t /= d) * t; const tc = ts * t;
                 return b + c * (tc + -3 * ts + 3 * t);
             }
 
             function rotate() {
                 spinTime += 30;
-                if (spinTime >= spinTimeTotal) {
-                    stopRotate();
-                    return;
-                }
+                if (spinTime >= spinTimeTotal) { stopRotate(); return; }
                 const spinAngle = spinAngleStart - easeOut(spinTime, 0, spinAngleStart, spinTimeTotal);
                 currentAngle += (spinAngle * Math.PI / 180);
                 drawWheel();
@@ -199,58 +184,55 @@
         function stopRotate() {
             isSpinning = false;
             document.getElementById('btn-spin').disabled = false;
-
             const numSegments = participants.length;
             let degrees = (currentAngle * 180 / Math.PI) % 360;
             let index = Math.floor((360 - degrees + 270) % 360 / (360 / numSegments));
-            
             index = (index + numSegments) % numSegments; 
-
-            const winner = participants[index];
-            document.getElementById('winner-display').innerText = `🎉 ¡Ganador: ${winner}! 🎉`;
+            document.getElementById('winner-display').innerText = `🎉 ¡Ganador: ${participants[index]}! 🎉`;
         }
 
-        // 3. Conexión y Lectura Real de Datos de Google Sheets (Directa)
+        // ==========================================
+        // LECTURA AUTOMÁTICA EN TIEMPO REAL DESDE ARCGIS ONLINE
+        // ==========================================
         async function fetchParticipants() {
-            document.getElementById('winner-display').innerText = "Sincronizando datos...";
+            document.getElementById('winner-display').innerText = "Sincronizando datos de ArcGIS...";
+            
+            // Construimos el Query REST. 'where=1=1' extrae todos los registros.
+            // Añadimos la fecha actual (&t=) para romper la caché del navegador y forzar datos nuevos.
+            const queryUrl = `${ARCGIS_LAYER_URL}/query?where=1%3D1&outFields=${CAMPO_NOMBRE}&f=pjson&t=${new Date().getTime()}`;
             
             try {
-                // Forzamos la descarga del documento agregando un parámetro de tiempo para evitar caché
-                const response = await fetch(`${urlOriginal}&t=${new Date().getTime()}`);
-                if (!response.ok) throw new Error("Error de red");
+                const response = await fetch(queryUrl);
+                if (!response.ok) throw new Error("Error de conexión");
                 
-                const data = await response.text();
-                
-                // Procesamiento de las filas leídas del CSV
-                const rows = data.split('\n').map(row => row.trim()).filter(row => row.length > 0);
+                const data = await response.json();
                 const nuevosParticipantes = [];
                 
-                // Iteramos saltándonos la primera fila (Cabeceras de columna)
-                for(let i = 1; i < rows.length; i++) {
-                    const columns = rows[i].split(',');
-                    // Evaluamos la columna 1 (segunda columna del CSV), que corresponde a 'Nombres y apellidos'
-                    if(columns && columns.trim() !== '') {
-                        const name = columns.replace(/"/g, '').trim(); // Limpieza correcta de comillas
-                        nuevosParticipantes.push(name);
-                    }
+                if (data.features && data.features.length > 0) {
+                    data.features.forEach(feature => {
+                        const name = feature.attributes[CAMPO_NOMBRE]; 
+                        if (name && name.trim() !== '') {
+                            nuevosParticipantes.push(name.trim());
+                        }
+                    });
                 }
 
-                if(nuevosParticipantes.length > 0) {
+                if (nuevosParticipantes.length > 0) {
                     participants = nuevosParticipantes;
                     document.getElementById('winner-display').innerText = `Usuarios sincronizados: ${participants.length}`;
                 } else {
                     participants = ["Sin registros"];
-                    document.getElementById('winner-display').innerText = "La hoja no tiene filas con nombres aún.";
+                    document.getElementById('winner-display').innerText = "La encuesta aún no tiene respuestas.";
                 }
                 drawWheel();
 
             } catch (error) {
-                console.error("Detalles del error: ", error);
-                document.getElementById('winner-display').innerText = "Error de conexión. Verifica los permisos de la hoja.";
+                console.error("Error en ArcGIS: ", error);
+                document.getElementById('winner-display').innerText = "Error. Verifica que la URL y los permisos públicos de la capa de ArcGIS sean correctos.";
             }
         }
 
-        // Ejecución inicial automática al cargar la página
+        // Ejecución inicial automática
         fetchParticipants();
     </script>
 </body>
