@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ruleta de Sorteo Interactiva</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #1e1e2f;
+            color: #fff;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            padding: 20px;
+            overflow-x: hidden;
+        }
+        h1 {
+            margin-bottom: 10px;
+            font-size: 1.8rem;
+            text-align: center;
+            color: #00d2ff;
+        }
+        .container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 100%;
+            max-width: 500px;
+        }
+        /* Contenedor de la ruleta con indicador */
+        .roulette-box {
+            position: relative;
+            width: 100%;
+            max-width: 400px;
+            aspect-ratio: 1 / 1;
+            margin: 20px 0;
+        }
+        canvas {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            background: #2a2a40;
+        }
+        /* Flecha indicadora del ganador */
+        .pointer {
+            position: absolute;
+            top: -15px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 0;
+            height: 0;
+            border-left: 20px solid transparent;
+            border-right: 20px solid transparent;
+            border-top: 30px solid #ff007f;
+            z-index: 10;
+            filter: drop-shadow(0px 4px 6px rgba(0,0,0,0.3));
+        }
+        button {
+            background: linear-gradient(45deg, #00d2ff, #0066ff);
+            border: none;
+            color: white;
+            padding: 15px 40px;
+            font-size: 1.2rem;
+            font-weight: bold;
+            border-radius: 50px;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(0, 102, 255, 0.4);
+            transition: transform 0.2s, filter 0.2s;
+            width: 80%;
+            max-width: 300px;
+            display: block;
+            margin: 0 auto;
+        }
+        button:active {
+            transform: scale(0.98);
+        }
+        button:disabled {
+            background: #555;
+            box-shadow: none;
+            cursor: not-allowed;
+        }
+        #winner-display {
+            margin-top: 20px;
+            font-size: 1.5rem;
+            font-weight: bold;
+            min-height: 36px;
+            text-align: center;
+            color: #00ff88;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1>Sorteo en Vivo</h1>
+        <button id="btn-sync" onclick="fetchParticipants()" style="background: #3a3a55; font-size: 0.9rem; padding: 8px 20px; margin-bottom: 10px; width: auto;">🔄 Actualizar Lista</button>
+        
+        <div class="roulette-box">
+            <div class="pointer"></div>
+            <canvas id="canvas" width="500" height="500"></canvas>
+        </div>
+
+        <button id="btn-spin" onclick="spinWheel()">¡GIRAR RULETA!</button>
+        <div id="winner-display">Cargando participantes...</div>
+    </div>
+
+    <script>
+        // URLs configuradas dinámicamente con las credenciales de tu Google Sheet
+		const urlOriginal = 'https://docs.google.com/spreadsheets/d/1NeUO2SzZRaEpMicQa2d6axD11_LsqWhZuChH1oGc2UE/export?format=csv&gid=390326018';
+        
+        // Proxy para romper el bloqueo de archivo local (C:/) durante tus pruebas
+        const SHEET_CSV_URL = 'https://corsproxy.io/?' + encodeURIComponent(urlOriginal);
+
+        let participants = ["Esperando datos..."];
+        const canvas = document.getElementById('canvas');
+        const ctx = canvas.getContext('2d');
+        let currentAngle = 0;
+        let isSpinning = false;
+
+        // Paleta de colores para los sectores de la ruleta
+        const colors = ['#1abc9c', '#3498db', '#9b59b6', '#f1c40f', '#e67e22', '#e74c3c', '#2ecc71', '#34495e'];
+
+        // 1. Dibujar la ruleta en el Canvas
+        function drawWheel() {
+            const numSegments = participants.length;
+            const anglePerSegment = (2 * Math.PI) / numSegments;
+            const radius = canvas.width / 2;
+
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            for (let i = 0; i < numSegments; i++) {
+                const segmentAngle = currentAngle + (i * anglePerSegment);
+                
+                // Dibujar sector
+                ctx.beginPath();
+                ctx.moveTo(radius, radius);
+                ctx.arc(radius, radius, radius, segmentAngle, segmentAngle + anglePerSegment);
+                ctx.closePath();
+                ctx.fillStyle = colors[i % colors.length];
+                ctx.fill();
+                ctx.strokeStyle = '#1e1e2f';
+                ctx.lineWidth = 2;
+                ctx.stroke();
+
+                // Dibujar texto del participante
+                ctx.save();
+                ctx.translate(radius, radius);
+                ctx.rotate(segmentAngle + anglePerSegment / 2);
+                ctx.textAlign = "right";
+                ctx.fillStyle = "#fff";
+                ctx.font = "bold 16px sans-serif";
+                
+                let text = participants[i];
+                if(text.length > 12) text = text.substring(0, 10) + '...';
+                
+                ctx.fillText(text, radius - 20, 5);
+                ctx.restore();
+            }
+        }
+
+        // 2. Lógica del Giro de la Ruleta
+        function spinWheel() {
+            if (isSpinning || (participants.length <= 1 && participants.includes("Esperando"))) return;
+
+            isSpinning = true;
+            document.getElementById('btn-spin').disabled = true;
+            document.getElementById('winner-display').innerText = "¡Girando...!";
+
+            const spinAngleStart = Math.random() * 10 + 10;
+            let spinTime = 0;
+            const spinTimeTotal = Math.random() * 2000 + 4000; // Duración del giro
+
+            function easeOut(t, b, c, d) {
+                const ts = (t /= d) * t;
+                const tc = ts * t;
+                return b + c * (tc + -3 * ts + 3 * t);
+            }
+
+            function rotate() {
+                spinTime += 30;
+                if (spinTime >= spinTimeTotal) {
+                    stopRotate();
+                    return;
+                }
+                const spinAngle = spinAngleStart - easeOut(spinTime, 0, spinAngleStart, spinTimeTotal);
+                currentAngle += (spinAngle * Math.PI / 180);
+                drawWheel();
+                requestAnimationFrame(rotate);
+            }
+            rotate();
+        }
+
+        function stopRotate() {
+            isSpinning = false;
+            document.getElementById('btn-spin').disabled = false;
+
+            const numSegments = participants.length;
+            let degrees = (currentAngle * 180 / Math.PI) % 360;
+            let index = Math.floor((360 - degrees + 270) % 360 / (360 / numSegments));
+            
+            index = (index + numSegments) % numSegments; 
+
+            const winner = participants[index];
+            document.getElementById('winner-display').innerText = `🎉 ¡Ganador: ${winner}! 🎉`;
+        }
+
+        // 3. Conexión y Lectura Real de Datos de Google Sheets
+        async function fetchParticipants() {
+            document.getElementById('winner-display').innerText = "Sincronizando datos...";
+            
+            try {
+                // Forzamos la descarga del documento agregando un parámetro de tiempo aleatorio
+                const response = await fetch(`${SHEET_CSV_URL}&t=${new Date().getTime()}`);
+                if (!response.ok) throw new Error("Error de red");
+                
+                const data = await response.text();
+                
+                // Procesamiento de las filas leídas del CSV
+                const rows = data.split('\n').map(row => row.trim()).filter(row => row.length > 0);
+                const nuevosParticipantes = [];
+                
+                // Iteramos saltándonos la primera fila (Cabeceras de columna)
+                for(let i = 1; i < rows.length; i++) {
+                    const columns = rows[i].split(',');
+                    if(columns) {
+                        const name = columns.replace(/"/g, ''); // Limpieza de comillas dobles
+                        nuevosParticipantes.push(name);
+                    }
+                }
+
+                if(nuevosParticipantes.length > 0) {
+                    participants = nuevosParticipantes;
+                    document.getElementById('winner-display').innerText = `Usuarios sincronizados: ${participants.length}`;
+                } else {
+                    participants = ["Sin registros"];
+                    document.getElementById('winner-display').innerText = "La hoja de cálculo no tiene filas con nombres aún.";
+                }
+                drawWheel();
+
+            } catch (error) {
+                console.error("Detalles del error: ", error);
+                document.getElementById('winner-display').innerText = "Error al conectar. Intentando vía directa...";
+                
+                // Intento alternativo directo por si falla el proxy
+                try {
+                    const responseDirecta = await fetch(`${urlOriginal}&t=${new Date().getTime()}`);
+                    const dataDirecta = await responseDirecta.text();
+                    const rowsDirectas = dataDirecta.split('\n').map(r => r.trim()).filter(r => r.length > 0);
+                    const directos = [];
+                    for(let i = 1; i < rowsDirectas.length; i++) {
+                        const cols = rowsDirectas[i].split(',');
+                        if(cols) directos.push(cols.replace(/"/g, ''));
+                    }
+                    if(directos.length > 0) {
+                        participants = directos;
+                        document.getElementById('winner-display').innerText = `Sincronizados (Directo): ${participants.length}`;
+                        drawWheel();
+                    }
+                } catch(err) {
+                    document.getElementById('winner-display').innerText = "No se pudo actualizar. Verifica que la hoja tenga permisos para 'Cualquier persona con el enlace'.";
+                }
+            }
+        }
+
+        // Ejecución inicial automática al cargar la página
+        fetchParticipants();
+    </script>
+</body>
+</html>
