@@ -114,11 +114,11 @@
     </div>
 
     <script>
-        // URLs configuradas dinámicamente con las credenciales de tu Google Sheet
-		const urlOriginal = 'https://docs.google.com/spreadsheets/d/1NeUO2SzZRaEpMicQa2d6axD11_LsqWhZuChH1oGc2UE/export?format=csv&gid=390326018';
+		// URL limpia de exportación directa apuntando a tu hoja actual de "Ana Perez"
+        const urlOriginal = 'https://docs.google.com/spreadsheets/d/1NeUO2SzZRaEpMicQa2d6axD11_LsqWhZuChH1oGc2UE/export?format=csv&gid=390326018';
         
-        // Proxy para romper el bloqueo de archivo local (C:/) durante tus pruebas
-        const SHEET_CSV_URL = 'https://corsproxy.io/?' + encodeURIComponent(urlOriginal);
+        // Mantener la estructura del archivo limpia para consulta directa HTTPS
+        const SHEET_CSV_URL = urlOriginal;
 
         let participants = ["Esperando datos..."];
         const canvas = document.getElementById('canvas');
