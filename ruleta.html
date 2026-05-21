@@ -103,7 +103,7 @@
     <div class="container">
         <h1>Sorteo en Vivo</h1>
         <button id="btn-sync" onclick="fetchParticipants()" style="background: #3a3a55; font-size: 0.9rem; padding: 8px 20px; margin-bottom: 10px; width: auto;">🔄 Actualizar Lista</button>
-        
+         
         <div class="roulette-box">
             <div class="pointer"></div>
             <canvas id="canvas" width="500" height="500"></canvas>
@@ -114,12 +114,9 @@
     </div>
 
     <script>
-		// URL limpia de exportación directa apuntando a tu hoja actual de "Ana Perez"
+        // URL limpia de exportación directa apuntando a tu hoja actual de "Ana Perez"
         const urlOriginal = 'https://docs.google.com/spreadsheets/d/1NeUO2SzZRaEpMicQa2d6axD11_LsqWhZuChH1oGc2UE/export?format=csv&gid=390326018';
         
-        // Mantener la estructura del archivo limpia para consulta directa HTTPS
-        const SHEET_CSV_URL = urlOriginal;
-
         let participants = ["Esperando datos..."];
         const canvas = document.getElementById('canvas');
         const ctx = canvas.getContext('2d');
@@ -169,7 +166,7 @@
 
         // 2. Lógica del Giro de la Ruleta
         function spinWheel() {
-            if (isSpinning || (participants.length <= 1 && participants.includes("Esperando"))) return;
+            if (isSpinning || participants.length === 0 || participants.includes("Esperando datos...")) return;
 
             isSpinning = true;
             document.getElementById('btn-spin').disabled = true;
@@ -213,13 +210,13 @@
             document.getElementById('winner-display').innerText = `🎉 ¡Ganador: ${winner}! 🎉`;
         }
 
-        // 3. Conexión y Lectura Real de Datos de Google Sheets
+        // 3. Conexión y Lectura Real de Datos de Google Sheets (Directa)
         async function fetchParticipants() {
             document.getElementById('winner-display').innerText = "Sincronizando datos...";
             
             try {
-                // Forzamos la descarga del documento agregando un parámetro de tiempo aleatorio
-                const response = await fetch(`${SHEET_CSV_URL}&t=${new Date().getTime()}`);
+                // Forzamos la descarga del documento agregando un parámetro de tiempo para evitar caché
+                const response = await fetch(`${urlOriginal}&t=${new Date().getTime()}`);
                 if (!response.ok) throw new Error("Error de red");
                 
                 const data = await response.text();
@@ -231,8 +228,9 @@
                 // Iteramos saltándonos la primera fila (Cabeceras de columna)
                 for(let i = 1; i < rows.length; i++) {
                     const columns = rows[i].split(',');
-                    if(columns) {
-                        const name = columns.replace(/"/g, ''); // Limpieza de comillas dobles
+                    // Evaluamos la columna 1 (segunda columna del CSV), que corresponde a 'Nombres y apellidos'
+                    if(columns && columns.trim() !== '') {
+                        const name = columns.replace(/"/g, '').trim(); // Limpieza correcta de comillas
                         nuevosParticipantes.push(name);
                     }
                 }
@@ -242,32 +240,13 @@
                     document.getElementById('winner-display').innerText = `Usuarios sincronizados: ${participants.length}`;
                 } else {
                     participants = ["Sin registros"];
-                    document.getElementById('winner-display').innerText = "La hoja de cálculo no tiene filas con nombres aún.";
+                    document.getElementById('winner-display').innerText = "La hoja no tiene filas con nombres aún.";
                 }
                 drawWheel();
 
             } catch (error) {
                 console.error("Detalles del error: ", error);
-                document.getElementById('winner-display').innerText = "Error al conectar. Intentando vía directa...";
-                
-                // Intento alternativo directo por si falla el proxy
-                try {
-                    const responseDirecta = await fetch(`${urlOriginal}&t=${new Date().getTime()}`);
-                    const dataDirecta = await responseDirecta.text();
-                    const rowsDirectas = dataDirecta.split('\n').map(r => r.trim()).filter(r => r.length > 0);
-                    const directos = [];
-                    for(let i = 1; i < rowsDirectas.length; i++) {
-                        const cols = rowsDirectas[i].split(',');
-                        if(cols) directos.push(cols.replace(/"/g, ''));
-                    }
-                    if(directos.length > 0) {
-                        participants = directos;
-                        document.getElementById('winner-display').innerText = `Sincronizados (Directo): ${participants.length}`;
-                        drawWheel();
-                    }
-                } catch(err) {
-                    document.getElementById('winner-display').innerText = "No se pudo actualizar. Verifica que la hoja tenga permisos para 'Cualquier persona con el enlace'.";
-                }
+                document.getElementById('winner-display').innerText = "Error de conexión. Verifica los permisos de la hoja.";
             }
         }
 
