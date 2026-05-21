@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sorteo en Vivo - Marquesina Digital</title>
+    <title>Sorteo en Vivo - Tómbola Vertical Masiva</title>
     <style>
         * {
             box-sizing: border-box;
@@ -39,11 +39,11 @@
             max-width: 600px;
         }
         
-        /* CONTENEDOR ESTILO TRAGAMONEDAS */
+        /* 1. CUADRO VISUAL AMPLIADO VERTICALMENTE (7 CELDAS VISIBLES) */
         .slot-machine-box {
             position: relative;
             width: 100%;
-            height: 140px;
+            height: 490px; /* 70px por celda * 7 celdas = 490px */
             background: #151522;
             border: 4px solid #0066ff;
             border-radius: 15px;
@@ -52,20 +52,21 @@
             box-shadow: 0 0 25px rgba(0, 102, 255, 0.4), inset 0 0 15px rgba(0,0,0,0.8);
         }
         
-        /* Líneas indicadoras del centro */
+        /* 2. LÍNEAS INDICADORAS EN LA CELDA CENTRAL (CUARTA CELDA) */
         .slot-machine-box::before, .slot-machine-box::after {
             content: '';
             position: absolute;
             left: 0;
             right: 0;
-            height: 2px;
-            background: rgba(255, 0, 127, 0.6);
+            height: 3px;
+            background: rgba(255, 0, 127, 0.8);
             z-index: 10;
+            box-shadow: 0 0 8px #ff007f;
         }
-        .slot-machine-box::before { top: 35px; }
-        .slot-machine-box::after { bottom: 35px; }
+        .slot-machine-box::before { top: 210px; }  /* Inicio de la 4ta celda */
+        .slot-machine-box::after { bottom: 210px; } /* Fin de la 4ta celda */
 
-        /* Flechas indicadoras laterales */
+        /* Flechas indicadoras alineadas al centro exacto */
         .indicator-left, .indicator-right {
             position: absolute;
             top: 50%;
@@ -77,15 +78,15 @@
         }
         .indicator-left {
             left: 10px;
-            border-top: 12px solid transparent;
-            border-bottom: 12px solid transparent;
-            border-left: 18px solid #ff007f;
+            border-top: 15px solid transparent;
+            border-bottom: 15px solid transparent;
+            border-left: 22px solid #ff007f;
         }
         .indicator-right {
             right: 10px;
-            border-top: 12px solid transparent;
-            border-bottom: 12px solid transparent;
-            border-right: 18px solid #ff007f;
+            border-top: 15px solid transparent;
+            border-bottom: 15px solid transparent;
+            border-right: 22px solid #ff007f;
         }
 
         /* Tira deslizante que contiene los nombres */
@@ -99,7 +100,7 @@
             will-change: transform;
         }
         
-        /* Estilo de cada celda de nombre */
+        /* Estilo y opacidad base de cada celda */
         .slot-item {
             width: 100%;
             height: 70px;
@@ -108,7 +109,7 @@
             justify-content: center;
             font-size: 1.8rem;
             font-weight: bold;
-            color: #fff;
+            color: #ffffff;
             text-align: center;
             padding: 0 40px;
             white-space: nowrap;
@@ -169,18 +170,16 @@
         // ========================================================
         // 🚨 CONFIGURACIÓN DE TU CAPA DE ARCGIS ONLINE
         // ========================================================
-        // Coloca la URL de tu servicio REST de ArcGIS (debe terminar en /0)
         const ARCGIS_LAYER_URL = 'https://services8.arcgis.com/2qDHoDLqu6VOlf1y/arcgis/rest/services/survey123_33efe2aaf89243e6bf952c3dc96cce92/FeatureServer/0';
-        
-        // Nombre de la columna de nombres en tu Survey123
         const CAMPO_NOMBRE = 'nombres_y_apellidos'; 
         // ========================================================
 
         let participants = [];
         let isSpinning = false;
-        const itemHeight = 70; // Altura en píxeles de cada bloque de nombre
+        const itemHeight = 70; // Altura fija de cada celda en px
+        const centralOffset = itemHeight * 3; // Ajuste dinámico para centrar en la 4ta posición
 
-        // Generar tira visual de nombres en el DOM
+        // Generar la lista inicial en el DOM centrando el primer ítem
         function buildSlotStrip(list) {
             const strip = document.getElementById('slot-strip');
             strip.innerHTML = '';
@@ -191,11 +190,11 @@
                 item.innerText = name;
                 strip.appendChild(item);
             });
-            // Posicionar al centro del primer elemento
-            strip.style.transform = `translateY(${itemHeight / 2}px)`;
+            // Posiciona el primer ítem exactamente en el cuadro del medio
+            strip.style.transform = `translateY(${centralOffset}px)`;
         }
 
-        // LÓGICA DE GIRO (Efecto Tragamonedas con Desaceleración)
+        // ANIMACIÓN DE GIRO CON DESACELERACIÓN
         function startSlotMachine() {
             if (isSpinning || participants.length <= 1) return;
             
@@ -206,33 +205,32 @@
 
             const strip = document.getElementById('slot-strip');
             
-            // 1. Mezclar de forma aleatoria transparente el arreglo completo para la animación masiva
+            // 1. Mezclamos aleatoriamente todos los nombres para el efecto de paso continuo
             const randomizedList = [...participants].sort(() => Math.random() - 0.5);
             
-            // 2. Elegimos al ganador real de forma matemática y transparente
+            // 2. Elegimos al ganador real
             const winnerIndex = Math.floor(Math.random() * participants.length);
             const winnerName = participants[winnerIndex];
             
-            // 3. Multiplicamos la lista para crear un efecto de bucle infinito largo y espectacular
-            const totalRepetitions = 8; 
+            // 3. Multiplicamos la lista para dar bastantes vueltas (efecto infinito continuo)
+            const totalRepetitions = 6; 
             let extendedList = [];
             for (let i = 0; i < totalRepetitions; i++) {
                 extendedList = extendedList.concat(randomizedList);
             }
             
-            // Forzamos que el elemento final de la animación donde se detenga sea el ganador real
+            // Calculamos en qué posición global del bloque extendido quedará nuestro ganador elegido
             const targetGlobalIndex = extendedList.length - randomizedList.length + randomizedList.indexOf(winnerName);
             
-            // Reconstruimos la tira ampliada en el DOM
+            // Renderizamos los elementos en la tira
             buildSlotStrip(extendedList);
 
-            // 4. Parámetros de animación física
-            let currentY = itemHeight / 2;
-            const targetY = -(targetGlobalIndex * itemHeight) + (itemHeight / 2);
+            // 4. Variables físicas de desplazamiento
+            let currentY = centralOffset;
+            const targetY = -(targetGlobalIndex * itemHeight) + centralOffset;
             let startTime = null;
-            const duration = 5000; // Duración de la animación (5 segundos)
+            const duration = 5000; // 5 segundos de animación dramática
 
-            // Función de desaceleración suave (Ease Out)
             function easeOutQuad(t, b, c, d) {
                 return -c *(t/=d)*(t-2) + b;
             }
@@ -242,11 +240,11 @@
                 const elapsed = timestamp - startTime;
 
                 if (elapsed < duration) {
-                    currentY = easeOutQuad(elapsed, itemHeight / 2, targetY - (itemHeight / 2), duration);
+                    currentY = easeOutQuad(elapsed, centralOffset, targetY - centralOffset, duration);
                     strip.style.transform = `translateY(${currentY}px)`;
                     requestAnimationFrame(animate);
                 } else {
-                    // Fin de la animación
+                    // Frenado final milimétrico en el ganador
                     strip.style.transform = `translateY(${targetY}px)`;
                     document.getElementById('winner-display').innerText = `🎉 ¡Ganador: ${winnerName}! 🎉`;
                     isSpinning = false;
@@ -258,7 +256,7 @@
             requestAnimationFrame(animate);
         }
 
-        // SINCRONIZACIÓN EN TIEMPO REAL DESDE ARCGIS ONLINE
+        // CONEXIÓN DIRECTA EN TIEMPO REAL CON TU SURVEY123
         async function fetchParticipants() {
             document.getElementById('winner-display').innerText = "Sincronizando datos de ArcGIS...";
             const queryUrl = `${ARCGIS_LAYER_URL}/query?where=1%3D1&outFields=${CAMPO_NOMBRE}&f=pjson&t=${new Date().getTime()}`;
@@ -297,7 +295,6 @@
             }
         }
 
-        // Carga inicial automatizada
         fetchParticipants();
     </script>
 </body>
