@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Galería de Fotos ArcGIS</title>
+    <style>
+        body { font-family: sans-serif; padding: 20px; background-color: #f4f4f4; }
+        #galeria-arcgis {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 15px;
+        }
+        .foto-item img {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+            border-radius: 8px;
+            border: 2px solid white;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Galería de Fotos</h1>
+    <div id="galeria-arcgis">Cargando fotos...</div>
+
+    <script>
+        // URL de tu Feature Layer (Capa 0)
+        const FEATURE_LAYER_URL = "https://services8.arcgis.com/2qDHoDLqu6VOlf1y/arcgis/rest/services/survey123_945a32a467d4463f89a94fc94a2eb6e0/FeatureServer/0";
+
+        async function cargarFotosArcGIS() {
+            const contenedor = document.getElementById('galeria-arcgis');
+            try {
+                // 1. Obtener IDs de registros
+                const res = await fetch(`${FEATURE_LAYER_URL}/query?where=1=1&returnIdsOnly=true&f=json`);
+                const data = await res.json();
+
+                if (!data.objectIds || data.objectIds.length === 0) {
+                    contenedor.innerHTML = "No hay fotos aún.";
+                    return;
+                }
+
+                // Obtener adjuntos para los registros
+                const ids = data.objectIds.join(',');
+                const attRes = await fetch(`${FEATURE_LAYER_URL}/queryAttachments?objectIds=${ids}&f=json`);
+                const attData = await attRes.json();
+
+                contenedor.innerHTML = "";
+                
+                if (attData.attachmentGroups) {
+                    attData.attachmentGroups.forEach(group => {
+                        group.attachmentInfos.forEach(info => {
+                            if (info.contentType.startsWith('image/')) {
+                                const imgUrl = `${FEATURE_LAYER_URL}/${group.parentObjectId}/attachments/${info.id}`;
+                                contenedor.innerHTML += `
+                                    <div class="foto-item">
+                                        <img src="${imgUrl}" alt="Foto" onerror="this.style.display='none'">
+                                    </div>`;
+                            }
+                        });
+                    });
+                } else {
+                    contenedor.innerHTML = "No se encontraron imágenes adjuntas.";
+                }
+            } catch (e) {
+                contenedor.innerHTML = "Error al cargar. Asegúrate de estar usando un servidor local (Live Server) o GitHub Pages.";
+                console.error(e);
+            }
+        }
+
+        // Cargar al abrir
+        cargarFotosArcGIS();
+    </script>
+</body>
+</html>
