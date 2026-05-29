@@ -1,0 +1,449 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Juego de Memoria - Edificios</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            user-select: none;
+            -webkit-user-select: none;
+        }
+
+        body {
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            background: #121212;
+            color: #ffffff;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-start;
+            min-height: 100vh;
+            padding: 15px;
+        }
+
+        h1 {
+            font-size: 5vw; /* Tamaño dinámico según la pantalla */
+            max-size: 2.2rem;
+            color: #ffffff;
+            text-align: center;
+            margin-bottom: 15px;
+            font-weight: bold;
+            letter-spacing: 1px;
+        }
+
+        @media (min-width: 600px) {
+            h1 { font-size: 2.2rem; }
+        }
+
+        /* Tabla de Clasificación Superior */
+        #leaderboard {
+            width: 100%;
+            max-width: 800px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(0, 255, 204, 0.3);
+            border-radius: 15px;
+            padding: 12px;
+            margin-bottom: 15px;
+            text-align: center;
+            box-shadow: 0 4px 20px rgba(0, 255, 204, 0.1);
+        }
+
+        #leaderboard h3 {
+            color: #00ffcc;
+            font-size: 1.2rem;
+            margin-bottom: 8px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        #scores-list {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 10px;
+            list-style: none;
+            font-size: 1rem;
+        }
+
+        .score-item {
+            background: rgba(0, 0, 0, 0.4);
+            padding: 6px 12px;
+            border-radius: 20px;
+            min-width: 130px;
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .score-item span {
+            color: #00ffcc;
+            font-weight: bold;
+        }
+
+        /* Panel de Control */
+        #ui-panel {
+            display: flex;
+            width: 100%;
+            max-width: 800px;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            background: rgba(255, 255, 255, 0.03);
+            padding: 10px 20px;
+            border-radius: 50px;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+
+        #timer {
+            font-size: 1.8rem;
+            font-weight: bold;
+            font-variant-numeric: tabular-nums;
+        }
+
+        button {
+            background: #00ffcc;
+            color: #121212;
+            border: none;
+            padding: 10px 25px;
+            font-size: 1rem;
+            font-weight: bold;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        button:active {
+            transform: scale(0.95);
+            background: #00ccaa;
+        }
+
+        /* REDISEÑO RESPONSIVE: Contenedor del Tablero Ajustable */
+        #game-grid {
+            display: grid;
+            /* 3 columnas en pantallas grandes por defecto, ajustables */
+            grid-template-columns: repeat(3, 1fr); 
+            gap: 10px;
+            width: 100%;       
+            max-width: 540px;       
+            margin: 0 auto;
+            perspective: 1000px;
+            touch-action: none !important;
+            background: rgba(255, 255, 255, 0.04); 
+            border-radius: 12px;
+            padding: 12px;
+        }
+
+        /* Rediseño de tarjetas proporcionales */
+        .card {
+            position: relative;
+            width: 100%;       
+            aspect-ratio: 1 / 1; /* Mantiene la proporción clásica de fotografía arquitectónica */
+            cursor: pointer;
+            transform-style: preserve-3d;
+            transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            will-change: transform;
+        }
+
+        /* Ajuste de columnas para pantallas muy estrechas (Celulares verticales) */
+        /* @media (max-width: 480px) {
+            #game-grid {
+                grid-template-columns: repeat(3, 1fr); /* 3 columnas x 4 filas para optimizar espacio móvil */
+            }
+        }
+		*/
+        .card.flipped {
+            transform: rotateY(180deg);
+        }
+
+        .card-face {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            backface-visibility: hidden;
+            border-radius: 8px;
+            border: 2px solid #333;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.4);
+        }
+
+        .card-back {
+            background: linear-gradient(135deg, #1e1e1e 0%, #2a2a2a 100%);
+            border: 2px solid rgba(0, 255, 204, 0.4);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .card-back::before {
+            content: "◆";
+            font-size: 1.8rem;
+            color: #00ffcc;
+            opacity: 0.6;
+        }
+
+        .card-front {
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            transform: rotateY(180deg);
+            border-color: #00ffcc;
+        }
+
+        .card.matched .card-front {
+            border-color: #00cc66;
+            opacity: 0.6;
+        }
+
+        /* Modales */
+        .modal-screen {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(18, 18, 18, 0.96);
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 100;
+            text-align: center;
+            padding: 20px;
+        }
+
+        .modal-screen h2 {
+            font-size: 2rem;
+            color: #00ffcc;
+            margin-bottom: 15px;
+        }
+
+        input[type="text"] {
+            background: #2a2a2a;
+            border: 2px solid #00ffcc;
+            color: white;
+            padding: 12px 20px;
+            font-size: 1.2rem;
+            border-radius: 30px;
+            text-align: center;
+            width: 80%;
+            max-width: 400px;
+            margin-bottom: 25px;
+            outline: none;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>¡Juega esta Memoria y Gana!</h1>
+
+    <div id="leaderboard">
+        <h3>🏆 MEJORES TIEMPOS MEMORIA 🏆</h3>
+        <ul id="scores-list">
+            <li class="score-item">1° Juan: <span>00:38</span></li>
+            <li class="score-item">2° Percy: <span>00:41</span></li>
+            <li class="score-item">3° Luis: <span>01:00</span></li>
+        </ul>
+    </div>
+
+    <div id="ui-panel">
+        <div id="timer">00:00</div>
+        <button id="reset-btn">Reiniciar</button>
+    </div>
+
+    <div id="game-grid"></div>
+
+    <div id="name-modal" class="modal-screen">
+        <h2>¡Excelente memoria!</h2>
+        <p id="time-report">Completado en --:--</p>
+        <p>Ingresa tu nombre para el registro:</p>
+        <input type="text" id="player-name" placeholder="Tu Nombre" maxlength="12">
+        <button id="save-score-btn">Guardar Récord</button>
+    </div>
+
+    <div id="win-screen" class="modal-screen">
+        <h2>¡Puntuación Guardada!</h2>
+        <p>El tablero de memoria ha sido actualizado con éxito.</p>
+        <button id="restart-btn">Jugar de Nuevo</button>
+    </div>
+
+    <script>
+        const gridContainer = document.getElementById('game-grid');
+        const timerDisplay = document.getElementById('timer');
+        const resetBtn = document.getElementById('reset-btn');
+        const restartBtn = document.getElementById('restart-btn');
+        const nameModal = document.getElementById('name-modal');
+        const winScreen = document.getElementById('win-screen');
+        const timeReport = document.getElementById('time-report');
+        const playerNameInput = document.getElementById('player-name');
+        const saveScoreBtn = document.getElementById('save-score-btn');
+        const scoresList = document.getElementById('scores-list');
+
+        let memoryHighScores = [
+            { name: "Juan", time: 38000 },
+            { name: "Percy", time: 41000 },
+            { name: "Luis", time: 60000 }
+        ];
+
+        let cardsData = [];
+        let flippedCards = [];
+        let matchedPairs = 0;
+        let startTime;
+        let timerInterval;
+        let gameActive = false;
+        let finalTimeMs = 0;
+        let lockBoard = false;
+
+        const IMAGENES_LOCALES = [
+            "imagenes/edificio1.jpg",
+            "imagenes/edificio2.jpg",
+            "imagenes/edificio3.jpg",
+            "imagenes/edificio4.jpg",
+            "imagenes/edificio5.jpg",
+            "imagenes/edificio6.jpg"
+        ];
+
+        function generateCardsData() {
+            const pool = [...IMAGENES_LOCALES, ...IMAGENES_LOCALES];
+            for (let i = pool.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [pool[i], pool[j]] = [pool[j], pool[i]];
+            }
+            return pool;
+        }
+
+        function initGame() {
+            gridContainer.innerHTML = '';
+            flippedCards = [];
+            matchedPairs = 0;
+            lockBoard = false;
+            
+            nameModal.style.display = 'none';
+            winScreen.style.display = 'none';
+            playerNameInput.value = '';
+            
+            clearInterval(timerInterval);
+            timerDisplay.textContent = "00:00";
+            gameActive = false;
+
+            cardsData = generateCardsData();
+
+            cardsData.forEach((path) => {
+                const card = document.createElement('div');
+                card.classList.add('card');
+                card.dataset.image = path;
+
+                const frontFace = document.createElement('div');
+                frontFace.classList.add('card-face', 'card-front');
+                frontFace.style.backgroundImage = `url('${path}')`;
+
+                const backFace = document.createElement('div');
+                backFace.classList.add('card-face', 'card-back');
+
+                card.appendChild(frontFace);
+                card.appendChild(backFace);
+                
+                card.addEventListener('pointerdown', handleCardClick);
+                gridContainer.appendChild(card);
+            });
+
+            renderLeaderboard();
+        }
+
+        function handleCardClick(e) {
+            const clickedCard = e.currentTarget;
+            if (lockBoard) return;
+            if (clickedCard.classList.contains('flipped') || clickedCard.classList.contains('matched')) return;
+
+            if (!gameActive) {
+                startTimer();
+                gameActive = true;
+            }
+
+            clickedCard.classList.add('flipped');
+            flippedCards.push(clickedCard);
+
+            if (flippedCards.length === 2) {
+                checkMatch();
+            }
+        }
+
+        function checkMatch() {
+            const [card1, card2] = flippedCards;
+            const isMatch = card1.dataset.image === card2.dataset.image;
+
+            if (isMatch) {
+                card1.classList.add('matched');
+                card2.classList.add('matched');
+                matchedPairs++;
+                flippedCards = [];
+                
+                if (matchedPairs === IMAGENES_LOCALES.length) {
+                    handleVictory();
+                }
+            } else {
+                lockBoard = true;
+                setTimeout(() => {
+                    card1.classList.remove('flipped');
+                    card2.classList.remove('flipped');
+                    flippedCards = [];
+                    lockBoard = false;
+                }, 800);
+            }
+        }
+
+        function startTimer() {
+            startTime = Date.now();
+            timerInterval = setInterval(() => {
+                finalTimeMs = Date.now() - startTime;
+                timerDisplay.textContent = formatTime(finalTimeMs);
+            }, 1000);
+        }
+
+        function formatTime(ms) {
+            const totalSeconds = Math.floor(ms / 1000);
+            const minutes = Math.floor(totalSeconds / 60).toString().padStart(2, '0');
+            const seconds = (totalSeconds % 60).toString().padStart(2, '0');
+            return `${minutes}:${seconds}`;
+        }
+
+        function handleVictory() {
+            clearInterval(timerInterval);
+            gameActive = false;
+            timeReport.textContent = `Completado en ${formatTime(finalTimeMs)}`;
+            setTimeout(() => { nameModal.style.display = 'flex'; }, 500);
+        }
+
+        function saveScore() {
+            let name = playerNameInput.value.trim();
+            if (name === "") name = "Anónimo";
+
+            memoryHighScores.push({ name: name, time: finalTimeMs });
+            memoryHighScores.sort((a, b) => a.time - b.time);
+            memoryHighScores = memoryHighScores.slice(0, 3);
+            
+            nameModal.style.display = 'none';
+            winScreen.style.display = 'flex';
+            renderLeaderboard();
+        }
+
+        function renderLeaderboard() {
+            const items = scoresList.querySelectorAll('.score-item');
+            items.forEach((item, index) => {
+                if (memoryHighScores[index]) {
+                    const record = memoryHighScores[index];
+                    item.innerHTML = `${index + 1}° ${record.name}: <span>${formatTime(record.time)}</span>`;
+                } else {
+                    item.innerHTML = `${index + 1}°: <span>--:--</span>`;
+                }
+            });
+        }
+
+        saveScoreBtn.addEventListener('click', saveScore);
+        resetBtn.addEventListener('click', initGame);
+        restartBtn.addEventListener('click', initGame);
+
+        initGame();
+    </script>
+</body>
+</html>
