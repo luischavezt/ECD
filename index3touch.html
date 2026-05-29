@@ -1,0 +1,571 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Rompecabezas Interactivo con Guía</title>
+	
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            user-select: none;
+            -webkit-user-select: none;
+        }
+
+        body {
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            background: #121212;
+            color: #ffffff;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-start;
+            min-height: 100vh;
+            overflow-x: hidden;
+            overflow-y: auto;
+            padding: 20px;
+        }
+
+        /* Tabla de Clasificación Superior Adaptativa */
+        #leaderboard {
+            width: 100%;
+            max-width: 800px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(0, 255, 204, 0.3);
+            border-radius: 15px;
+            padding: 15px;
+            margin-bottom: 20px;
+            text-align: center;
+            box-shadow: 0 4px 20px rgba(0, 255, 204, 0.1);
+        }
+
+        #leaderboard h3 {
+            color: #00ffcc;
+            font-size: 1.4rem;
+            margin-bottom: 10px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        #scores-list {
+            display: flex;
+            justify-content: space-around;
+            flex-wrap: wrap;
+            gap: 10px;
+            list-style: none;
+            font-size: 1.2rem;
+        }
+
+        .score-item {
+            background: rgba(0, 0, 0, 0.4);
+            padding: 8px 15px;
+            border-radius: 20px;
+            min-width: 160px;
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .score-item span {
+            color: #00ffcc;
+            font-weight: bold;
+		
+        }
+		
+        /* Panel de Control */
+        #ui-panel {
+            display: flex;
+            width: 100%;
+            max-width: 800px;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+            background: rgba(255, 255, 255, 0.03);
+            padding: 15px 30px;
+            border-radius: 50px;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+
+        #timer {
+            font-size: 2.2rem;
+            font-weight: bold;
+            font-variant-numeric: tabular-nums;
+        }
+
+        button {
+            background: #00ffcc;
+            color: #121212;
+            border: none;
+            padding: 12px 35px;
+            font-size: 1.2rem;
+            font-weight: bold;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        button:active {
+            transform: scale(0.95);
+            background: #00ccaa;
+        }
+
+        /* Layout Principal Elástico */
+        #main-game-layout {
+            display: flex;
+            flex-direction: row;
+            align-items: flex-start;
+            justify-content: center;
+            gap: 30px;
+            width: 100%;
+            max-width: 1100px;
+        }
+		
+        /* Contenedor Cuadrado Líquido */
+        #game-container {
+            position: relative;
+            width: 100%;
+            max-width: 750px;
+            aspect-ratio: 1 / 1;
+            background: #1e1e1e;
+            border: 4px solid #333;
+            border-radius: 12px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.7);
+            touch-action: none !important; /* Bloquea gestos nativos en todo el contenedor */
+        }
+
+        /* Panel de Guía Lateral */
+        #guide-panel {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 20px;
+            border-radius: 12px;
+            min-width: 200px;
+        }
+
+        #guide-panel span {
+            font-size: 1.1rem;
+            color: #aaa;
+            margin-bottom: 12px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        #preview-image {
+            width: 180px;
+            height: 180px;
+            border-radius: 8px;
+            border: 2px solid #333;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.5);
+            opacity: 0.7;
+            transition: all 0.3s ease;
+            background-size: cover;
+            background-position: center;
+        }
+
+        #preview-image:active, #preview-image:hover {
+            opacity: 1;
+            border-color: #00ffcc;
+            transform: scale(1.03);
+        }
+
+        #board-grid {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            grid-template-rows: repeat(3, 1fr);
+            pointer-events: none;
+        }
+
+        .grid-slot {
+            border: 1px dashed rgba(255, 255, 255, 0.08);
+        }
+
+        .piece {
+            position: absolute;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            cursor: grab;
+            touch-action: none !important; /* Apaga el scroll nativo de Android sobre la pieza */
+            border-radius: 4px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.5);
+            z-index: 2;
+            will-change: transform;
+        }
+
+        .piece:active {
+            cursor: grabbing;
+            z-index: 10;
+            box-shadow: 0 16px 32px rgba(0,0,0,0.7);
+        }
+
+        /* Pantallas Modales */
+        .modal-screen {
+            display: none;
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(18, 18, 18, 0.96);
+            border-radius: 8px;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 20;
+            text-align: center;
+            padding: 20px;
+            animation: fadeIn 0.3s ease forwards;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .modal-screen h2 {
+            font-size: 2.5rem;
+            color: #00ffcc;
+            margin-bottom: 15px;
+        }
+
+        .modal-screen p {
+            font-size: 1.3rem;
+            margin-bottom: 20px;
+        }
+
+        input[type="text"] {
+            background: #2a2a2a;
+            border: 2px solid #00ffcc;
+            color: white;
+            padding: 15px 25px;
+            font-size: 1.4rem;
+            border-radius: 30px;
+            text-align: center;
+            width: 80%;
+            max-width: 400px;
+            margin-bottom: 25px;
+            outline: none;
+        }
+
+        /* --- MEDIA QUERY REORGANIZACIÓN PARA CELULARES --- */
+        @media (max-width: 768px) {
+            #main-game-layout {
+                flex-direction: column;
+                align-items: center;
+            }
+            #guide-panel {
+                width: 100%;
+                max-width: 400px;
+                flex-direction: row;
+                justify-content: space-around;
+                padding: 10px;
+            }
+            #guide-panel span { margin-bottom: 0; align-self: center; }
+            #preview-image { width: 80px; height: 80px; }
+            #timer { font-size: 1.8rem; }
+            button { padding: 10px 25px; font-size: 1rem; }
+            .modal-screen h2 { font-size: 1.8rem; }
+        }
+    </style>
+</head>
+<body>
+	<h1 style="margin-bottom: 35px; text-align: center; color: white; font-weight: bold;">
+        ¡Arma el Rompecabezas y Gana!
+    </h1>
+	
+    <div id="leaderboard">
+        <h3>🏆 MEJORES TIEMPOS 🏆</h3>
+        <ul id="scores-list">
+            <li class="score-item">1°: <span>--:--</span></li>
+            <li class="score-item">2°: <span>--:--</span></li>
+            <li class="score-item">3°: <span>--:--</span></li>
+        </ul>
+    </div>
+
+    <div id="ui-panel">
+        <div id="timer">00:00</div>
+        <button id="reset-btn">Reiniciar</button>
+    </div>
+
+    <div id="main-game-layout">
+        
+        <div id="game-container">
+            <div id="board-grid">
+                <div class="grid-slot"></div><div class="grid-slot"></div><div class="grid-slot"></div>
+                <div class="grid-slot"></div><div class="grid-slot"></div><div class="grid-slot"></div>
+                <div class="grid-slot"></div><div class="grid-slot"></div><div class="grid-slot"></div>
+            </div>
+
+            <div id="name-modal" class="modal-screen">
+                <h2>¡Lo lograste!</h2>
+                <p id="time-report">Tu tiempo fue de --:--</p>
+                <p>Ingresa tu nombre para el cuadro de honor:</p>
+                <input type="text" id="player-name" placeholder="Tu Nombre o Iniciales" maxlength="12">
+                <button id="save-score-btn">Guardar Récord</button>
+            </div>
+
+            <div id="win-screen" class="modal-screen">
+                <h2>¡Felicitaciones!</h2>
+                <p>El marcador ha sido actualizado.</p>
+                <button id="restart-btn">Siguiente Imagen</button>
+            </div>
+        </div>
+
+        <div id="guide-panel">
+            <span>Guía Visual</span>
+            <div id="preview-image"></div>
+        </div>
+
+    </div>
+
+    <script>
+        const ROWS = 3;
+        const COLS = 3;
+
+        const container = document.getElementById('game-container');
+        const previewImage = document.getElementById('preview-image');
+        const timerDisplay = document.getElementById('timer');
+        const resetBtn = document.getElementById('reset-btn');
+        const restartBtn = document.getElementById('restart-btn');
+        const nameModal = document.getElementById('name-modal');
+        const winScreen = document.getElementById('win-screen');
+        const timeReport = document.getElementById('time-report');
+        const playerNameInput = document.getElementById('player-name');
+        const saveScoreBtn = document.getElementById('save-score-btn');
+        const scoresList = document.getElementById('scores-list');
+
+        let pieces = [];
+        let startTime;
+        let timerInterval;
+        let gameActive = false;
+        let finalTimeMs = 0;
+        let currentImageUrl = '';
+        
+        let containerBounds = { width: 0, height: 0 };
+        let pieceSize = 0;
+        let lastWidth = window.innerWidth;
+
+        function getNewImageUrl() {
+            const randomId = Math.floor(Math.random() * 1000);
+            return `https://picsum.photos/800/800?random=${randomId}`;
+        }
+
+        function initGame(changeImage = true) {
+            document.querySelectorAll('.piece').forEach(p => p.remove());
+            pieces = [];
+            nameModal.style.display = 'none';
+            winScreen.style.display = 'none';
+            playerNameInput.value = '';
+            
+            clearInterval(timerInterval);
+            timerDisplay.textContent = "00:00";
+            gameActive = false;
+
+            if (changeImage || !currentImageUrl) {
+                currentImageUrl = getNewImageUrl();
+            }
+
+            previewImage.style.backgroundImage = `url('${currentImageUrl}')`;
+
+            containerBounds.width = container.clientWidth;
+            containerBounds.height = container.clientHeight;
+            pieceSize = containerBounds.width / ROWS;
+
+            for (let r = 0; r < ROWS; r++) {
+                for (let c = 0; c < COLS; c++) {
+                    const piece = document.createElement('div');
+                    piece.classList.add('piece');
+                    piece.style.width = `${pieceSize}px`;
+                    piece.style.height = `${pieceSize}px`;
+                    piece.style.backgroundImage = `url('${currentImageUrl}')`;
+                    piece.style.backgroundSize = `${containerBounds.width}px ${containerBounds.height}px`;
+                    piece.style.backgroundPosition = `-${c * pieceSize}px -${r * pieceSize}px`;
+                    
+                    piece.dataset.correctX = c * pieceSize;
+                    piece.dataset.correctY = r * pieceSize;
+
+                    const randomX = Math.floor(Math.random() * (containerBounds.width - pieceSize));
+                    const randomY = Math.floor(Math.random() * (containerBounds.height - pieceSize));
+                    
+                    piece.style.left = `${randomX}px`;
+                    piece.style.top = `${randomY}px`;
+                    
+                    piece.dataset.translateX = 0;
+                    piece.dataset.translateY = 0;
+                    piece.style.transform = `translate(0px, 0px)`;
+
+                    setupDragAndDrop(piece);
+                    container.appendChild(piece);
+                    pieces.push(piece);
+                }
+            }
+            renderLeaderboard();
+        }
+
+        function setupDragAndDrop(piece) {
+            let isDragging = false;
+            let startX = 0, startY = 0;
+            let currentX = 0, currentY = 0;
+
+            // SOLUCIÓN CLAVE ANDROID: Usar la API unificada PointerEvents
+            const startDrag = (e) => {
+                if (nameModal.style.display === 'flex' || winScreen.style.display === 'flex') return;
+                
+                // Captura el puntero táctil específico para que Android no lo suelte al moverlo rápido
+                piece.setPointerCapture(e.pointerId);
+
+                if (!gameActive) {
+                    startTimer();
+                    gameActive = true;
+                }
+
+                isDragging = true;
+                piece.style.zIndex = "10";
+
+                // PointerEvents lee directamente clientX de forma nativa e híbrida sin arreglos
+                startX = e.clientX - parseFloat(piece.dataset.translateX);
+                startY = e.clientY - parseFloat(piece.dataset.translateY);
+            };
+
+            const drag = (e) => {
+                if (!isDragging) return;
+
+                currentX = e.clientX - startX;
+                currentY = e.clientY - startY;
+
+                const origLeft = parseFloat(piece.style.left);
+                const origTop = parseFloat(piece.style.top);
+
+                // Límites dentro del contenedor para evitar desbordamiento
+                if (origLeft + currentX < 0) currentX = -origLeft;
+                if (origLeft + currentX > containerBounds.width - pieceSize) currentX = containerBounds.width - pieceSize - origLeft;
+                if (origTop + currentY < 0) currentY = -origTop;
+                if (origTop + currentY > containerBounds.height - pieceSize) currentY = containerBounds.height - pieceSize - origTop;
+
+                piece.dataset.translateX = currentX;
+                piece.dataset.translateY = currentY;
+
+                piece.style.transform = `translate(${currentX}px, ${currentY}px)`;
+            };
+
+            const stopDrag = (e) => {
+                if (!isDragging) return;
+                isDragging = false;
+                piece.style.zIndex = "2";
+
+                // Libera el control del puntero en Android
+                try { piece.releasePointerCapture(e.pointerId); } catch(err) {}
+
+                const finalLeft = parseFloat(piece.style.left) + currentX;
+                const finalTop = parseFloat(piece.style.top) + currentY;
+                
+                const correctX = parseFloat(piece.dataset.correctX);
+                const correctY = parseFloat(piece.dataset.correctY);
+
+                const magnetThreshold = pieceSize * 0.25; 
+
+                if (Math.abs(finalLeft - correctX) < magnetThreshold && Math.abs(finalTop - correctY) < magnetThreshold) {
+                    piece.style.left = `${correctX}px`;
+                    piece.style.top = `${correctY}px`;
+                } else {
+                    piece.style.left = `${finalLeft}px`;
+                    piece.style.top = `${finalTop}px`;
+                }
+                
+                piece.style.transform = `translate(0px, 0px)`;
+                piece.dataset.translateX = 0;
+                piece.dataset.translateY = 0;
+                
+                currentX = 0;
+                currentY = 0;
+                checkVictory();
+            };
+
+            // Eventos Pointer amarrados directo a la pieza (Detecta dedo y mouse por igual sin retrasos)
+            piece.addEventListener('pointerdown', startDrag);
+            piece.addEventListener('pointermove', drag);
+            piece.addEventListener('pointerup', stopDrag);
+            piece.addEventListener('pointercancel', stopDrag);
+        }
+
+        function startTimer() {
+            startTime = Date.now();
+            timerInterval = setInterval(() => {
+                finalTimeMs = Date.now() - startTime;
+                timerDisplay.textContent = formatTime(finalTimeMs);
+            }, 1000);
+        }
+
+        function formatTime(ms) {
+            const totalSeconds = Math.floor(ms / 1000);
+            const minutes = Math.floor(totalSeconds / 60).toString().padStart(2, '0');
+            const seconds = (totalSeconds % 60).toString().padStart(2, '0');
+            return `${minutes}:${seconds}`;
+        }
+
+        function checkVictory() {
+            const allCorrect = pieces.every(piece => {
+                return Math.abs(parseFloat(piece.style.left) - parseFloat(piece.dataset.correctX)) < 1 &&
+                       Math.abs(parseFloat(piece.style.top) - parseFloat(piece.dataset.correctY)) < 1;
+            });
+
+            if (allCorrect && gameActive) {
+                clearInterval(timerInterval);
+                gameActive = false;
+                timeReport.textContent = `Tu tiempo fue de ${formatTime(finalTimeMs)}`;
+                nameModal.style.display = 'flex';
+            }
+        }
+
+        function saveScore() {
+            let name = playerNameInput.value.trim();
+            if (name === "") name = "Anónimo";
+
+            let highScores = JSON.parse(localStorage.getItem('puzzleHighScores')) || [];
+            highScores.push({ name: name, time: finalTimeMs });
+            highScores.sort((a, b) => a.time - b.time);
+            highScores = highScores.slice(0, 5);
+
+            localStorage.setItem('puzzleHighScores', JSON.stringify(highScores));
+            
+            nameModal.style.display = 'none';
+            winScreen.style.display = 'flex';
+            renderLeaderboard();
+        }
+
+        function renderLeaderboard() {
+            const highScores = JSON.parse(localStorage.getItem('puzzleHighScores')) || [];
+            const items = scoresList.querySelectorAll('.score-item');
+            
+            items.forEach((item, index) => {
+                if (highScores[index]) {
+                    const record = highScores[index];
+                    item.innerHTML = `${index + 1}° ${record.name}: <span>${formatTime(record.time)}</span>`;
+                } else {
+                    item.innerHTML = `${index + 1}°: <span>--:--</span>`;
+                }
+            });
+        }
+
+        window.addEventListener('resize', () => {
+            if (window.innerWidth !== lastWidth) {
+                lastWidth = window.innerWidth;
+                initGame(false);
+            }
+        });
+
+        saveScoreBtn.addEventListener('click', saveScore);
+        resetBtn.addEventListener('click', () => initGame(true));
+        restartBtn.addEventListener('click', () => initGame(true));
+
+        window.onload = () => initGame(true);
+    </script>
+</body>
+</html>
+
