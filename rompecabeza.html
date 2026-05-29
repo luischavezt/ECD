@@ -28,6 +28,15 @@
             padding: 20px;
         }
 
+        /* ESTILOS PARA EL LOGO SUPERIOR */
+        .brand-logo {
+            max-width: 100%;
+            max-height: 80px;
+            object-fit: contain;
+            margin-bottom: 10px;
+            display: block;
+        }
+
         /* Tabla de Clasificación Superior Adaptativa */
         #leaderboard {
             width: 100%;
@@ -69,7 +78,6 @@
         .score-item span {
             color: #00ffcc;
             font-weight: bold;
-		
         }
 		
         /* Panel de Control */
@@ -130,7 +138,7 @@
             border: 4px solid #333;
             border-radius: 12px;
             box-shadow: 0 20px 40px rgba(0,0,0,0.7);
-            touch-action: none !important; /* Bloquea gestos nativos en todo el contenedor */
+            touch-action: none !important;
         }
 
         /* Panel de Guía Lateral */
@@ -191,7 +199,7 @@
             position: absolute;
             border: 1px solid rgba(255, 255, 255, 0.2);
             cursor: grab;
-            touch-action: none !important; /* Apaga el scroll nativo de Android sobre la pieza */
+            touch-action: none !important;
             border-radius: 4px;
             box-shadow: 0 4px 12px rgba(0,0,0,0.5);
             z-index: 2;
@@ -271,11 +279,15 @@
             #timer { font-size: 1.8rem; }
             button { padding: 10px 25px; font-size: 1rem; }
             .modal-screen h2 { font-size: 1.8rem; }
+            .brand-logo { max-height: 60px; } /* Reducción de logo en pantallas móviles */
         }
     </style>
 </head>
 <body>
-	<h1 style="margin-bottom: 35px; text-align: center; color: white; font-weight: bold;">
+
+    <img src="logo.png" alt="Logo" class="brand-logo">
+
+    <h1 style="margin-bottom: 35px; text-align: center; color: white; font-weight: bold;">
         ¡Arma el Rompecabezas y Gana!
     </h1>
 	
@@ -413,11 +425,9 @@
             let startX = 0, startY = 0;
             let currentX = 0, currentY = 0;
 
-            // SOLUCIÓN CLAVE ANDROID: Usar la API unificada PointerEvents
             const startDrag = (e) => {
                 if (nameModal.style.display === 'flex' || winScreen.style.display === 'flex') return;
                 
-                // Captura el puntero táctil específico para que Android no lo suelte al moverlo rápido
                 piece.setPointerCapture(e.pointerId);
 
                 if (!gameActive) {
@@ -428,7 +438,6 @@
                 isDragging = true;
                 piece.style.zIndex = "10";
 
-                // PointerEvents lee directamente clientX de forma nativa e híbrida sin arreglos
                 startX = e.clientX - parseFloat(piece.dataset.translateX);
                 startY = e.clientY - parseFloat(piece.dataset.translateY);
             };
@@ -442,7 +451,6 @@
                 const origLeft = parseFloat(piece.style.left);
                 const origTop = parseFloat(piece.style.top);
 
-                // Límites dentro del contenedor para evitar desbordamiento
                 if (origLeft + currentX < 0) currentX = -origLeft;
                 if (origLeft + currentX > containerBounds.width - pieceSize) currentX = containerBounds.width - pieceSize - origLeft;
                 if (origTop + currentY < 0) currentY = -origTop;
@@ -459,7 +467,6 @@
                 isDragging = false;
                 piece.style.zIndex = "2";
 
-                // Libera el control del puntero en Android
                 try { piece.releasePointerCapture(e.pointerId); } catch(err) {}
 
                 const finalLeft = parseFloat(piece.style.left) + currentX;
@@ -487,7 +494,6 @@
                 checkVictory();
             };
 
-            // Eventos Pointer amarrados directo a la pieza (Detecta dedo y mouse por igual sin retrasos)
             piece.addEventListener('pointerdown', startDrag);
             piece.addEventListener('pointermove', drag);
             piece.addEventListener('pointerup', stopDrag);
@@ -568,4 +574,3 @@
     </script>
 </body>
 </html>
-
