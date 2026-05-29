@@ -1,0 +1,482 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Atrapa las Esferas Táctil</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            user-select: none;
+            -webkit-user-select: none;
+        }
+
+        body {
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            background: #121212;
+            color: #ffffff;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-start;
+            min-height: 100vh;
+            padding: 15px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        /* ESTILOS DEL LOGO SUPERIOR */
+        .brand-logo {
+            max-width: 100%;
+            max-height: 80px; /* Evita que ocupe demasiado espacio vertical en el tótem */
+            object-fit: contain;
+            margin-bottom: 10px;
+            display: block;
+        }
+
+        /* BOTÓN SECRETO PARA DESCARGAR EXCEL (Esquina superior derecha, casi invisible) */
+        #admin-trigger {
+            position: absolute;
+            top: 5px;
+            right: 5px;
+            width: 30px;
+            height: 30px;
+            background: transparent;
+            cursor: pointer;
+            z-index: 200;
+        }
+
+        h1 {
+            font-size: 1.6rem;
+            color: #ffffff;
+            text-align: center;
+            margin-bottom: 10px;
+            font-weight: bold;
+            letter-spacing: 1px;
+        }
+
+        #ui-panel {
+            display: flex;
+            width: 100%;
+            max-width: 500px;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            background: rgba(255, 255, 255, 0.03);
+            padding: 10px 20px;
+            border-radius: 50px;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+
+        #score-display {
+            font-size: 1.3rem;
+            font-weight: bold;
+        }
+
+        #score-display span {
+            color: #00ffcc;
+        }
+
+        #lives-display {
+            font-size: 1.3rem;
+            letter-spacing: 3px;
+        }
+
+        #game-area {
+            position: relative;
+            width: 100%;
+            max-width: 500px;
+            height: 52vh; /* Se redujo ligeramente para compensar el espacio del logo */
+            background: rgba(255, 255, 255, 0.02);
+            border: 2px solid rgba(0, 255, 204, 0.2);
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: inset 0 0 20px rgba(0,0,0,0.6);
+            touch-action: none;
+        }
+
+        #basket {
+            position: absolute;
+            bottom: 15px;
+            left: 50%;
+            width: 90px;
+            height: 100px;
+            background: linear-gradient(135deg, #00ffcc 0%, #00aa99 100%);
+            border-radius: 12px 12px 30px 30px;
+            transform: translateX(-50%);
+            box-shadow: 0 6px 20px rgba(0, 255, 204, 0.4);
+            border: 2px solid #ffffff;
+            will-change: left;
+        }
+
+        .ball {
+            position: absolute;
+            width: 30px;
+            height: 30px;
+            background: radial-gradient(circle at 30% 30%, #ffffff, #00ffcc);
+            border-radius: 50%;
+            box-shadow: 0 0 10px rgba(0, 255, 204, 0.6);
+        }
+
+        .modal-screen {
+            display: flex;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(18, 18, 18, 0.98);
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 100;
+            text-align: center;
+            padding: 20px;
+        }
+
+        .modal-screen h2 {
+            font-size: 2rem;
+            color: #ff3366;
+            margin-bottom: 10px;
+        }
+
+        .modal-screen p {
+            font-size: 1rem;
+            margin-bottom: 15px;
+            color: #cccccc;
+        }
+
+        .form-container {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            width: 85%;
+            max-width: 350px;
+            margin-bottom: 20px;
+        }
+
+        input[type="text"], input[type="email"], input[type="tel"] {
+            background: #2a2a2a;
+            border: 1px solid rgba(0, 255, 204, 0.4);
+            color: white;
+            padding: 10px 15px;
+            font-size: 1.05rem;
+            border-radius: 25px;
+            text-align: center;
+            outline: none;
+            user-select: text;
+            -webkit-user-select: text;
+        }
+
+        input:focus {
+            border-color: #00ffcc;
+            box-shadow: 0 0 8px rgba(0, 255, 204, 0.3);
+        }
+
+        button {
+            background: #00ffcc;
+            color: #121212;
+            border: none;
+            padding: 12px 30px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            border-radius: 25px;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(0, 255, 204, 0.3);
+        }
+
+        button:active {
+            transform: scale(0.95);
+        }
+
+        #leaderboard {
+            width: 100%;
+            max-width: 500px;
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            padding: 10px;
+            margin-top: 15px;
+            text-align: center;
+        }
+
+        #leaderboard h3 {
+            color: #00ffcc;
+            font-size: 1rem;
+            margin-bottom: 5px;
+            letter-spacing: 1px;
+        }
+
+        #scores-list {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            list-style: none;
+            font-size: 0.9rem;
+        }
+
+        .score-item {
+            background: rgba(0, 0, 0, 0.3);
+            padding: 4px 10px;
+            border-radius: 20px;
+        }
+
+        .score-item span {
+            color: #00ffcc;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Zona táctil oculta para descargar la base de datos -->
+    <div id="admin-trigger" onclick="downloadLeadsExcel()"></div>
+
+    <!-- IMAGEN DEL LOGO (Ubicada en la raíz del repositorio de GitHub) -->
+    <img src="logo.png" alt="Logo" class="brand-logo">
+
+    <h1>Atrapa las Esferas</h1>
+
+    <div id="ui-panel">
+        <div id="score-display">Puntos: <span id="score-val">0</span></div>
+        <div id="lives-display">❤️❤️</div>
+    </div>
+
+    <div id="game-area">
+        <div id="basket"></div>
+    </div>
+
+    <div id="leaderboard">
+        <h3>🏆 TOP 3 DE LA JORNADA 🏆</h3>
+        <ul id="scores-list">
+            <li class="score-item">1° --: <span>0 pts</span></li>
+            <li class="score-item">2° --: <span>0 pts</span></li>
+            <li class="score-item">3° --: <span>0 pts</span></li>
+        </ul>
+    </div>
+
+    <div id="start-modal" class="modal-screen">
+        <h2 style="color: #00ffcc;">¿Listo para jugar?</h2>
+        <p>¡Lluvia de esferas! Mueve la canasta deslizando tu dedo.<br>Demuestra tu agilidad y registra tu récord.</p>
+        <button id="start-game-btn">Empezar Juego</button>
+    </div>
+
+    <div id="game-over-modal" class="modal-screen" style="display: none;">
+        <h2>¡Fin del Juego!</h2>
+        <p id="final-score-report">Lograste atrapar -- esferas.</p>
+        <p style="color: #00ffcc; font-size: 0.95rem;">Registra tus datos para guardar tu puntuación:</p>
+        
+        <form id="lead-form" class="form-container" onsubmit="event.preventDefault();">
+            <input type="text" id="p-name" placeholder="Nombre completo" required maxlength="30">
+            <input type="email" id="p-email" placeholder="Correo electrónico" required>
+            <input type="tel" id="p-phone" placeholder="Teléfono / WhatsApp" required>
+            <button type="submit" id="save-score-btn">Enviar y Finalizar</button>
+        </form>
+    </div>
+
+    <script>
+        const gameArea = document.getElementById('game-area');
+        const basket = document.getElementById('basket');
+        const scoreVal = document.getElementById('score-val');
+        const livesDisplay = document.getElementById('lives-display');
+        const startModal = document.getElementById('start-modal');
+        const gameOverModal = document.getElementById('game-over-modal');
+        const finalScoreReport = document.getElementById('final-score-report');
+        const leadForm = document.getElementById('lead-form');
+        const saveScoreBtn = document.getElementById('save-score-btn');
+        const startGameBtn = document.getElementById('start-game-btn');
+        const scoresList = document.getElementById('scores-list');
+
+        let highScores = []; 
+        let score = 0;
+        let lives = 2;
+        let gameActive = false;
+        let animationFrameId, spawnIntervalId;
+        let ballsArray = [];
+        let ballSpeed = 3.5;       
+        let spawnTime = 1600;      
+        let areaWidth = gameArea.clientWidth;
+        let areaHeight = gameArea.clientHeight;
+        const basketWidth = 90;
+        let basketX = areaWidth / 2;
+
+        window.addEventListener('resize', () => {
+            areaWidth = gameArea.clientWidth;
+            areaHeight = gameArea.clientHeight;
+        });
+
+        function moveBasket(clientX) {
+            if (!gameActive) return;
+            const rect = gameArea.getBoundingClientRect();
+            let relativeX = clientX - rect.left;
+            if (relativeX < basketWidth / 2) relativeX = basketWidth / 2;
+            if (relativeX > areaWidth - basketWidth / 2) relativeX = areaWidth - basketWidth / 2;
+            basketX = relativeX;
+            basket.style.left = `${basketX}px`;
+        }
+
+        gameArea.addEventListener('touchmove', (e) => { if (e.touches.length > 0) moveBasket(e.touches[0].clientX); }, { passive: true });
+        gameArea.addEventListener('touchstart', (e) => { if (e.touches.length > 0) moveBasket(e.touches[0].clientX); }, { passive: true });
+        gameArea.addEventListener('mousemove', (e) => { moveBasket(e.clientX); });
+
+        function spawnBall() {
+            if (!gameActive) return;
+            const ballEl = document.createElement('div');
+            ballEl.classList.add('ball');
+            let xPos = Math.floor(Math.random() * (areaWidth - 30));
+            ballEl.style.left = `${xPos}px`;
+            ballEl.style.top = `-35px`;
+            gameArea.appendChild(ballEl);
+            ballsArray.push({ element: ballEl, x: xPos, y: -35 });
+        }
+
+        function startSpawning() {
+            clearInterval(spawnIntervalId);
+            spawnIntervalId = setInterval(spawnBall, spawnTime);
+        }
+
+        function updateGame() {
+            if (!gameActive) return;
+            for (let i = ballsArray.length - 1; i >= 0; i--) {
+                let ball = ballsArray[i];
+                ball.y += ballSpeed;
+                ball.element.style.top = `${ball.y}px`;
+
+                if (ball.y >= areaHeight - 110 && ball.y <= areaHeight - 75) {
+                    if (ball.x + 15 >= (basketX - basketWidth / 2) && ball.x + 15 <= (basketX + basketWidth / 2)) {
+                        score++;
+                        scoreVal.textContent = score;
+                        if (score > 0 && score % 5 === 0) {
+                            ballSpeed += 0.8;
+                            if (spawnTime > 600) spawnTime -= 200; 
+                            startSpawning(); 
+                        }
+                        ball.element.remove();
+                        ballsArray.splice(i, 1);
+                        continue;
+                    }
+                }
+
+                if (ball.y > areaHeight - 15) {
+                    lives--;
+                    if (lives === 1) livesDisplay.textContent = "❤️💔";
+                    else {
+                        livesDisplay.textContent = "💔💔";
+                        endGame();
+                        return;
+                    }
+                    ball.element.remove();
+                    ballsArray.splice(i, 1);
+                    continue;
+                }
+            }
+            animationFrameId = requestAnimationFrame(updateGame);
+        }
+
+        function startGame() {
+            ballsArray.forEach(b => b.element.remove());
+            ballsArray = [];
+            score = 0; lives = 2; ballSpeed = 3.5; spawnTime = 1600;
+            scoreVal.textContent = score;
+            livesDisplay.textContent = "❤️❤️";
+            startModal.style.display = 'none';
+            gameOverModal.style.display = 'none';
+            leadForm.reset();
+            basketX = areaWidth / 2;
+            basket.style.left = `${basketX}px`;
+            gameActive = true;
+            spawnBall();
+            startSpawning();
+            animationFrameId = requestAnimationFrame(updateGame);
+        }
+
+        function endGame() {
+            gameActive = false;
+            clearInterval(spawnIntervalId);
+            cancelAnimationFrame(animationFrameId);
+            finalScoreReport.textContent = `Lograste atrapar ${score} esferas.`;
+            gameOverModal.style.display = 'flex';
+        }
+
+        function loadLocalData() {
+            const storedScores = localStorage.getItem('totem_top_scores');
+            if (storedScores) { highScores = JSON.parse(storedScores); } 
+            else { highScores = [{ name: "Leyenda", points: 15 }, { name: "Pro", points: 10 }, { name: "Novato", points: 5 }]; }
+            renderLeaderboard();
+        }
+
+        function handleFormSubmit() {
+            if (!leadForm.checkValidity()) { leadForm.reportValidity(); return; }
+
+            const name = document.getElementById('p-name').value.trim();
+            const email = document.getElementById('p-email').value.trim();
+            const phone = document.getElementById('p-phone').value.trim();
+            const dateStr = new Date().toLocaleString();
+
+            let allLeads = localStorage.getItem('totem_database_leads');
+            allLeads = allLeads ? JSON.parse(allLeads) : [];
+            allLeads.push({ fecha: dateStr, nombre: name, correo: email, telefono: phone, puntos: score });
+            localStorage.setItem('totem_database_leads', JSON.stringify(allLeads));
+
+            highScores.push({ name: name, points: score });
+            highScores.sort((a, b) => b.points - a.points);
+            highScores = highScores.slice(0, 3);
+            localStorage.setItem('totem_top_scores', JSON.stringify(highScores));
+            
+            renderLeaderboard();
+            gameOverModal.style.display = 'none';
+            startModal.style.display = 'flex';
+        }
+
+        function renderLeaderboard() {
+            const items = scoresList.querySelectorAll('.score-item');
+            items.forEach((item, index) => {
+                if (highScores[index]) {
+                    item.innerHTML = `${index + 1}° ${highScores[index].name}: <span>${highScores[index].points} pts</span>`;
+                }
+            });
+        }
+
+        function downloadLeadsExcel() {
+            const password = prompt("Ingrese la clave de administrador para descargar los leads:");
+            if (password !== "1234") {
+                alert("Clave incorrecta.");
+                return;
+            }
+
+            let allLeads = localStorage.getItem('totem_database_leads');
+            allLeads = allLeads ? JSON.parse(allLeads) : [];
+
+            if (allLeads.length === 0) {
+                alert("Aún no hay ningún cliente registrado.");
+                return;
+            }
+
+            let csvContent = "\uFEFFfecha;nombre;correo;telefono;puntos\n";
+            
+            allLeads.forEach(lead => {
+                csvContent += `"${lead.fecha}";"${lead.nombre}";"${lead.correo}";"${lead.telefono}";${lead.puntos}\n`;
+            });
+
+            const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+            const link = document.createElement("a");
+            const url = URL.createObjectURL(blob);
+            
+            link.setAttribute("href", url);
+            link.setAttribute("download", `leads_totem_${new Date().toISOString().slice(0,10)}.csv`);
+            link.style.visibility = 'hidden';
+            
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        }
+
+        startGameBtn.addEventListener('click', startGame);
+        saveScoreBtn.addEventListener('click', handleFormSubmit);
+        loadLocalData();
+    </script>
+</body>
+</html>
+
