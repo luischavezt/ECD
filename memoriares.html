@@ -26,8 +26,7 @@
         }
 
         h1 {
-            font-size: 5vw; /* Tamaño dinámico según la pantalla */
-            max-size: 2.2rem;
+            font-size: 5vw; 
             color: #ffffff;
             text-align: center;
             margin-bottom: 15px;
@@ -39,7 +38,6 @@
             h1 { font-size: 2.2rem; }
         }
 
-        /* Tabla de Clasificación Superior */
         #leaderboard {
             width: 100%;
             max-width: 800px;
@@ -82,7 +80,6 @@
             font-weight: bold;
         }
 
-        /* Panel de Control */
         #ui-panel {
             display: flex;
             width: 100%;
@@ -119,14 +116,13 @@
             background: #00ccaa;
         }
 
-        /* REDISEÑO RESPONSIVE: Contenedor del Tablero Ajustable */
+        /* Tu cuadrícula intacta de 12 cartas */
         #game-grid {
             display: grid;
-            /* 3 columnas en pantallas grandes por defecto, ajustables */
             grid-template-columns: repeat(3, 1fr); 
             gap: 10px;
             width: 100%;       
-            max-width: 540px;       
+            max-width: 400px;       
             margin: 0 auto;
             perspective: 1000px;
             touch-action: none !important;
@@ -135,24 +131,24 @@
             padding: 12px;
         }
 
-        /* Rediseño de tarjetas proporcionales */
+        @media (min-width: 450px) {
+            #game-grid {
+                grid-template-columns: repeat(4, 1fr);
+                max-width: 500px;
+            }
+        }
+
         .card {
             position: relative;
             width: 100%;       
-            aspect-ratio: 1 / 1; /* Mantiene la proporción clásica de fotografía arquitectónica */
+            aspect-ratio: 1 / 1; 
             cursor: pointer;
             transform-style: preserve-3d;
             transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
             will-change: transform;
+            -webkit-tap-highlight-color: transparent;
         }
 
-        /* Ajuste de columnas para pantallas muy estrechas (Celulares verticales) */
-        /* @media (max-width: 480px) {
-            #game-grid {
-                grid-template-columns: repeat(3, 1fr); /* 3 columnas x 4 filas para optimizar espacio móvil */
-            }
-        }
-		*/
         .card.flipped {
             transform: rotateY(180deg);
         }
@@ -195,7 +191,6 @@
             opacity: 0.6;
         }
 
-        /* Modales */
         .modal-screen {
             display: none;
             position: fixed;
@@ -293,8 +288,9 @@
         let gameActive = false;
         let finalTimeMs = 0;
         let lockBoard = false;
-		
-		const IMAGENES_LOCALES = [
+        
+        // Rutas absolutas fijadas para tus 6 imágenes en minúsculas
+        const IMAGENES_LOCALES = [
             "https://luischavezt.github.io/Ruleta/imagenes/edificio1.jpg",
             "https://luischavezt.github.io/Ruleta/imagenes/edificio2.jpg",
             "https://luischavezt.github.io/Ruleta/imagenes/edificio3.jpg",
