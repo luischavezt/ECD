@@ -22,6 +22,16 @@
             padding: 20px;
             overflow-x: hidden;
         }
+        
+        /* ESTILOS DEL LOGO SUPERIOR */
+        .brand-logo {
+            max-width: 100%;
+            max-height: 80px; /* Evita que sature el espacio en vertical */
+            object-fit: contain;
+            margin-bottom: 10px;
+            display: block;
+        }
+
         h1 {
             margin-bottom: 10px;
             font-size: 1.8rem;
@@ -80,6 +90,7 @@
         }
         button:active { transform: scale(0.98); }
         button:disabled { background: #555; box-shadow: none; cursor: not-allowed; }
+        
         #winner-display {
             margin-top: 20px;
             font-size: 1.5rem;
@@ -88,11 +99,22 @@
             text-align: center;
             color: #00ff88;
         }
+
+        /* ========================================================
+           📱 RESPONSIVE: ADAPTACIÓN AUTOMÁTICA PARA CELULARES
+           ======================================================== */
+        @media (max-height: 760px), (max-width: 480px) {
+            h1 { font-size: 1.5rem; }
+            button { font-size: 1.1rem; padding: 12px 30px; }
+            .brand-logo { max-height: 60px; } /* Reducción menor en móviles */
+        }
     </style>
 </head>
 <body>
 
     <div class="container">
+        <img src="logo.png" alt="Logo" class="brand-logo">
+
         <h1>Sorteo en Vivo</h1>
         <button id="btn-sync" onclick="fetchParticipants()" style="background: #3a3a55; font-size: 0.9rem; padding: 8px 20px; margin-bottom: 10px; width: auto;">🔄 Actualizar Lista</button>
          
@@ -109,10 +131,7 @@
         // ==========================================
         // 🚨 CONFIGURACIÓN DE TU CAPA DE ARCGIS ONLINE
         // ==========================================
-        // 1. Pega aquí abajo la URL de la capa de tu Survey123 (asegúrate de que termine en /0)
         const ARCGIS_LAYER_URL = 'https://services8.arcgis.com/2qDHoDLqu6VOlf1y/arcgis/rest/services/survey123_33efe2aaf89243e6bf952c3dc96cce92/FeatureServer/0';
-        
-        // 2. Coloca aquí el nombre interno exacto de la columna que guarda los nombres en tu encuesta (ej: 'nombre', 'nombres_apellidos', etc.)
         const CAMPO_NOMBRE = 'nombres_y_apellidos'; 
         // ==========================================
 
@@ -191,14 +210,8 @@
             document.getElementById('winner-display').innerText = `🎉 ¡Ganador: ${participants[index]}! 🎉`;
         }
 
-        // ==========================================
-        // LECTURA AUTOMÁTICA EN TIEMPO REAL DESDE ARCGIS ONLINE
-        // ==========================================
         async function fetchParticipants() {
             document.getElementById('winner-display').innerText = "Sincronizando datos de ArcGIS...";
-            
-            // Construimos el Query REST. 'where=1=1' extrae todos los registros.
-            // Añadimos la fecha actual (&t=) para romper la caché del navegador y forzar datos nuevos.
             const queryUrl = `${ARCGIS_LAYER_URL}/query?where=1%3D1&outFields=${CAMPO_NOMBRE}&f=pjson&t=${new Date().getTime()}`;
             
             try {
@@ -232,7 +245,6 @@
             }
         }
 
-        // Ejecución inicial automática
         fetchParticipants();
     </script>
 </body>
