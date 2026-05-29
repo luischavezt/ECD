@@ -116,33 +116,27 @@
             background: #00ccaa;
         }
 
-        /* Tu cuadrícula intacta de 12 cartas */
+        /* CUADRÍCULA FIJA: 3 columnas, lo que genera automáticamente 4 filas hacia abajo */
         #game-grid {
             display: grid;
-            grid-template-columns: repeat(4, 1fr); 
-            gap: 15px;
+            grid-template-columns: repeat(3, 130px); 
+            justify-content: center;                 
+            gap: 15px;                               
             width: 100%;       
-            max-width: 700px;       
-            margin: 20 auto;
+            max-width: 500px;                             
+            margin: 20px auto;
             perspective: 1000px;
             touch-action: none !important;
             background: rgba(255, 255, 255, 0.04); 
             border-radius: 12px;
-            padding: 15px;
+            padding: 20px;
         }
 
-        @media (min-width: 480px) {
-            #game-grid {
-                grid-template-columns: repeat(3, 1fr);
-                max-width: 100px;
-                gap: 10px;
-            }
-        }
-
+        /* LAS CARTAS: Grandes, legibles y cuadradas en Monitor/Tótem */
         .card {
             position: relative;
-            width: 100%;       
-            aspect-ratio: 1 / 1; 
+            width: 130px;                            
+            height: 130px;                           
             cursor: pointer;
             transform-style: preserve-3d;
             transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
@@ -227,6 +221,20 @@
             margin-bottom: 25px;
             outline: none;
         }
+
+        /* ADAPTACIÓN PARA MÓVILES */
+        @media (max-width: 450px) {
+            #game-grid {
+                grid-template-columns: repeat(3, 1fr); 
+                gap: 10px;
+                padding: 12px;
+            }
+            .card {
+                width: 100%;
+                height: auto;
+                aspect-ratio: 1 / 1;                 
+            }
+        }
     </style>
 </head>
 <body>
@@ -290,7 +298,7 @@
         let finalTimeMs = 0;
         let lockBoard = false;
         
-        // Rutas absolutas fijadas para tus 6 imágenes en minúsculas
+        // Tus 6 imágenes con enlaces absolutos fijos e indestructibles
         const IMAGENES_LOCALES = [
             "https://luischavezt.github.io/Ruleta/imagenes/edificio1.jpg",
             "https://luischavezt.github.io/Ruleta/imagenes/edificio2.jpg",
