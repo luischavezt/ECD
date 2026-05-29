@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Trivia de Velocidad</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>.screen { display: none; } .active { display: flex; }</style>
+</head>
+<body class="bg-slate-100 min-h-screen flex items-center justify-center p-4">
+
+    <div id="main-container" class="bg-white p-8 rounded-xl shadow-lg w-full max-w-sm">
+        
+        <div id="ranking-section" class="mb-8 border-b pb-4">
+            <h3 class="font-bold text-slate-700 mb-2 text-center">TOP 3 <br> (Ranking de los menores tiempos)</h3>
+            <ul id="ranking-list" class="bg-gray-50 p-3 rounded text-sm text-center"></ul>
+        </div>
+
+        <div id="setup-screen" class="screen active flex-col text-center">
+            <h1 class="text-2xl font-bold mb-4">Trivia Veloz</h1>
+            <input type="text" id="player-name" placeholder="Escribir tu nombre" class="w-full p-2 border rounded mb-4">
+            <button onclick="iniciarJuego()" class="bg-blue-600 text-white py-2 rounded w-full hover:bg-blue-700">Comenzar</button>
+        </div>
+
+        <div id="game-screen" class="screen flex-col">
+            <p class="text-sm text-gray-500 mb-2 text-center">Pregunta <span id="q-num">1</span>/5</p>
+            <h2 id="pregunta" class="text-lg font-semibold mb-4 text-center"></h2>
+            <div id="opciones" class="space-y-2"></div>
+            <div id="feedback" class="text-center font-bold text-red-600 mt-4 h-6"></div>
+        </div>
+
+        <div id="results-screen" class="screen flex-col text-center">
+            <h2 class="text-xl font-bold mb-2">¡Terminado!</h2>
+            <p id="final-time" class="text-lg mb-6"></p>
+            <button onclick="location.reload()" class="bg-blue-600 text-white py-2 rounded w-full hover:bg-blue-700">Jugar de nuevo</button>
+        </div>
+    </div>
+
+    <script>
+        const bancoPreguntas = [
+            { q: "¿Capital de Francia?", o: ["Londres", "París", "Roma"], a: 1 },
+			{ q: "¿Capital de Brasil?", o: ["Sao Paulo", "Brasilia", "Rio de Janeiro"], a: 1 },
+            { q: "¿Planeta rojo?", o: ["Marte", "Júpiter", "Venus"], a: 0 },
+            { q: "¿Autor del Quijote?", o: ["Lorca", "Cervantes", "Quevedo"], a: 1 },
+            { q: "¿Continentes totales?", o: ["5", "6", "7"], a: 2 },
+            { q: "¿Metal más ligero?", o: ["Litio", "Hierro", "Oro"], a: 0 },
+            { q: "¿Elemento más abundante?", o: ["Oxígeno", "Hidrógeno", "Carbono"], a: 1 },
+            { q: "¿Océano más grande?", o: ["Atlántico", "Índico", "Pacífico"], a: 2 },
+            { q: "¿País más poblado?", o: ["India", "China", "EE.UU."], a: 0 },
+            { q: "¿Símbolo químico del Agua?", o: ["H2O", "CO2", "O2"], a: 0 },
+            { q: "¿Capital de Japón?", o: ["Seúl", "Tokio", "Beijing"], a: 1 }
+        ];
+
+        let preguntasSeleccionadas = [];
+        let state = { name: "", indice: 0, startTime: 0 };
+
+        function renderRanking() {
+            let ranking = JSON.parse(localStorage.getItem("ranking")) || [];
+            const list = document.getElementById("ranking-list");
+            list.innerHTML = ranking.length > 0 
+                ? ranking.map(r => `<li>${r.name}: <b>${r.time}s</b></li>`).join("")
+                : "<li>Sin registros aún</li>";
+        }
+
+        function iniciarJuego() {
+            state.name = document.getElementById("player-name").value || "Anónimo";
+            state.startTime = Date.now();
+            
+            preguntasSeleccionadas = [...bancoPreguntas]
+                .sort(() => Math.random() - 0.5)
+                .slice(0, 5);
+            
+            document.getElementById("setup-screen").classList.remove("active");
+            document.getElementById("ranking-section").classList.add("hidden");
+            document.getElementById("game-screen").classList.add("active");
+            mostrarPregunta();
+        }
+
+        function mostrarPregunta() {
+            document.getElementById("feedback").innerText = "";
+            if (state.indice < preguntasSeleccionadas.length) {
+                document.getElementById("q-num").innerText = state.indice + 1;
+                document.getElementById("pregunta").innerText = preguntasSeleccionadas[state.indice].q;
+                const optDiv = document.getElementById("opciones");
+                optDiv.innerHTML = "";
+                preguntasSeleccionadas[state.indice].o.forEach((txt, i) => {
+                    const btn = document.createElement("button");
+                    btn.innerText = txt;
+                    btn.className = "w-full bg-blue-500 text-white p-2 rounded hover:bg-blue-600 transition";
+                    btn.onclick = () => manejarRespuesta(i);
+                    optDiv.appendChild(btn);
+                });
+            } else {
+                terminarJuego();
+            }
+        }
+
+        function manejarRespuesta(indiceElegido) {
+            if (indiceElegido === preguntasSeleccionadas[state.indice].a) {
+                state.indice++;
+                mostrarPregunta();
+            } else {
+                const feedback = document.getElementById("feedback");
+                feedback.innerText = "¡Incorrecto!";
+                setTimeout(() => { feedback.innerText = ""; }, 1000);
+            }
+        }
+
+        function terminarJuego() {
+            const tiempoTotal = ((Date.now() - state.startTime) / 1000).toFixed(2);
+            document.getElementById("game-screen").classList.remove("active");
+            document.getElementById("results-screen").classList.add("active");
+            document.getElementById("final-time").innerText = `Tu tiempo: ${tiempoTotal} segundos`;
+
+            let ranking = JSON.parse(localStorage.getItem("ranking")) || [];
+            ranking.push({ name: state.name, time: parseFloat(tiempoTotal) });
+            ranking.sort((a, b) => a.time - b.time);
+            ranking = ranking.slice(0, 3);
+            localStorage.setItem("ranking", JSON.stringify(ranking));
+        }
+
+        renderRanking();
+    </script>
+</body>
+</html>
