@@ -116,12 +116,24 @@ body {
     font-size: 0.9rem;
 }
 
-/* Ajuste para pantallas muy pequeñas (Celulares) */
-@media (max-width: 480px) {
+/* =======================================================
+   ESTILOS EXCLUSIVOS PARA CELULARES (PANTALLAS CHICAS)
+   ======================================================= */
+@media (max-width: 768px) {
+    
+    /* Hace que la cuadrícula pase a 1 columna en celulares */
     .grid-container {
         grid-template-columns: 1fr;
     }
+
+    /* Oculta el cuadro gris del PDF que no carga en móviles */
     .embed-container {
-        height: 350px;
+        display: none !important; 
+    }
+
+    /* Ajusta la tarjeta para que no quede un espacio vacío abajo */
+    .card {
+        padding: 1.2rem;
+        gap: 0.5rem;
     }
 }
