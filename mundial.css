@@ -1,0 +1,249 @@
+/* Configuración General */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Segoe UI', Arial, sans-serif;
+}
+
+body {
+    background-color: #0f172a; /* Fondo oscuro moderno */
+    color: #f8fafc;
+    padding-bottom: 3rem;
+}
+
+/* Header deportivo */
+.hero-header {
+    background: linear-gradient(135deg, #1e3a8a 0%, #047857 100%); /* Azul y verde césped */
+    text-align: center;
+    padding: 2.5rem 1rem;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+}
+
+.hero-header h1 {
+    font-size: 2rem;
+    font-weight: 800;
+    letter-spacing: 1px;
+    text-shadow: 2px 2px 4px rgba(0,0,0,0.4);
+}
+
+.hero-header p {
+    color: #93c5fd;
+    margin-top: 0.5rem;
+    font-size: 1rem;
+}
+
+/* Contenedor Principal */
+.main-container {
+    max-width: 500px; /* Tamaño ideal para simular pantalla de celular en PC */
+    margin: 1.5rem auto;
+    padding: 0 1rem;
+}
+
+/* Tarjeta del Grupo */
+.grupo-container {
+    background-color: #1e293b;
+    border-radius: 16px;
+    overflow: hidden;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+    margin-bottom: 2rem;
+    border: 1px solid #334155;
+}
+
+.grupo-header {
+    background-color: #0f172a;
+    padding: 1rem;
+    text-align: center;
+    border-bottom: 2px solid #047857;
+}
+
+.grupo-header h2 {
+    font-size: 1.3rem;
+    color: #34d399; /* Verde brillante */
+    letter-spacing: 2px;
+}
+
+/* Lista de partidos */
+.partidos-list {
+    padding: 1rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+/* Fila de cada partido */
+.partido-card {
+    background-color: #334155;
+    padding: 0.75rem 1rem;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+/* Estilos para los equipos */
+.team {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    width: 35%; /* Ancho fijo para mantener simetría */
+}
+
+.team.local {
+    justify-content: flex-start;
+}
+
+.team.visitante {
+    justify-content: flex-end;
+}
+
+.team-name {
+    font-size: 0.95rem;
+    font-weight: 600;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis; /* Corta nombres largos elegantemente */
+}
+
+.flag {
+    font-size: 1.3rem;
+}
+
+/* Inputs de los Goles */
+.score-inputs {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    width: 30%;
+}
+
+.input-goles {
+    width: 45px;
+    height: 40px;
+    background-color: #1e293b;
+    border: 2px solid #475569;
+    color: #fff;
+    text-align: center;
+    font-size: 1.2rem;
+    font-weight: 700;
+    border-radius: 8px;
+    outline: none;
+    -moz-appearance: textfield; /* Quita flechas nativas en Firefox */
+}
+
+.input-goles::-webkit-outer-spin-button,
+.input-goles::-webkit-inner-spin-button {
+    -webkit-appearance: none; /* Quita flechas nativas en Chrome/Safari */
+    margin: 0;
+}
+
+.input-goles:focus {
+    border-color: #34d399;
+    background-color: #0f172a;
+}
+
+.vs {
+    color: #94a3b8;
+    font-weight: bold;
+}
+
+/* Tabla de Posiciones */
+.tabla-wrapper {
+    padding: 1rem;
+    background-color: #111827;
+    border-top: 1px solid #334155;
+}
+
+.tabla-wrapper h3 {
+    font-size: 1rem;
+    color: #94a3b8;
+    margin-bottom: 0.75rem;
+}
+
+.tabla-posiciones {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.9rem;
+}
+
+.tabla-posiciones th, .tabla-posiciones td {
+    padding: 0.6rem 0.5rem;
+    text-align: center;
+}
+
+.tabla-posiciones th {
+    color: #64748b;
+    font-weight: 600;
+    text-transform: uppercase;
+    font-size: 0.75rem;
+    border-bottom: 1px solid #334155;
+}
+
+.tabla-posiciones td {
+    border-bottom: 1px solid #1e293b;
+}
+
+.text-left {
+    text-align: left !important;
+}
+
+.font-bold {
+    font-weight: bold;
+}
+
+/* Indicador visual de los que clasifican (Verde suave en el fondo) */
+.tabla-posiciones tr.clasificado td {
+    background-color: rgba(4, 120, 87, 0.15);
+}
+
+.tabla-posiciones tr.clasificado td:first-child {
+    border-left: 4px solid #34d399; /* Línea verde al inicio */
+}
+/* =======================================================
+   NUEVOS: ESTILOS PARA SELECTOR Y CONTROL DE GRUPOS
+   ======================================================= */
+
+/* Estilos para el Selector de navegación superior */
+.selector-navegacion {
+    max-width: 500px;
+    margin: 1.5rem auto 0 auto;
+    padding: 0 1rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.selector-navegacion label {
+    color: #94a3b8;
+    font-size: 0.95rem;
+    font-weight: 600;
+}
+
+.selector-navegacion select {
+    background-color: #1e293b;
+    color: #fff;
+    border: 2px solid #047857;
+    padding: 0.5rem 1rem;
+    border-radius: 8px;
+    font-size: 1rem;
+    font-weight: bold;
+    outline: none;
+    width: 60%;
+    cursor: pointer;
+}
+
+.selector-navegacion select:focus {
+    border-color: #34d399;
+}
+
+/* LÓGICA DE PESTAÑAS: Oculta los grupos por defecto */
+.grupo-container {
+    display: none !important;
+}
+
+/* Muestra únicamente el grupo que tenga la clase 'active' */
+.grupo-container.active {
+    display: block !important;
+}
