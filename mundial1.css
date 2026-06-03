@@ -1,0 +1,122 @@
+body { background: #0b1929; color: white; font-family: 'Arial', sans-serif; padding: 20px; }
+.container { max-width: 800px; margin: auto; }
+.grupo { background: #162638; padding: 20px; margin-bottom: 30px; border-radius: 8px; }
+
+/* MODIFICADO: Alineación de partidos */
+.partido { 
+    display: flex; 
+    justify-content: center; 
+    align-items: center; 
+    gap: 10px; 
+    margin: 10px 0; 
+}
+
+/* AGREGADO: Ancho fijo para los nombres, así los inputs siempre quedan en el mismo lugar */
+.partido span {
+    width: 120px; 
+    white-space: nowrap;
+}
+.partido span:first-child { text-align: right; } /* Equipo izquierdo */
+.partido span:last-child { text-align: left; }  /* Equipo derecho */
+
+/* MODIFICADO: Estilo de inputs */
+input { 
+    width: 40px; 
+    text-align: center; 
+    background: #0b1929; 
+    color: white; 
+    border: 1px solid #334e6d; 
+    padding: 5px; 
+    border-radius: 4px; /* Opcional: bordes redondeados */
+}
+
+table { width: 100%; border-collapse: collapse; margin-top: 10px; }
+th, td { border: 1px solid #334e6d; padding: 10px; text-align: center; }
+#fase16avos { background: #1c3552; padding: 20px; text-align: center; border-radius: 8px; font-size: 1.2em; }
+.cruce { margin: 15px 0; font-weight: bold; }
+
+.oculto { display: none !important; }
+
+#selectorGrupo {
+    padding: 10px;
+    margin-bottom: 20px;
+    background: #162638;
+    color: white;
+    border: 1px solid #334e6d;
+    cursor: pointer;
+    width: 100%;
+    max-width: 300px;
+}
+
+input::placeholder { color: transparent; }
+
+.partido {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 15px;
+}
+
+/* Para que los inputs se vean igual en todas las fases */
+/* Corrección de la llave faltante */
+.score16 {
+    width: 50px;
+    text-align: center;
+    background: #0b1929;
+    color: white;
+    border: 1px solid #334e6d;
+    padding: 5px;
+    border-radius: 4px;
+}
+
+/* Asegúrate de que .seccion tenga el diseño de contenedor que buscas */
+.seccion {
+    background: #1c3552; /* Coincide con el estilo de 16vos */
+    padding: 20px;
+    border-radius: 8px;
+    text-align: center;
+    margin-top: 20px;
+}
+
+/* --- ADAPTACIÓN PARA MÓVILES --- */
+@media (max-width: 600px) {
+    body {
+        font-size: 16px; /* Aumenta el tamaño de fuente general */
+        padding: 10px;
+    }
+
+    /* Aumentar tamaño de inputs de score */
+    input, .score16 {
+        width: 50px;
+        height: 50px; /* Damos altura para que sean más fáciles de tocar */
+        font-size: 1.2em; /* Texto del número más grande */
+        padding: 5px;
+    }
+
+    /* Ajustar los nombres de los equipos para que no se amontonen */
+    .partido span {
+        width: 90px; /* Ajuste para pantallas pequeñas */
+        font-size: 0.9em;
+        line-height: 1.2;
+    }
+
+    /* Espaciado del contenedor del partido */
+    .partido {
+        gap: 5px;
+        margin-bottom: 20px; /* Más espacio entre partidos para "dedos" */
+    }
+
+    /* Tablas: reducir padding pero mantener legibilidad */
+    th, td {
+        padding: 8px 4px;
+        font-size: 0.85em;
+    }
+    
+    #selectorGrupo {
+        width: 100%;
+        max-width: 100%;
+        font-size: 1em;
+        padding: 15px; /* Más grande para facilitar selección */
+    }
+}
