@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Fixture Mundial 2026</title>
+    <link rel="stylesheet" href="mundial1.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Fixture Mundial 2026</h1>
+        
+        <select id="selectorGrupo" onchange="mostrarSeccion()">
+            <option value="" disabled selected>Fase de Grupos</option>
+            <option value="grupoA">Grupo A</option>
+            <option value="grupoB">Grupo B</option>
+			<option value="grupoC">Grupo C</option>
+			<option value="grupoD">Grupo D</option>
+			<option value="grupoE">Grupo E</option>
+			<option value="grupoF">Grupo F</option>
+            <option value="fase16vos">16vos de Final</option>
+			<option value="fase8vos">8vos de Final</option>
+        </select>
+        
+        <div id="grupos-container">
+            <section class="grupo grupo-a oculto" id="grupoA">
+                <h2>GRUPO A</h2>
+                <div id="partidosA" class="partidos"></div>
+                <h3>Posiciones</h3>
+                <table id="tablaA"><thead><tr><th>Pos</th><th>Equipo</th><th>PTS</th><th>DG</th></tr></thead><tbody></tbody></table>
+            </section>
+            
+            <section class="grupo grupo-b oculto" id="grupoB">
+                <h2>GRUPO B</h2>
+                <div id="partidosB" class="partidos"></div>
+                <h3>Posiciones</h3>
+                <table id="tablaB"><thead><tr><th>Pos</th><th>Equipo</th><th>PTS</th><th>DG</th></tr></thead><tbody></tbody></table>
+            </section>
+			
+			<section class="grupo grupo-c oculto" id="grupoC">
+                <h2>GRUPO C</h2>
+                <div id="partidosC" class="partidos"></div>
+                <h3>Posiciones</h3>
+                <table id="tablaC"><thead><tr><th>Pos</th><th>Equipo</th><th>PTS</th><th>DG</th></tr></thead><tbody></tbody></table>
+            </section>
+			
+			<section class="grupo grupo-d oculto" id="grupoD">
+                <h2>GRUPO D</h2>
+                <div id="partidosD" class="partidos"></div>
+                <h3>Posiciones</h3>
+                <table id="tablaD"><thead><tr><th>Pos</th><th>Equipo</th><th>PTS</th><th>DG</th></tr></thead><tbody></tbody></table>
+            </section>
+			
+			<section class="grupo grupo-e oculto" id="grupoE">
+                <h2>GRUPO E</h2>
+                <div id="partidosE" class="partidos"></div>
+                <h3>Posiciones</h3>
+                <table id="tablaE"><thead><tr><th>Pos</th><th>Equipo</th><th>PTS</th><th>DG</th></tr></thead><tbody></tbody></table>
+            </section>
+			
+			<section class="grupo grupo-f oculto" id="grupoF">
+                <h2>GRUPO F</h2>
+                <div id="partidosF" class="partidos"></div>
+                <h3>Posiciones</h3>
+                <table id="tablaF"><thead><tr><th>Pos</th><th>Equipo</th><th>PTS</th><th>DG</th></tr></thead><tbody></tbody></table>
+            </section>
+        </div>
+
+        <section id="fase16vos" class="seccion fase-16vos oculto">
+			<h2>16vos de Final</h2>
+				<div class="partido" id="partido73">
+					<span id="equipo1">1ro A</span> 
+					<input type="number" class="score16" id="p73_v1"> - <input type="number" class="score16" id="p73_v2">
+					<span id="equipo2">2do B</span>
+				</div>
+				<div class="partido" id="partido74">
+					<span id="equipo3">2do A</span> 
+					<input type="number" class="score16" id="p74_v1"> - <input type="number" class="score16" id="p74_v2">
+					<span id="equipo4">1ro B</span>
+				</div>
+				<div class="partido" id="partido75">
+					<span id="equipo5">2do C</span> 
+					<input type="number" class="score16" id="p75_v1"> - <input type="number" class="score16" id="p75_v2">
+					<span id="equipo6">1ro D</span>
+				</div>
+				<div class="partido" id="partido76">
+					<span id="equipo7">2do D</span> 
+					<input type="number" class="score16" id="p76_v1"> - <input type="number" class="score16" id="p76_v2">
+					<span id="equipo8">1ro C</span>
+				</div>
+				<div class="partido" id="partido77">
+					<span id="equipo9">2do E</span> 
+					<input type="number" class="score16" id="p77_v1"> - <input type="number" class="score16" id="p77_v2">
+					<span id="equipo10">1ro F</span>
+				</div>
+				<div class="partido" id="partido78">
+					<span id="equipo11">2do F</span> 
+					<input type="number" class="score16" id="p78_v1"> - <input type="number" class="score16" id="p78_v2">
+					<span id="equipo12">1ro E</span>
+				</div>
+		</section>
+
+		<section id="fase8vos" class="seccion fase-8vos oculto">
+			<h2>8vos de Final</h2>
+				<div class="partido" id="partido89">
+					<span id="ganador73">Ganador P73</span> 
+					<input type="number" class="score16" id="p89_equipo1"> - <input type="number" class="score16" id="p89_equipo2">
+					<span id="ganador74">Ganador P74</span>
+				</div>
+				<div class="partido" id="partido90">
+					<span id="ganador75">Ganador P75</span> 
+					<input type="number" class="score16" id="p90_equipo1"> - <input type="number" class="score16" id="p90_equipo2">
+					<span id="ganador76">Ganador P76</span>
+				</div>
+				<div class="partido" id="partido91">
+					<span id="ganador77">Ganador P77</span> 
+					<input type="number" class="score16" id="p91_equipo1"> - <input type="number" class="score16" id="p91_equipo2">
+					<span id="ganador78">Ganador P78</span>
+				</div>
+		</section>
+    </div>
+    <script src="script1.js"></script>
+</body>
+</html>
