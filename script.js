@@ -262,7 +262,7 @@ window.addEventListener('load', () => {
 
     // Espera 3 segundos
     setTimeout(() => {
-        splash.classList.add('ocultar-splash');
+        splash.classList.add('fade-out');
     }, 3000);
 });
 init();
