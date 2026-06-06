@@ -257,12 +257,4 @@ function actualizarBarraProgreso() {
     barra.innerText = porcentaje + "%";
 }
 
-window.addEventListener('load', () => {
-    const splash = document.getElementById('splash-screen');
-
-    // Espera 3 segundos
-    setTimeout(() => {
-        splash.classList.add('fade-out');
-    }, 3000);
-});
 init();
