@@ -50,11 +50,11 @@ h2 { text-align: center; color: #ffffff; margin-top: 0; font-size: 1.2rem; }
 /* --- PARTIDOS RESPONSIVE --- */
 .partido {
     display: flex;
-    flex-wrap: wrap; /* Salto de línea automático para los equipos */
+    flex-wrap: wrap; /* Mantenemos wrap para que la fecha pueda estar arriba */
     justify-content: center;
     align-items: center;
     gap: 5px;
-    padding: 5px 0;
+    padding: 10px 5px;
     border-bottom: 1px solid #334e6d;
 }
 
@@ -66,10 +66,20 @@ h2 { text-align: center; color: #ffffff; margin-top: 0; font-size: 1.2rem; }
     margin-bottom: 5px;
 }
 
-/* Ajuste de inputs para móviles */
+/* ESTO ES LO QUE SOLUCIONA EL SALTO DE LOS NOMBRES */
+.partido span {
+    flex: 1; /* Hace que el nombre ocupe el espacio disponible */
+    font-size: 0.9rem;
+    white-space: nowrap; /* Evita que el nombre salte de renglón */
+    overflow: hidden;    /* Si es muy largo, lo corta */
+    text-overflow: ellipsis; /* Pone "..." si no cabe */
+    text-align: center;
+}
+
+/* Ajuste de inputs para que no ocupen demasiado espacio */
 .score, .score16 {
-    width: 40px;
-    height: 40px;
+    flex: 0 0 35px; /* Tamaño fijo para que no se achiquen de más */
+    height: 35px;   /* Un poquito menos de altura para ganar espacio */
     text-align: center;
     background: #0b1929;
     color: white;
