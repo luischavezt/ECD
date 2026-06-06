@@ -53,8 +53,8 @@ h2 { text-align: center; color: #ffffff; margin-top: 0; font-size: 1.2rem; }
     flex-wrap: wrap; /* Mantenemos wrap para que la fecha pueda estar arriba */
     justify-content: center;
     align-items: center;
-    gap: 3px;
-    padding: 8px 2px;
+    gap: 5px;
+    padding: 10px 5px;
     border-bottom: 1px solid #334e6d;
 }
 
