@@ -144,3 +144,15 @@ th, td { border: 1px solid #334e6d; padding: 8px; text-align: center; }
     white-space: nowrap; /* Evita que el texto se rompa */
     box-shadow: 0 4px 6px rgba(0,0,0,0.2);
 }
+
+/* --- AJUSTE DEFINITIVO PARA NOMBRES EN CELULAR --- */
+@media (max-width: 480px) {
+    .partido span {
+        font-size: 0.75rem !important; /* Baja el tamaño de 0.9 a 0.75 */
+        letter-spacing: -0.5px;       /* Comprime un poco las letras para ganar espacio */
+    }
+    
+    .partido {
+        gap: 2px !important;          /* Reduce la separación entre elementos */
+    }
+}
