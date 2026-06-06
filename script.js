@@ -36,7 +36,7 @@ const banderas = {
     "España": "es", "Cabo Verde": "cv", "Arabia Saudita": "sa", "Uruguay": "uy",
     "Francia": "fr", "Senegal": "sn", "Irak": "iq", "Noruega": "no",
     "Argentina": "ar", "Argelia": "dz", "Austria": "at", "Jordania": "jo",
-    "Portugal": "pt", "Congo": "cg", "Uzbequistan": "uz", "Colombia": "co",
+    "Portugal": "pt", "Congo": "cd", "Uzbequistan": "uz", "Colombia": "co",
     "Inglaterra": "gb-eng", "Croacia": "hr", "Ghana": "gh", "Panama": "pa"
 };
 
