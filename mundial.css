@@ -156,3 +156,30 @@ th, td { border: 1px solid #334e6d; padding: 8px; text-align: center; }
         gap: 2px !important;          /* Reduce la separación entre elementos */
     }
 }
+
+#splash-screen {
+    position: fixed; /* Lo fija sobre toda la pantalla */
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: #0b1929; /* Color de fondo sólido para que no se vea caótico */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 10000; /* Asegura que tape todo */
+    transition: opacity 1s ease; /* Transición suave al desaparecer */
+}
+
+#splash-screen img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover; /* Ajusta la imagen para cubrir toda la pantalla */
+    opacity: 0.3;      /* <--- ESTA ES LA TRANSPARENCIA QUE QUERÍAS */
+}
+
+/* Clase para ocultar el splash */
+.ocultar-splash {
+    opacity: 0;
+    pointer-events: none; /* Permite hacer clic en el contenido de atrás al desaparecer */
+}
