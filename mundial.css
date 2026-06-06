@@ -68,14 +68,14 @@ h2 { text-align: center; color: #ffffff; margin-top: 0; font-size: 1.2rem; }
 
 /* ESTO ES LO QUE SOLUCIONA EL SALTO DE LOS NOMBRES */
 .partido span {
-    flex: 1; /* Hace que el nombre ocupe el espacio disponible */
-    font-size: 0.9rem;
-    white-space: nowrap; /* Evita que el nombre salte de renglón */
-    overflow: hidden;    /* Si es muy largo, lo corta */
-    text-overflow: ellipsis; /* Pone "..." si no cabe */
+    flex: 1;
+    font-size: 0.85rem; /* Reduje apenas un poco el tamaño original (0.9) */
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
     text-align: center;
+    min-width: 0; /* <--- ESTO ES LO QUE TE FALTA */
 }
-
 /* Ajuste de inputs para que no ocupen demasiado espacio */
 .score, .score16 {
     flex: 0 0 35px; /* Tamaño fijo para que no se achiquen de más */
