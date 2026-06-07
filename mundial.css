@@ -176,6 +176,42 @@ th, td { border: 1px solid #334e6d; padding: 8px; text-align: center; }
     height: 100%;
     object-fit: cover; /* Ajusta la imagen al tamaño de pantalla */
     opacity: 0.4;      /* Ajusta la transparencia aquí (0.1 a 1.0) */
+}#splash-screen {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 9999;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+    transition: opacity 0.5s ease;
+}
+
+#splash-screen img {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    z-index: 1; /* La imagen al fondo */
+}
+
+.titulo-splash {
+    position: relative;
+    z-index: 2; /* El texto encima de la imagen */
+    color: white;
+    text-shadow: 2px 2px 8px rgba(0,0,0,0.8); /* Para que resalte sobre el césped */
+    font-size: 3rem;
+    text-align: center;
+    padding: 20px;
+    margin: 0;
+}
+
+.ocultar-splash {
+    opacity: 0;
+    pointer-events: none; /* Para que puedas hacer clic en lo de atrás al desaparecer */
 }
 
 /* Clase que aplicaremos para que desaparezca */
