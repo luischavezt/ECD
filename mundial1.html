@@ -1,0 +1,450 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fixture Mundial 2026</title>
+    <link rel="stylesheet" href="mundial1.css">
+</head>
+<body>
+    <div id="splash-screen">
+        <img src="https://luischavezt.github.io/ECD/imagenes/inicio0.jpg" alt="Logo Mundial">
+		<h1 class="titulo-splash">🏆 Fixture Mundial Futbol 2026 🏆</h1>
+	</div>
+	<div class="container">
+        <div class="contenedor-header">
+			<div style="margin-top: 10px; opacity: 0.8;">
+			<a href="https://visitor-badge.laobi.icu/">
+			<img src="https://visitor-badge.laobi.icu/badge?page_id=luischavezt.github.io_v1&left_color=gray&right_color=orange" />
+			</a>
+			</div>
+			<a href="https://wa.me/?text=¡Hola! Te comparto mi simulador del Mundial 2026: https://luischavezt.github.io/ECD/mundial.html" 
+			class="btn-compartir-centrado" target="_blank">
+			Compartir x WhatsApp 💬
+			</a>
+		</div>
+		<h1 onclick="mostrarSeccion('bienvenida', null)" style="cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 10px;">
+			<span>🏆</span> <span>Fixture Mundial Futbol 2026</span> <span>🏆</span>
+		</h1>
+        <div class="contenedor-barra">
+			<div id="barra-progreso">0%</div>
+		</div>
+        <nav class="menu-navegacion">
+			<div class="scroll-container">
+				<button onclick="mostrarSeccion('grupoA', this)">A</button>
+				<button onclick="mostrarSeccion('grupoB', this)">B</button>
+				<button onclick="mostrarSeccion('grupoC', this)">C</button>
+				<button onclick="mostrarSeccion('grupoD', this)">D</button>
+				<button onclick="mostrarSeccion('grupoE', this)">E</button>
+				<button onclick="mostrarSeccion('grupoF', this)">F</button>
+				<button onclick="mostrarSeccion('grupoG', this)">G</button>
+				<button onclick="mostrarSeccion('grupoH', this)">H</button>
+				<button onclick="mostrarSeccion('grupoI', this)">I</button>
+				<button onclick="mostrarSeccion('grupoJ', this)">J</button>
+				<button onclick="mostrarSeccion('grupoK', this)">K</button>
+				<button onclick="mostrarSeccion('grupoL', this)">L</button>
+        
+				<button onclick="mostrarSeccion('fase16vos', this)">16vos</button>
+				<button onclick="mostrarSeccion('fase8vos', this)">8vos</button>
+				<button onclick="mostrarSeccion('fase4tos', this)">4tos</button>
+			</div>
+		</nav>
+		
+		<div id="contenedor-exportacion" class="oculto" style="text-align: center; margin: 15px 0;">
+		<select id="selectorFase" onchange="iniciarExportacion()" style="padding: 10px; border-radius: 8px; background: #DAF527; font-weight: bold; cursor: pointer; border: none;">
+			<option value="">📸 Exportar Resultados de...</option>
+			<option value="16vos">16vos de Final</option>
+			<option value="8vos">8vos de Final</option>
+			<option value="4tos">4tos, Semis y Final</option>
+		</select>
+		</div>
+
+        <div id="grupos-container">
+			<section id="bienvenida" class="seccion">
+				<h2>Bienvenido a la aplicacion interactiva para los partidos del Mundial 2026</h2>
+				<div class="contenedor-banderas">
+				<img src="https://upload.wikimedia.org/wikipedia/commons/f/fc/Flag_of_Mexico.svg" alt="México">
+				<img src="https://upload.wikimedia.org/wikipedia/commons/d/d9/Flag_of_Canada_%28Pantone%29.svg" alt="Canadá">
+				<img src="https://upload.wikimedia.org/wikipedia/commons/a/a4/Flag_of_the_United_States.svg" alt="Estados Unidos">
+				</div>
+				<p style="text-align: center;"><b>INDICACIONES:</b><br><br>
+				-Empieza a simular los resultados y a llenar los Scores de cada fase del mundial, seleccionando los botones de la parte superior.
+				<br>
+				-Una vez que vayas llenando los Scores, las tablas de la fase de grupos se actualiza automaticamente.
+				<br>
+				-Los resultados que ingreses se almacenaran en memoria, por si necesitas cerrar la aplicacion y luego volver a ingresar.
+				<br>
+				-Cuando se complete el llenado de los 12 grupos, los cruces de las fases eliminatorias, se cargaran automaticamente.
+				<br>
+				-Tienes la opcion de resetear todos los Scores de cada grupo o fase, de manera independiente o si prefieres, resetear todo de golpe.</p>
+			<div style="text-align: center; margin: 20px 0;">
+					<a href="https://storymaps.arcgis.com/stories/867c839643384cdbaa3011255a58559b" target="_blank" style="padding: 10px 20px; background-color: #007bff; color: white; text-decoration: none; border-radius: 5px; font-weight: bold; transition: background 0.3s;">
+					Ver ubicación de estadios
+					</a>
+			</div>
+			
+			<!-- Agregado -->
+			<div style="text-align: center; margin: 20px 0;">
+				<button onclick="calcularEstadisticas(); mostrarSeccion('seccionEstadisticas', this);" 
+				style="...">
+				📊 Ver Estadísticas Generales
+				</button>
+			</div>
+				
+			</section>
+			
+			<section class="grupo grupo-a oculto" id="grupoA">
+                <h2>GRUPO A</h2>
+                <h3>Posiciones</h3>
+                <table id="tablaA"><thead><tr><th>Pos</th><th>Equipo</th><th>PTS</th><th>DG</th></tr></thead><tbody></tbody></table>
+				<div id="partidosA" class="partidos"></div>
+            </section>
+            
+            <section class="grupo grupo-b oculto" id="grupoB">
+                <h2>GRUPO B</h2>
+                <h3>Posiciones</h3>
+                <table id="tablaB"><thead><tr><th>Pos</th><th>Equipo</th><th>PTS</th><th>DG</th></tr></thead><tbody></tbody></table>
+				<div id="partidosB" class="partidos"></div>
+            </section>
+			
+			<section class="grupo grupo-c oculto" id="grupoC">
+                <h2>GRUPO C</h2>
+                <h3>Posiciones</h3>
+                <table id="tablaC"><thead><tr><th>Pos</th><th>Equipo</th><th>PTS</th><th>DG</th></tr></thead><tbody></tbody></table>
+				<div id="partidosC" class="partidos"></div>
+            </section>
+			
+			<section class="grupo grupo-d oculto" id="grupoD">
+                <h2>GRUPO D</h2>
+                <h3>Posiciones</h3>
+                <table id="tablaD"><thead><tr><th>Pos</th><th>Equipo</th><th>PTS</th><th>DG</th></tr></thead><tbody></tbody></table>
+				<div id="partidosD" class="partidos"></div>
+            </section>
+			
+			<section class="grupo grupo-e oculto" id="grupoE">
+                <h2>GRUPO E</h2>          
+                <h3>Posiciones</h3>
+                <table id="tablaE"><thead><tr><th>Pos</th><th>Equipo</th><th>PTS</th><th>DG</th></tr></thead><tbody></tbody></table>
+				<div id="partidosE" class="partidos"></div>
+            </section>
+			
+			<section class="grupo grupo-f oculto" id="grupoF">
+                <h2>GRUPO F</h2>
+                <h3>Posiciones</h3>
+                <table id="tablaF"><thead><tr><th>Pos</th><th>Equipo</th><th>PTS</th><th>DG</th></tr></thead><tbody></tbody></table>
+				<div id="partidosF" class="partidos"></div>
+            </section>
+			
+			<section class="grupo grupo-g oculto" id="grupoG">
+                <h2>GRUPO G</h2>
+                <h3>Posiciones</h3>
+                <table id="tablaG"><thead><tr><th>Pos</th><th>Equipo</th><th>PTS</th><th>DG</th></tr></thead><tbody></tbody></table>
+				<div id="partidosG" class="partidos"></div>
+            </section>
+			
+			<section class="grupo grupo-h oculto" id="grupoH">
+                <h2>GRUPO H</h2>
+                <h3>Posiciones</h3>
+                <table id="tablaH"><thead><tr><th>Pos</th><th>Equipo</th><th>PTS</th><th>DG</th></tr></thead><tbody></tbody></table>
+				<div id="partidosH" class="partidos"></div>
+            </section>
+			
+			<section class="grupo grupo-i oculto" id="grupoI">
+                <h2>GRUPO I</h2>
+                <h3>Posiciones</h3>
+                <table id="tablaI"><thead><tr><th>Pos</th><th>Equipo</th><th>PTS</th><th>DG</th></tr></thead><tbody></tbody></table>
+				<div id="partidosI" class="partidos"></div>
+            </section>
+			
+			<section class="grupo grupo-j oculto" id="grupoJ">
+                <h2>GRUPO J</h2>
+                <h3>Posiciones</h3>
+                <table id="tablaJ"><thead><tr><th>Pos</th><th>Equipo</th><th>PTS</th><th>DG</th></tr></thead><tbody></tbody></table>
+				<div id="partidosJ" class="partidos"></div>
+            </section>
+			
+			<section class="grupo grupo-k oculto" id="grupoK">
+                <h2>GRUPO K</h2>
+                <h3>Posiciones</h3>
+                <table id="tablaK"><thead><tr><th>Pos</th><th>Equipo</th><th>PTS</th><th>DG</th></tr></thead><tbody></tbody></table>
+				<div id="partidosK" class="partidos"></div>
+            </section>
+			
+			<section class="grupo grupo-l oculto" id="grupoL">
+                <h2>GRUPO L</h2>
+                <h3>Posiciones</h3>
+                <table id="tablaL"><thead><tr><th>Pos</th><th>Equipo</th><th>PTS</th><th>DG</th></tr></thead><tbody></tbody></table>
+				<div id="partidosL" class="partidos"></div>
+            </section>
+			<!-- Agregado -->
+			<section id="seccionEstadisticas" class="seccion oculto">
+                <h2>📊 Estadísticas Generales</h2>
+                <table style="width: 100%; text-align: left; border-collapse: collapse;">
+					<tr><th>Categoría</th><th>Equipo</th><th>Valor</th></tr>
+					<tr><td>Más Victorias</td><td id="stat-wins-name">-</td><td id="stat-wins-val">0</td></tr>
+					<tr><td>Menos Victorias</td><td id="stat-wins-min-name">-</td><td id="stat-wins-min-val">0</td></tr>
+					<tr><td>Más Empates</td><td id="stat-draws-name">-</td><td id="stat-draws-val">0</td></tr>
+					<tr><td>Más Goles marcados</td><td id="stat-goals-name">-</td><td id="stat-goals-val">0</td></tr>
+					<tr><td>Menos Goles marcados</td><td id="stat-goals-min-name">-</td><td id="stat-goals-min-val">0</td></tr>
+					<tr><td>Más Goles recibidos</td><td id="stat-goals-rec-name">-</td><td id="stat-goals-rec-val">0</td></tr>
+					<tr><td>Menos Goles recibidos</td><td id="stat-goals-rec-min-name">-</td><td id="stat-goals-rec-min-val">0</td></tr>
+					<tr><td><b>Goles Totales</b></td><td>-</td><td id="goles-totales-val">0</td></tr>
+				</table>
+
+				<div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin-top: 15px;">
+					<div style="background: #1a2a40; padding: 6px; border-radius: 4px; text-align: center; font-size: 0.85em; border: 1px solid #333;">
+						Goles A: <span id="goles-grupoA-val">0</span>
+					</div>
+					<div style="background: #1a2a40; padding: 6px; border-radius: 4px; text-align: center; font-size: 0.85em; border: 1px solid #333;">
+						Goles B: <span id="goles-grupoB-val">0</span>
+					</div>
+					<div style="background: #1a2a40; padding: 6px; border-radius: 4px; text-align: center; font-size: 0.85em; border: 1px solid #333;">
+						Goles C: <span id="goles-grupoC-val">0</span>
+					</div>
+					<div style="background: #1a2a40; padding: 6px; border-radius: 4px; text-align: center; font-size: 0.85em; border: 1px solid #333;">
+						Goles D: <span id="goles-grupoD-val">0</span>
+					</div>
+					<div style="background: #1a2a40; padding: 6px; border-radius: 4px; text-align: center; font-size: 0.85em; border: 1px solid #333;">
+						Goles E: <span id="goles-grupoE-val">0</span>
+					</div>
+					<div style="background: #1a2a40; padding: 6px; border-radius: 4px; text-align: center; font-size: 0.85em; border: 1px solid #333;">
+						Goles F: <span id="goles-grupoF-val">0</span>
+					</div>
+					<div style="background: #1a2a40; padding: 6px; border-radius: 4px; text-align: center; font-size: 0.85em; border: 1px solid #333;">
+						Goles G: <span id="goles-grupoG-val">0</span>
+					</div>
+					<div style="background: #1a2a40; padding: 6px; border-radius: 4px; text-align: center; font-size: 0.85em; border: 1px solid #333;">
+						Goles H: <span id="goles-grupoH-val">0</span>
+					</div>
+					<div style="background: #1a2a40; padding: 6px; border-radius: 4px; text-align: center; font-size: 0.85em; border: 1px solid #333;">
+						Goles I: <span id="goles-grupoI-val">0</span>
+					</div>
+					<div style="background: #1a2a40; padding: 6px; border-radius: 4px; text-align: center; font-size: 0.85em; border: 1px solid #333;">
+						Goles J: <span id="goles-grupoJ-val">0</span>
+					</div>
+					<div style="background: #1a2a40; padding: 6px; border-radius: 4px; text-align: center; font-size: 0.85em; border: 1px solid #333;">
+						Goles K: <span id="goles-grupoK-val">0</span>
+					</div>
+					<div style="background: #1a2a40; padding: 6px; border-radius: 4px; text-align: center; font-size: 0.85em; border: 1px solid #333;">
+						Goles L: <span id="goles-grupoL-val">0</span>
+					</div>
+				</div>
+            </section>
+        </div>
+		
+        <section id="fase16vos" class="seccion fase-16vos oculto">
+			<h2>16vos de Final</h2>
+			<div class="partido" id="partido73">
+				<div class="procedencia">2ro A - 2do B</div>
+				<span class="fecha-partido">28 de Junio - 15:00 - LOS ANGELES</span> <span id="equipo1">2ro A</span> 
+				<input type="number" class="score16" id="p73_v1"> - <input type="number" class="score16" id="p73_v2">
+				<span id="equipo2">2do B</span>
+			</div>
+			<div class="partido" id="partido74">
+				<div class="procedencia">1ro E - 3ro B</div>
+				<span class="fecha-partido">29 de Junio - 16:30 - BOSTON</span> <span id="equipo3">1ro E</span> 
+				<input type="number" class="score16" id="p74_v1"> - <input type="number" class="score16" id="p74_v2">
+				<span id="equipo4">3ro B</span>
+			</div>
+			<div class="partido" id="partido75">
+				<div class="procedencia">1ro F - 2do C</div>
+				<span class="fecha-partido">29 de Junio - 21:00 - MONTERREY</span> <span id="equipo5">1ro F</span> 
+				<input type="number" class="score16" id="p75_v1"> - <input type="number" class="score16" id="p75_v2">
+				<span id="equipo6">2do C</span>
+			</div>
+			<div class="partido" id="partido76">
+				<div class="procedencia">1ro C - 2do F</div>
+				<span class="fecha-partido">29 de Junio - 13:00 - HOUSTON</span> <span id="equipo7">1ro C</span> 
+				<input type="number" class="score16" id="p76_v1"> - <input type="number" class="score16" id="p76_v2">
+				<span id="equipo8">2do F</span>
+			</div>
+			<div class="partido" id="partido77">
+				<div class="procedencia">1ro I - 3ro A</div>
+				<span class="fecha-partido">30 de Junio - 17:00 - NEW JERSEY</span> <span id="equipo9">1ro I</span> 
+				<input type="number" class="score16" id="p77_v1"> - <input type="number" class="score16" id="p77_v2">
+				<span id="equipo10">3ro A</span>
+			</div>
+			<div class="partido" id="partido78">
+				<div class="procedencia">2do E - 2do I</div>
+				<span class="fecha-partido">30 de Junio - 13:00 - DALLAS</span> <span id="equipo11">2do E</span> 
+				<input type="number" class="score16" id="p78_v1"> - <input type="number" class="score16" id="p78_v2">
+				<span id="equipo12">2do I</span>
+			</div>
+			<div class="partido" id="partido79">
+				<div class="procedencia">1ro A - 3ro C</div>
+				<span class="fecha-partido">30 de Junio - 21:00 - MEXICO</span> <span id="equipo13">1ro A</span> 
+				<input type="number" class="score16" id="p79_v1"> - <input type="number" class="score16" id="p79_v2">
+				<span id="equipo14">3ro C</span>
+			</div>
+			<div class="partido" id="partido80">
+				<div class="procedencia">1ro L - 3ro D</div>
+				<span class="fecha-partido">01 de Julio - 12:00 - ATLANTA</span> <span id="equipo15">1ro L</span> 
+				<input type="number" class="score16" id="p80_v1"> - <input type="number" class="score16" id="p80_v2">
+				<span id="equipo16">3ro D</span>
+			</div>
+			<div class="partido" id="partido81">
+				<div class="procedencia">1ro D - 3ro E</div>
+				<span class="fecha-partido">01 de Julio - 20:00 - SAN FRANCISCO</span> <span id="equipo17">1ro D</span> 
+				<input type="number" class="score16" id="p81_v1"> - <input type="number" class="score16" id="p81_v2">
+				<span id="equipo18">3ro E</span>
+			</div>
+			<div class="partido" id="partido82">
+				<div class="procedencia">1ro G - 3ro F</div>
+				<span class="fecha-partido">01 de Julio - 16:00 - SEATTLE</span> <span id="equipo19">1ro G</span> 
+				<input type="number" class="score16" id="p82_v1"> - <input type="number" class="score16" id="p82_v2">
+				<span id="equipo20">3ro F</span>
+			</div>
+			<div class="partido" id="partido83">
+				<div class="procedencia">2do K - 2do L</div>
+				<span class="fecha-partido">02 de Julio - 19:00 - TORONTO</span> <span id="equipo21">2do K</span> 
+				<input type="number" class="score16" id="p83_v1"> - <input type="number" class="score16" id="p83_v2">
+				<span id="equipo22">2do L</span>
+			</div>
+			<div class="partido" id="partido84">
+				<div class="procedencia">1ro H - 2do J</div>
+				<span class="fecha-partido">02 de Julio - 15:00 - LOS ANGELES</span> <span id="equipo23">1ro H</span> 
+				<input type="number" class="score16" id="p84_v1"> - <input type="number" class="score16" id="p84_v2">
+				<span id="equipo24">2do J</span>
+			</div>
+			<div class="partido" id="partido85">
+				<div class="procedencia">1ro B - 3ro G</div>
+				<span class="fecha-partido">02 de Julio - 21:00 - VANCOUVER</span> <span id="equipo25">1ro B</span> 
+				<input type="number" class="score16" id="p85_v1"> - <input type="number" class="score16" id="p85_v2">
+				<span id="equipo26">3ro G</span>
+			</div>
+			<div class="partido" id="partido86">
+				<div class="procedencia">1ro J - 2do H</div>
+				<span class="fecha-partido">03 de Julio - 18:00 - MIAMI</span> <span id="equipo27">1ro J</span> 
+				<input type="number" class="score16" id="p86_v1"> - <input type="number" class="score16" id="p86_v2">
+				<span id="equipo28">2do H</span>
+			</div>
+			<div class="partido" id="partido87">
+				<div class="procedencia">1ro K - 3ro H</div>
+				<span class="fecha-partido">03 de Julio - 21:30 - KANSAS CITY</span> <span id="equipo29">1ro K</span> 
+				<input type="number" class="score16" id="p87_v1"> - <input type="number" class="score16" id="p87_v2">
+				<span id="equipo30">3ro H</span>
+			</div>
+			<div class="partido" id="partido88">
+				<div class="procedencia">2do D - 2do G</div>
+				<span class="fecha-partido">03 de Julio - 14:00 - DALLAS</span> <span id="equipo31">2do D</span> 
+				<input type="number" class="score16" id="p88_v1"> - <input type="number" class="score16" id="p88_v2">
+				<span id="equipo32">2do G</span>
+			</div>
+		</section>
+
+		<section id="fase8vos" class="seccion fase-8vos oculto">
+			<h2>8vos de Final</h2>
+				<div class="partido" id="partido89">
+					<span id="ganador74">Ganador P74</span> 
+					<input type="number" class="score16" id="p89_equipo1"> - <input type="number" class="score16" id="p89_equipo2">
+					<span id="ganador77">Ganador P77</span>
+				</div>
+				<div class="partido" id="partido90">
+					<span id="ganador73">Ganador P73</span> 
+					<input type="number" class="score16" id="p90_equipo1"> - <input type="number" class="score16" id="p90_equipo2">
+					<span id="ganador75">Ganador P75</span>
+				</div>
+				<div class="partido" id="partido91">
+					<span id="ganador76">Ganador P76</span> 
+					<input type="number" class="score16" id="p91_equipo1"> - <input type="number" class="score16" id="p91_equipo2">
+					<span id="ganador78">Ganador P78</span>
+				</div>
+				<div class="partido" id="partido92">
+					<span id="ganador79">Ganador P79</span> 
+					<input type="number" class="score16" id="p92_equipo1"> - <input type="number" class="score16" id="p92_equipo2">
+					<span id="ganador80">Ganador P80</span>
+				</div>
+				<div class="partido" id="partido93">
+					<span id="ganador83">Ganador P83</span> 
+					<input type="number" class="score16" id="p93_equipo1"> - <input type="number" class="score16" id="p93_equipo2">
+					<span id="ganador84">Ganador P84</span>
+				</div>
+				<div class="partido" id="partido94">
+					<span id="ganador81">Ganador P81</span> 
+					<input type="number" class="score16" id="p94_equipo1"> - <input type="number" class="score16" id="p94_equipo2">
+					<span id="ganador82">Ganador P82</span>
+				</div>
+				<div class="partido" id="partido95">
+					<span id="ganador86">Ganador P86</span> 
+					<input type="number" class="score16" id="p95_equipo1"> - <input type="number" class="score16" id="p95_equipo2">
+					<span id="ganador88">Ganador P88</span>
+				</div>
+				<div class="partido" id="partido96">
+					<span id="ganador85">Ganador P85</span> 
+					<input type="number" class="score16" id="p96_equipo1"> - <input type="number" class="score16" id="p96_equipo2">
+					<span id="ganador87">Ganador P87</span>
+				</div>
+		</section>
+		
+		<section id="fase4tos" class="seccion fase-4tos oculto">
+			<h2>4tos de Final</h2>
+				<div class="partido" id="partido97">
+					<span id="ganador89">Ganador P89</span> 
+					<input type="number" class="score16" id="p97_equipo1"> - <input type="number" class="score16" id="p97_equipo2">
+					<span id="ganador90">Ganador P90</span>
+				</div>
+				<div class="partido" id="partido98">
+					<span id="ganador93">Ganador P93</span> 
+					<input type="number" class="score16" id="p98_equipo1"> - <input type="number" class="score16" id="p98_equipo2">
+					<span id="ganador94">Ganador P94</span>
+				</div>
+				<div class="partido" id="partido99">
+					<span id="ganador91">Ganador P91</span> 
+					<input type="number" class="score16" id="p99_equipo1"> - <input type="number" class="score16" id="p99_equipo2">
+					<span id="ganador92">Ganador P92</span>
+				</div>
+				<div class="partido" id="partido100">
+					<span id="ganador95">Ganador P95</span> 
+					<input type="number" class="score16" id="p100_equipo1"> - <input type="number" class="score16" id="p100_equipo2">
+					<span id="ganador96">Ganador P96</span>
+				</div>
+				<br>
+			<h2>SemiFinal</h2>
+				<div class="partido" id="partido101">
+					<span id="ganador97">Ganador P97</span> 
+					<input type="number" class="score16" id="p101_equipo1"> - <input type="number" class="score16" id="p101_equipo2">
+					<span id="ganador98">Ganador P98</span>
+				</div>
+				<div class="partido" id="partido102">
+					<span id="ganador99">Ganador P99</span> 
+					<input type="number" class="score16" id="p102_equipo1"> - <input type="number" class="score16" id="p102_equipo2">
+					<span id="ganador100">Ganador P100</span>
+				</div>
+					<br>
+			<h2>Final</h2>
+				<div class="partido" id="partido104">
+					<span id="ganador101">Ganador P101</span> 
+					<input type="number" class="score16" id="p104_equipo1"> - <input type="number" class="score16" id="p104_equipo2">
+					<span id="ganador102">Ganador P102</span>
+				</div>
+		</section>
+		
+		<section id="seccionCampeon" class="seccion-campeon oculto" style="background-color: #DAF52780; color: #155724; padding: 20px; text-align: center; margin-top: 20px; border-radius: 10px;">
+			<h2>¡CAMPEÓN DEL MUNDO!</h2>
+			<div style="font-size: 45px; font-weight: bold; margin: 15px 0;">
+				<span id="nombreCampeon"></span>
+			</div>
+		</section>
+		<br>
+		<div style="text-align: center; margin-bottom: 20px;">
+			<div id="contenedor-botones-limpieza" class="oculto">
+			<button onclick="limpiarScores()" style="padding: 8px 15px; background: #dc3545; color: white; border: none; border-radius: 4px; cursor: pointer;">
+			🗑️ Limpiar todos los Scores 
+			</button>
+			<br><br>
+			<button onclick="limpiarGrupoActual()" style="padding: 8px 15px; background: #e67e22; color: white; border: none; border-radius: 4px; cursor: pointer; margin-left: 10px;">
+			⚠️ Limpiar solo Vista Actual
+			</button>
+		</div>
+		
+		<div id="canvas-export" style="display: none; background: #0a192f; color: white; padding: 30px; width: 600px; font-family: sans-serif; border-radius: 15px;">
+		<h2 style="text-align: center; color: #DAF527;">MUNDIAL 2026 - MIS RESULTADOS</h2>
+		<div id="contenido-canvas"></div>
+		</div>
+
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    </div>
+	
+    <script src="script1.js"></script>
+</body>
+</html>
