@@ -51,6 +51,9 @@
 		</nav>
 		
 		<div id="contenedor-exportacion" class="oculto" style="text-align: center; margin: 15px 0;">
+			<button onclick="exportarPronosticosPorFecha()" style="padding: 10px; border-radius: 8px; background: #28a745; color: white; font-weight: bold; cursor: pointer; border: none; margin-left: 10px;">
+			📅 Exportar por Fecha de partido
+			</button>
 		<select id="selectorFase" onchange="iniciarExportacion()" style="padding: 10px; border-radius: 8px; background: #DAF527; font-weight: bold; cursor: pointer; border: none;">
 			<option value="">📸 Exportar Resultados de...</option>
 			<option value="16vos">16vos de Final</option>
@@ -235,97 +238,97 @@
 			<h2>16vos de Final</h2>
 			<div class="partido" id="partido73">
 				<div class="procedencia">2ro A - 2do B</div>
-				<span class="fecha-partido">28 de Junio - 15:00 - LOS ANGELES</span> <span id="equipo1">2ro A</span> 
+				<span class="fecha-partido">28 Junio - 15:00 - LOS ANGELES</span> <span id="equipo1">2ro A</span> 
 				<input type="number" class="score16" id="p73_v1"> - <input type="number" class="score16" id="p73_v2">
 				<span id="equipo2">2do B</span>
 			</div>
 			<div class="partido" id="partido74">
 				<div class="procedencia">1ro E - 3ro B</div>
-				<span class="fecha-partido">29 de Junio - 16:30 - BOSTON</span> <span id="equipo3">1ro E</span> 
+				<span class="fecha-partido">29 Junio - 16:30 - BOSTON</span> <span id="equipo3">1ro E</span> 
 				<input type="number" class="score16" id="p74_v1"> - <input type="number" class="score16" id="p74_v2">
 				<span id="equipo4">3ro B</span>
 			</div>
 			<div class="partido" id="partido75">
 				<div class="procedencia">1ro F - 2do C</div>
-				<span class="fecha-partido">29 de Junio - 21:00 - MONTERREY</span> <span id="equipo5">1ro F</span> 
+				<span class="fecha-partido">29 Junio - 21:00 - MONTERREY</span> <span id="equipo5">1ro F</span> 
 				<input type="number" class="score16" id="p75_v1"> - <input type="number" class="score16" id="p75_v2">
 				<span id="equipo6">2do C</span>
 			</div>
 			<div class="partido" id="partido76">
 				<div class="procedencia">1ro C - 2do F</div>
-				<span class="fecha-partido">29 de Junio - 13:00 - HOUSTON</span> <span id="equipo7">1ro C</span> 
+				<span class="fecha-partido">29 Junio - 13:00 - HOUSTON</span> <span id="equipo7">1ro C</span> 
 				<input type="number" class="score16" id="p76_v1"> - <input type="number" class="score16" id="p76_v2">
 				<span id="equipo8">2do F</span>
 			</div>
 			<div class="partido" id="partido77">
 				<div class="procedencia">1ro I - 3ro A</div>
-				<span class="fecha-partido">30 de Junio - 17:00 - NEW JERSEY</span> <span id="equipo9">1ro I</span> 
+				<span class="fecha-partido">30 Junio - 17:00 - NEW JERSEY</span> <span id="equipo9">1ro I</span> 
 				<input type="number" class="score16" id="p77_v1"> - <input type="number" class="score16" id="p77_v2">
 				<span id="equipo10">3ro A</span>
 			</div>
 			<div class="partido" id="partido78">
 				<div class="procedencia">2do E - 2do I</div>
-				<span class="fecha-partido">30 de Junio - 13:00 - DALLAS</span> <span id="equipo11">2do E</span> 
+				<span class="fecha-partido">30 Junio - 13:00 - DALLAS</span> <span id="equipo11">2do E</span> 
 				<input type="number" class="score16" id="p78_v1"> - <input type="number" class="score16" id="p78_v2">
 				<span id="equipo12">2do I</span>
 			</div>
 			<div class="partido" id="partido79">
 				<div class="procedencia">1ro A - 3ro C</div>
-				<span class="fecha-partido">30 de Junio - 21:00 - MEXICO</span> <span id="equipo13">1ro A</span> 
+				<span class="fecha-partido">30 Junio - 21:00 - MEXICO</span> <span id="equipo13">1ro A</span> 
 				<input type="number" class="score16" id="p79_v1"> - <input type="number" class="score16" id="p79_v2">
 				<span id="equipo14">3ro C</span>
 			</div>
 			<div class="partido" id="partido80">
 				<div class="procedencia">1ro L - 3ro D</div>
-				<span class="fecha-partido">01 de Julio - 12:00 - ATLANTA</span> <span id="equipo15">1ro L</span> 
+				<span class="fecha-partido">01 Julio - 12:00 - ATLANTA</span> <span id="equipo15">1ro L</span> 
 				<input type="number" class="score16" id="p80_v1"> - <input type="number" class="score16" id="p80_v2">
 				<span id="equipo16">3ro D</span>
 			</div>
 			<div class="partido" id="partido81">
 				<div class="procedencia">1ro D - 3ro E</div>
-				<span class="fecha-partido">01 de Julio - 20:00 - SAN FRANCISCO</span> <span id="equipo17">1ro D</span> 
+				<span class="fecha-partido">01 Julio - 20:00 - SAN FRANCISCO</span> <span id="equipo17">1ro D</span> 
 				<input type="number" class="score16" id="p81_v1"> - <input type="number" class="score16" id="p81_v2">
 				<span id="equipo18">3ro E</span>
 			</div>
 			<div class="partido" id="partido82">
 				<div class="procedencia">1ro G - 3ro F</div>
-				<span class="fecha-partido">01 de Julio - 16:00 - SEATTLE</span> <span id="equipo19">1ro G</span> 
+				<span class="fecha-partido">01 Julio - 16:00 - SEATTLE</span> <span id="equipo19">1ro G</span> 
 				<input type="number" class="score16" id="p82_v1"> - <input type="number" class="score16" id="p82_v2">
 				<span id="equipo20">3ro F</span>
 			</div>
 			<div class="partido" id="partido83">
 				<div class="procedencia">2do K - 2do L</div>
-				<span class="fecha-partido">02 de Julio - 19:00 - TORONTO</span> <span id="equipo21">2do K</span> 
+				<span class="fecha-partido">02 Julio - 19:00 - TORONTO</span> <span id="equipo21">2do K</span> 
 				<input type="number" class="score16" id="p83_v1"> - <input type="number" class="score16" id="p83_v2">
 				<span id="equipo22">2do L</span>
 			</div>
 			<div class="partido" id="partido84">
 				<div class="procedencia">1ro H - 2do J</div>
-				<span class="fecha-partido">02 de Julio - 15:00 - LOS ANGELES</span> <span id="equipo23">1ro H</span> 
+				<span class="fecha-partido">02 Julio - 15:00 - LOS ANGELES</span> <span id="equipo23">1ro H</span> 
 				<input type="number" class="score16" id="p84_v1"> - <input type="number" class="score16" id="p84_v2">
 				<span id="equipo24">2do J</span>
 			</div>
 			<div class="partido" id="partido85">
 				<div class="procedencia">1ro B - 3ro G</div>
-				<span class="fecha-partido">02 de Julio - 21:00 - VANCOUVER</span> <span id="equipo25">1ro B</span> 
+				<span class="fecha-partido">02 Julio - 21:00 - VANCOUVER</span> <span id="equipo25">1ro B</span> 
 				<input type="number" class="score16" id="p85_v1"> - <input type="number" class="score16" id="p85_v2">
 				<span id="equipo26">3ro G</span>
 			</div>
 			<div class="partido" id="partido86">
 				<div class="procedencia">1ro J - 2do H</div>
-				<span class="fecha-partido">03 de Julio - 18:00 - MIAMI</span> <span id="equipo27">1ro J</span> 
+				<span class="fecha-partido">03 Julio - 18:00 - MIAMI</span> <span id="equipo27">1ro J</span> 
 				<input type="number" class="score16" id="p86_v1"> - <input type="number" class="score16" id="p86_v2">
 				<span id="equipo28">2do H</span>
 			</div>
 			<div class="partido" id="partido87">
 				<div class="procedencia">1ro K - 3ro H</div>
-				<span class="fecha-partido">03 de Julio - 21:30 - KANSAS CITY</span> <span id="equipo29">1ro K</span> 
+				<span class="fecha-partido">03 Julio - 21:30 - KANSAS CITY</span> <span id="equipo29">1ro K</span> 
 				<input type="number" class="score16" id="p87_v1"> - <input type="number" class="score16" id="p87_v2">
 				<span id="equipo30">3ro H</span>
 			</div>
 			<div class="partido" id="partido88">
 				<div class="procedencia">2do D - 2do G</div>
-				<span class="fecha-partido">03 de Julio - 14:00 - DALLAS</span> <span id="equipo31">2do D</span> 
+				<span class="fecha-partido">03 Julio - 14:00 - DALLAS</span> <span id="equipo31">2do D</span> 
 				<input type="number" class="score16" id="p88_v1"> - <input type="number" class="score16" id="p88_v2">
 				<span id="equipo32">2do G</span>
 			</div>
