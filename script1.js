@@ -118,7 +118,7 @@ function mostrarSeccion(idSeccion, btnElement) {
     
     // 3. Controlar visibilidad del contenedor de exportación
     const contenedorExport = document.getElementById('contenedor-exportacion');
-    const fasesEliminatorias = ['fase16vos', 'fase8vos', 'fase4tos'];
+    const fasesEliminatorias = ['grupoA', 'grupoB', 'grupoC', 'grupoD', 'grupoE', 'grupoF', 'grupoG', 'grupoH', 'grupoI', 'grupoJ', 'grupoK', 'grupoL', 'fase16vos', 'fase8vos', 'fase4tos'];
     
     if (fasesEliminatorias.includes(idSeccion)) {
         contenedorExport.classList.remove('oculto');
@@ -496,6 +496,68 @@ function calcularEstadisticas() {
     setTop3Row('stat-goals-min-name', 'stat-goals-min-val', 'stat-goals-min-pj', getTop3('g', 'min'));
     setTop3Row('stat-goals-rec-name', 'stat-goals-rec-val', 'stat-goals-rec-pj', getTop3('gr', 'max'));
     setTop3Row('stat-goals-rec-min-name', 'stat-goals-rec-min-val', 'stat-goals-rec-min-pj', getTop3('gr', 'min'));
+}
+
+function exportarPronosticosPorFecha() {
+    // Pedir fecha en formato "DD Mes"
+    const fecha = prompt("Ingresa la fecha para exportar (ejemplo: 11 junio o 01 julio):");
+    
+    if (!fecha) return;
+
+    const contenedorCanvas = document.getElementById('contenido-canvas');
+    const areaExport = document.getElementById('canvas-export');
+    
+    // Limpiar previo
+    contenedorCanvas.innerHTML = `<h2 style="text-align:center; color: #DAF527;">FECHA: ${fecha.toUpperCase()}</h2>`;
+
+    let encontrados = false;
+
+    // Buscamos todos los elementos que tengan la clase 'partido'
+    // Asegúrate de que todos tus bloques de partidos (grupos y eliminatorias) 
+    // tengan la clase "partido" en el div principal.
+    const partidos = document.querySelectorAll('.partido');
+
+    partidos.forEach(partido => {
+        const textoFecha = partido.innerText; 
+        
+        // Buscamos si el partido contiene la fecha escrita por el usuario
+        if (textoFecha.toLowerCase().includes(fecha.toLowerCase())) {
+            encontrados = true;
+            
+            // Clonamos el partido
+            const clon = partido.cloneNode(true);
+            
+            // Reemplazar inputs por texto en el clon
+            clon.querySelectorAll('input').forEach(input => {
+                const valor = input.value || "-";
+                const span = document.createElement('span');
+                span.innerText = " " + valor + " ";
+                span.style.fontWeight = "bold";
+                span.style.fontSize = "18px";
+                input.parentNode.replaceChild(span, input);
+            });
+
+            clon.style.border = "1px solid #444";
+            clon.style.margin = "10px 0";
+            clon.style.padding = "10px";
+            contenedorCanvas.appendChild(clon);
+        }
+    });
+
+    if (!encontrados) {
+        alert("No se encontraron partidos para: " + fecha);
+        return;
+    }
+
+    // Exportar
+    areaExport.style.display = 'block';
+    html2canvas(areaExport).then(canvas => {
+        const link = document.createElement('a');
+        link.download = `pronostico_${fecha.replace(' ', '_')}.jpg`;
+        link.href = canvas.toDataURL("image/jpeg", 1.0);
+        link.click();
+        areaExport.style.display = 'none';
+    });
 }
 
 init();
