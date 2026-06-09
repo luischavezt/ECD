@@ -233,13 +233,30 @@ function limpiarScores() {
     if (confirm("¿Estás seguro de que quieres borrar todos los marcadores?")) {
         localStorage.clear();
         document.querySelectorAll('input').forEach(i => i.value = "");
+        
+        // --- NUEVA LÍNEA: Ocultar todas las secciones de penales ---
+        document.querySelectorAll('.seccion-penales').forEach(p => p.style.display = 'none');
+        
         actualizarTodo();
         alert("Resultados borrados.");
     }
 }
 
 function limpiarInputsDeElemento(elemento) {
-    elemento.querySelectorAll('input').forEach(input => { input.value = ""; localStorage.removeItem(input.id); });
+    elemento.querySelectorAll('input').forEach(input => { 
+        input.value = ""; 
+        localStorage.removeItem(input.id);
+        
+        // Si el input es de tipo score, forzamos ocultar su penal asociado
+        if(input.id.includes('_v1') || input.id.includes('_v2')) {
+            const idPartido = input.id.split('_')[0].replace('p', '');
+            validarEmpate(idPartido);
+        }
+    });
+    
+    // Ocultar manualmente las secciones de penales si existen dentro del elemento
+    elemento.querySelectorAll('.seccion-penales').forEach(s => s.style.display = 'none');
+    
     elemento.querySelectorAll('[id^="ganador"]').forEach(span => span.innerText = "Ganador P" + span.id.replace('ganador', ''));
     if (elemento.id === 'seccionCampeon') document.getElementById('nombreCampeon').innerText = "";
 }
@@ -295,7 +312,15 @@ function validarEmpate(id) {
     const i1 = document.getElementById(`p${id}_v1`) || document.getElementById(`p${id}_equipo1`);
     const i2 = document.getElementById(`p${id}_v2`) || document.getElementById(`p${id}_equipo2`);
     const cont = document.getElementById(`penales${id}`);
-    if (cont) cont.style.display = (i1?.value !== "" && i2?.value !== "" && i1?.value === i2?.value) ? "flex" : "none";
+    
+    if (cont) {
+        // Si no hay valores en ambos campos, ocultar. Si hay valores y son iguales, mostrar.
+        if (i1?.value === "" || i2?.value === "") {
+            cont.style.display = "none";
+        } else {
+            cont.style.display = (i1?.value === i2?.value) ? "flex" : "none";
+        }
+    }
 }
 
 window.addEventListener('load', () => {
