@@ -115,7 +115,7 @@ th, td { border: 1px solid #334e6d; padding: 8px; text-align: center; }
 #barra-progreso {
     width: 0%;
     height: 20px;
-    background-color: #159DB0; /* Turquesa */
+    background-color: #E8F26F80; /* Amarillo */
     text-align: center;
     line-height: 20px;
     color: white;
