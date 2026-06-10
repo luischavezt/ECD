@@ -184,7 +184,7 @@ th, td { border: 1px solid #334e6d; padding: 8px; text-align: center; }
     z-index: 2; /* El texto encima de la imagen */
     color: white;
     text-shadow: 2px 2px 8px rgba(0,0,0,0.8); /* Para que resalte sobre el césped */
-    font-size: 3rem;
+    font-size: 2rem;
     text-align: center;
     padding: 20px;
     margin: 0;
