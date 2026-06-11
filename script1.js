@@ -221,7 +221,7 @@ function actualizarGanadores() {
 function actualizarTodo() {
     const tablas = {};
     ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L'].forEach(l => tablas[l] = calcular(l));
-    const mapping = [['equipo1','A',1],['equipo2','B',1],['equipo3','E',0],['equipo4','B',2],['equipo5','F',0],['equipo6','C',1],['equipo7','C',0],['equipo8','F',1],['equipo9','I',0],['equipo10','A',2],['equipo11','E',1],['equipo12','I',1],['equipo13','A',0],['equipo14','C',2],['equipo15','L',0],['equipo16','D',2],['equipo17','D',0],['equipo18','E',2],['equipo19','G',0],['equipo20','F',2],['equipo21','K',1],['equipo22','L',1],['equipo23','H',0],['equipo24','J',1],['equipo25','B',0],['equipo26','G',2],['equipo27','J',0],['equipo28','H',1],['equipo29','K',0],['equipo30','H',2],['equipo31','D',1],['equipo32','G',1]];
+    const mapping = [['equipo1','A',1],['equipo2','B',1],['equipo3','E',0],['equipo4','B',2],['equipo5','F',0],['equipo6','C',1],['equipo7','C',0],['equipo8','F',1],['equipo9','I',0],['equipo10','L',2],['equipo11','E',1],['equipo12','I',1],['equipo13','A',0],['equipo14','C',2],['equipo15','L',0],['equipo16','D',2],['equipo17','D',0],['equipo18','E',2],['equipo19','G',0],['equipo20','F',2],['equipo21','K',1],['equipo22','L',1],['equipo23','H',0],['equipo24','J',1],['equipo25','B',0],['equipo26','I',2],['equipo27','J',0],['equipo28','H',1],['equipo29','K',0],['equipo30','H',2],['equipo31','D',1],['equipo32','G',1]];
     mapping.forEach(([id, grupo, idx]) => { 
         const el = document.getElementById(id); 
         if (el && tablas[grupo] && tablas[grupo][idx]) el.innerHTML = `${getFlag(tablas[grupo][idx][0])} ${tablas[grupo][idx][0]}`;
