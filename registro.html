@@ -29,6 +29,7 @@
         <option value="futbol">Fútbol</option>
         <option value="basket">Básquet</option>
         <option value="voley">Voley</option>
+        <option value="balon">Balon Mano</option>
     </select>
     <button id="btnEnviar">Enviar Inscripción</button>
     <p id="mensaje"></p>
@@ -56,7 +57,7 @@
         if (error) {
             msg.innerText = "Error: " + error.message;
         } else {
-            msg.innerText = (data === 'Lleno') ? "❌ Cupo agotado." : "✅ ¡Inscripción exitosa!";
+            msg.innerText = (data === 'Lleno') ? "❌ Cupo agotado, intenta con otra disciplina." : "✅ ¡Inscripción exitosa!";
         }
     });
 </script>
