@@ -1,36 +1,11 @@
-<!DOCTYPE html>
-<html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <title>Inscripción Deportiva</title>
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <style>
-        body { font-family: sans-serif; display: flex; justify-content: center; padding: 50px; background-color: #f4f4f9; }
-        .form-container { background: white; padding: 2rem; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); width: 100%; max-width: 400px; }
-        input, select, button { width: 100%; padding: 10px; margin: 10px 0; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box; }
-        button { background-color: #007bff; color: white; border: none; cursor: pointer; }
-    </style>
-</head>
-<body>
-
-<div class="form-container">
-    <h2>Registro Deportivo</h2>
-    <input type="text" id="nombre" placeholder="Nombres">
-    <select id="disciplina">
-        <option value="futbol">Fútbol</option>
-        <option value="basket">Básquet</option>
-    </select>
-    <button id="btnEnviar">Enviar Inscripción</button>
-    <p id="mensaje"></p>
-</div>
-
 <script>
-    // 1. Inicialización
+    // Asegúrate de que esto solo aparezca UNA VEZ en todo tu archivo
     const supabaseUrl = 'https://pcfajfdswgibzzmbjanp.supabase.co';
-    const supabaseKey = 'sb_publishable_gV8sgdLKmD9dWuRRc9PZ7A_h-sZcnLB'; // <--- PEGA TU LLAVE AQUÍ
+    const supabaseKey = 'sb_publishable_gV8sgdLKmD9dWuRRc9PZ7A_h-sZcnLB'; // Pega aquí tu llave de la sección Publishable key
+    
+    // Inicializamos una sola vez
     const supabase = supabase.createClient(supabaseUrl, supabaseKey);
 
-    // 2. Evento del botón
     document.getElementById('btnEnviar').addEventListener('click', async () => {
         const nombre = document.getElementById('nombre').value;
         const disciplina = document.getElementById('disciplina').value;
@@ -38,19 +13,22 @@
 
         mensaje.innerText = "Enviando...";
 
-        const { data, error } = await supabase.rpc('registrar_participante', { 
-            nombre_in: nombre, 
-            disciplina_in: disciplina 
-        });
+        try {
+            const { data, error } = await supabase.rpc('registrar_participante', { 
+                nombre_in: nombre, 
+                disciplina_in: disciplina 
+            });
 
-        if (error) {
-            mensaje.innerText = "Error: " + error.message;
-        } else if (data === 'Lleno') {
-            mensaje.innerText = "❌ Cupo agotado.";
-        } else {
-            mensaje.innerText = "✅ ¡Inscripción exitosa!";
+            if (error) throw error;
+
+            if (data === 'Lleno') {
+                mensaje.innerText = "❌ Cupo agotado.";
+            } else {
+                mensaje.innerText = "✅ ¡Inscripción exitosa!";
+            }
+        } catch (err) {
+            mensaje.innerText = "Error: " + err.message;
+            console.error(err);
         }
     });
 </script>
-</body>
-</html>
