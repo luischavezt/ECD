@@ -55,11 +55,18 @@
             seccion: document.getElementById('seccion').value,
             disciplina: document.getElementById('disciplina').value 
         });
-
+        
+        const mensajeDiv = document.getElementById('mensaje'); // Asegúrate de tener este elemento en tu HTML
+        
         if (error) {
-            msg.innerText = "Error: " + error.message;
+            mensajeDiv.innerText = "❌ Error en la conexión: " + error.message;
+        } else if (data === 'Exito') {
+            mensajeDiv.innerText = "✅ ¡Inscripción exitosa!";
+        } else if (data === 'Lleno') {
+            mensajeDiv.innerText = "❌ Cupo agotado para esta disciplina.";
         } else {
-            msg.innerText = (data === 'Lleno') ? "❌ Cupo agotado, intenta con otra disciplina." : "✅ ¡Inscripción exitosa!";
+            // Esto captura el mensaje "Error: Todos los campos son obligatorios" que definimos en SQL
+            mensajeDiv.innerText = "⚠️ " + data;
         }
     });
 </script>
