@@ -29,9 +29,10 @@
     const supabaseUrl = 'https://pcfajfdswgibzzmbjanp.supabase.co';
     const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBjZmFqZmRzd2dpYnp6bWJqYW5wIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODEyNzgyMTYsImV4cCI6MjA5Njg1NDIxNn0.X3crcTOH9kPprVJKszu8E9hd68fcXxyXt3nvzm3MbjE';
     
-    // Inicialización con nombre único
+    // INICIALIZACIÓN
     const clienteSupabase = supabase.createClient(urlSupabase, keySupabase);
 
+    // LÓGICA DEL BOTÓN
     document.getElementById('btnEnviar').addEventListener('click', async () => {
         const nombre = document.getElementById('nombre').value;
         const disciplina = document.getElementById('disciplina').value;
@@ -40,7 +41,6 @@
         mensaje.innerText = "Enviando...";
 
         try {
-            // Usamos el cliente único
             const { data, error } = await clienteSupabase.rpc('registrar_participante', { 
                 nombre_in: nombre, 
                 disciplina_in: disciplina 
@@ -50,7 +50,7 @@
             mensaje.innerText = (data === 'Lleno') ? "❌ Cupo agotado." : "✅ ¡Inscripción exitosa!";
         } catch (err) {
             mensaje.innerText = "Error: " + err.message;
-            console.error("Error detallado:", err);
+            console.error("Error completo:", err);
         }
     });
 </script>
