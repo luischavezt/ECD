@@ -51,9 +51,9 @@
         msg.innerText = "Enviando...";
 
         const { data, error } = await sb.rpc('registrar_participante', { 
-            nombre_in: nombre, 
-            seccion_in: sec,
-            disciplina_in: disc 
+            nombre: document.getElementById('nombre').value,
+            seccion: document.getElementById('seccion').value,
+            disciplina: document.getElementById('disciplina').value 
         });
 
         if (error) {
