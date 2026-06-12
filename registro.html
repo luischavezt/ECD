@@ -29,34 +29,31 @@
     const supabaseUrl = 'https://pcfajfdswgibzzmbjanp.supabase.co';
     const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBjZmFqZmRzd2dpYnp6bWJqYW5wIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODEyNzgyMTYsImV4cCI6MjA5Njg1NDIxNn0.X3crcTOH9kPprVJKszu8E9hd68fcXxyXt3nvzm3MbjE';
     
-    // 2. Inicialización única
-    const supabase = supabase.createClient(supabaseUrl, supabaseKey);
+    // Inicialización con nombre único
+    const clienteSupabase = supabase.createClient(urlSupabase, keySupabase);
 
-    // 3. Lógica de envío
     document.getElementById('btnEnviar').addEventListener('click', async () => {
         const nombre = document.getElementById('nombre').value;
         const disciplina = document.getElementById('disciplina').value;
         const mensaje = document.getElementById('mensaje');
 
-        if (!nombre) { alert("Por favor escribe un nombre"); return; }
-        
         mensaje.innerText = "Enviando...";
 
         try {
-            const { data, error } = await supabase.rpc('registrar_participante', { 
+            // Usamos el cliente único
+            const { data, error } = await clienteSupabase.rpc('registrar_participante', { 
                 nombre_in: nombre, 
                 disciplina_in: disciplina 
             });
 
             if (error) throw error;
-
             mensaje.innerText = (data === 'Lleno') ? "❌ Cupo agotado." : "✅ ¡Inscripción exitosa!";
         } catch (err) {
             mensaje.innerText = "Error: " + err.message;
-            console.error(err);
+            console.error("Error detallado:", err);
         }
     });
 </script>
-
+    
 </body>
 </html>
