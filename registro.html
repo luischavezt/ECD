@@ -24,19 +24,22 @@
     <p id="mensaje"></p>
 </div>
 
-    <script>
-    // Asegúrate de que esto solo aparezca UNA VEZ en todo tu archivo
+<script>
+    // 1. Configuración única (URL y Key)
     const supabaseUrl = 'https://pcfajfdswgibzzmbjanp.supabase.co';
-    const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBjZmFqZmRzd2dpYnp6bWJqYW5wIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODEyNzgyMTYsImV4cCI6MjA5Njg1NDIxNn0.X3crcTOH9kPprVJKszu8E9hd68fcXxyXt3nvzm3MbjE'; // Pega aquí tu llave de la sección Publishable key
+    const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBjZmFqZmRzd2dpYnp6bWJqYW5wIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODEyNzgyMTYsImV4cCI6MjA5Njg1NDIxNn0.X3crcTOH9kPprVJKszu8E9hd68fcXxyXt3nvzm3MbjE';
     
-    // Inicializamos una sola vez
+    // 2. Inicialización única
     const supabase = supabase.createClient(supabaseUrl, supabaseKey);
 
+    // 3. Lógica de envío
     document.getElementById('btnEnviar').addEventListener('click', async () => {
         const nombre = document.getElementById('nombre').value;
         const disciplina = document.getElementById('disciplina').value;
         const mensaje = document.getElementById('mensaje');
 
+        if (!nombre) { alert("Por favor escribe un nombre"); return; }
+        
         mensaje.innerText = "Enviando...";
 
         try {
@@ -47,11 +50,7 @@
 
             if (error) throw error;
 
-            if (data === 'Lleno') {
-                mensaje.innerText = "❌ Cupo agotado.";
-            } else {
-                mensaje.innerText = "✅ ¡Inscripción exitosa!";
-            }
+            mensaje.innerText = (data === 'Lleno') ? "❌ Cupo agotado." : "✅ ¡Inscripción exitosa!";
         } catch (err) {
             mensaje.innerText = "Error: " + err.message;
             console.error(err);
