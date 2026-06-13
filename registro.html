@@ -9,30 +9,50 @@
         .form-container { background: white; padding: 2rem; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); width: 100%; max-width: 400px; }
         input, select, button { width: 100%; padding: 10px; margin: 10px 0; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box; }
         button { background-color: #007bff; color: white; border: none; cursor: pointer; }
+        .hidden { display: none; }
+        .btn-secondary { background-color: #6c757d; }
     </style>
 </head>
 <body>
 
 <div class="form-container">
-    <p><strong>Registro Deportivo</strong></p>
-    <h2>2do Primaria</h2>
-    <p>Nombres y apellidos</p>
-    <input type="text" id="nombre" placeholder="Nombres y apellidos" requerid>
-    <p>Seccion</p>
-    <select id="seccion" requerid>
-        <option value="A">A</option>
-        <option value="B">B</option>
-        <option value="C">C</option>
-    </select>
-    <p>Disciplina</p>
-    <select id="disciplina" requerid>
-        <option value="futbol">Fútbol</option>
-        <option value="basket">Básquet</option>
-        <option value="voley">Voley</option>
-        <option value="balonmano">Balon Mano</option>
-    </select>
-    <button id="btnEnviar">Enviar Inscripción</button>
-    <p id="mensaje"></p>
+    <div id="paso1">
+        <h3>Selecciona el Año/Grado</h3>
+        <select id="grado">
+            <option value="1ro">1ro Primaria</option>
+            <option value="2do">2do Primaria</option>
+            <option value="3ro">3ro Primaria</option>
+            <option value="4to">4to Primaria</option>
+        </select>
+        <button onclick="irAlRegistro()">Continuar</button>
+    </div>
+
+    <div id="paso2" class="hidden">
+        <p><strong>Registro Deportivo</strong></p>
+        <h2 id="tituloGrado"></h2>
+        
+        <p>Nombres y apellidos</p>
+        <input type="text" id="nombre" placeholder="Nombres y apellidos">
+        
+        <p>Sección</p>
+        <select id="seccion">
+            <option value="A">A</option>
+            <option value="B">B</option>
+            <option value="C">C</option>
+        </select>
+        
+        <p>Disciplina</p>
+        <select id="disciplina">
+            <option value="futbol">Fútbol</option>
+            <option value="basket">Básquet</option>
+            <option value="voley">Voley</option>
+            <option value="balonmano">Balon Mano</option>
+        </select>
+        
+        <button id="btnEnviar">Enviar Inscripción</button>
+        <button class="btn-secondary" onclick="volver()">Volver</button>
+        <p id="mensaje"></p>
+    </div>
 </div>
 
 <script>
@@ -42,31 +62,50 @@
     
     const sb = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
+    // Funciones para navegar entre pasos
+    function irAlRegistro() {
+        const grado = document.getElementById('grado').value;
+        document.getElementById('tituloGrado').innerText = grado + " Primaria";
+        document.getElementById('paso1').classList.add('hidden');
+        document.getElementById('paso2').classList.remove('hidden');
+    }
+
+    function volver() {
+        document.getElementById('paso1').classList.remove('hidden');
+        document.getElementById('paso2').classList.add('hidden');
+    }
+
+    // Lógica de envío a Supabase
     document.getElementById('btnEnviar').addEventListener('click', async () => {
         const nombre = document.getElementById('nombre').value;
-        const sec = document.getElementById('seccion').value;
-        const disc = document.getElementById('disciplina').value;
+        const grado = document.getElementById('grado').value;
+        const seccion = document.getElementById('seccion').value;
+        const disciplina = document.getElementById('disciplina').value;
         const msg = document.getElementById('mensaje');
+
+        if (!nombre) {
+            msg.innerText = "⚠️ Por favor, ingresa tu nombre.";
+            return;
+        }
 
         msg.innerText = "Enviando...";
 
         const { data, error } = await sb.rpc('registrar_participante', { 
-            nombre: document.getElementById('nombre').value,
-            seccion: document.getElementById('seccion').value,
-            disciplina: document.getElementById('disciplina').value 
+            nombre: nombre,
+            grado: grado,
+            seccion: seccion,
+            disciplina: disciplina
         });
         
-        const mensajeDiv = document.getElementById('mensaje'); // Asegúrate de tener este elemento en tu HTML
-        
         if (error) {
-            mensajeDiv.innerText = "❌ Error en la conexión: " + error.message;
+            msg.innerText = "❌ Error en la conexión: " + error.message;
         } else if (data === 'Exito') {
-            mensajeDiv.innerText = "✅ ¡Inscripción exitosa!";
+            msg.innerText = "✅ ¡Inscripción exitosa!";
+            document.getElementById('nombre').value = ''; // Limpiar campo
         } else if (data === 'Lleno') {
-            mensajeDiv.innerText = "❌ Cupo agotado para esta disciplina.";
+            msg.innerText = "❌ Cupo agotado para esta disciplina.";
         } else {
-            // Esto captura el mensaje "Error: Todos los campos son obligatorios" que definimos en SQL
-            mensajeDiv.innerText = "⚠️ " + data;
+            msg.innerText = "⚠️ " + data;
         }
     });
 </script>
