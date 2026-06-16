@@ -6,7 +6,7 @@
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
         body { font-family: sans-serif; display: flex; justify-content: center; padding: 50px; background-color: #f4f4f9; }
-        .form-container { background: #27D6F5; padding: 2rem; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); width: 100%; max-width: 400px; }
+        .form-container { background: #F2972E; padding: 2rem; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); width: 100%; max-width: 400px; }
         input, select, button { width: 100%; padding: 10px; margin: 10px 0; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box; }
         button { background-color: #007bff; color: white; border: none; cursor: pointer; }
         .hidden { display: none; }
@@ -17,7 +17,10 @@
 
 <div class="form-container"> 
     <div id="paso1">
-        <h3>Selecciona el Año/Grado</h3>
+		<h2>Registro Deportivo</h2>
+		<h1>Casa Naranja</h1>
+		
+        <p><strong>Selecciona el Año/Grado</strong></p>
         <select id="grado">
             <option value="1ro">1ro Primaria</option>
             <option value="2do">2do Primaria</option>
@@ -30,7 +33,7 @@
     </div>
 
     <div id="paso2" class="hidden">
-        <p><strong>Registro Deportivo</strong></p>
+        
         <h2 id="tituloGrado"></h2>
         
         <p>Nombres y apellidos</p>
