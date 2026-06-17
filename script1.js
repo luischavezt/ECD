@@ -497,6 +497,10 @@ function calcularEstadisticas() {
     setTop3Row('stat-goals-rec-name', 'stat-goals-rec-val', 'stat-goals-rec-pj', getTop3('gr', 'max'));
     setTop3Row('stat-goals-rec-min-name', 'stat-goals-rec-min-val', 'stat-goals-rec-min-pj', getTop3('gr', 'min'));
 }
+function cerrarEstadisticas() {
+    // Esto vuelve a poner la clase 'oculto' al div de estadísticas
+    document.getElementById('seccionEstadisticas').classList.add('oculto');
+}
 
 function exportarPronosticosPorFecha() {
     // 1. Pedir nombre y fecha
@@ -561,7 +565,6 @@ function mostrarMejoresTerceros() {
     const letrasGrupos = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L'];
 
     letrasGrupos.forEach(letra => {
-        // Obtenemos los resultados calculados previamente
         let ranking = calcular(letra);
         if (ranking.length >= 3) {
             terceros.push({
@@ -573,10 +576,8 @@ function mostrarMejoresTerceros() {
         }
     });
 
-    // Ordenar: 1ro por Puntos, 2do por Diferencia de Goles
     terceros.sort((a, b) => b.pts - a.pts || b.dg - a.dg);
 
-    // Renderizar
     const tbody = document.querySelector('#tabla-terceros tbody');
     tbody.innerHTML = terceros.map((t, i) => `
         <tr>
@@ -588,7 +589,13 @@ function mostrarMejoresTerceros() {
         </tr>
     `).join('');
 
-    // Mostrar sección
+    // Mostrar sección (usando tu función existente)
     mostrarSeccion('seccion-terceros', null);
 }
+
+// Nueva función para cerrar la sección
+function cerrarSeccion() {
+    document.getElementById('seccion-terceros').classList.add('oculto');
+}
+
 init();
