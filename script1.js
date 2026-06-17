@@ -499,35 +499,31 @@ function calcularEstadisticas() {
 }
 
 function exportarPronosticosPorFecha() {
-    // Pedir fecha en formato "DD Mes"
-    const fecha = prompt("Ingresa la fecha para exportar (ejemplo: 11 junio o 01 julio):");
-    
+    // 1. Pedir nombre y fecha
+    const fecha = prompt("Ingresa la fecha (ejemplo: 11 junio ó 01 julio):");
     if (!fecha) return;
+	
+	const nombre = prompt("¿Cuál es tu nombre (o apodo) para el pronóstico?");
+    if (!nombre) return; // Si cancela, salimos
 
     const contenedorCanvas = document.getElementById('contenido-canvas');
     const areaExport = document.getElementById('canvas-export');
     
-    // Limpiar previo
-    contenedorCanvas.innerHTML = `<h2 style="text-align:center; color: #DAF527;">FECHA: ${fecha.toUpperCase()}</h2>`;
+    // 2. Inyectar nombre y fecha en la cabecera del canvas
+    contenedorCanvas.innerHTML = `
+        <h2 style="text-align:center; color: #ff9800; margin-bottom: 5px; text-transform: uppercase;">${nombre}</h2>
+		<h3 style="text-align:center; color: #ffffff; margin-top: 0;">Fecha: ${fecha}</h3>
+    `;
 
     let encontrados = false;
-
-    // Buscamos todos los elementos que tengan la clase 'partido'
-    // Asegúrate de que todos tus bloques de partidos (grupos y eliminatorias) 
-    // tengan la clase "partido" en el div principal.
     const partidos = document.querySelectorAll('.partido');
 
     partidos.forEach(partido => {
-        const textoFecha = partido.innerText; 
-        
-        // Buscamos si el partido contiene la fecha escrita por el usuario
-        if (textoFecha.toLowerCase().includes(fecha.toLowerCase())) {
+        if (partido.innerText.toLowerCase().includes(fecha.toLowerCase())) {
             encontrados = true;
-            
-            // Clonamos el partido
             const clon = partido.cloneNode(true);
             
-            // Reemplazar inputs por texto en el clon
+            // Convertir inputs a texto plano
             clon.querySelectorAll('input').forEach(input => {
                 const valor = input.value || "-";
                 const span = document.createElement('span');
@@ -545,19 +541,54 @@ function exportarPronosticosPorFecha() {
     });
 
     if (!encontrados) {
-        alert("No se encontraron partidos para: " + fecha);
+        alert("No se encontraron partidos para la fecha: " + fecha);
         return;
     }
 
-    // Exportar
+    // 3. Exportar imagen
     areaExport.style.display = 'block';
     html2canvas(areaExport).then(canvas => {
         const link = document.createElement('a');
-        link.download = `pronostico_${fecha.replace(' ', '_')}.jpg`;
+        link.download = `pronostico_${nombre.replace(/\s+/g, '_')}_${fecha.replace(' ', '_')}.jpg`;
         link.href = canvas.toDataURL("image/jpeg", 1.0);
         link.click();
         areaExport.style.display = 'none';
     });
 }
 
+function mostrarMejoresTerceros() {
+    let terceros = [];
+    const letrasGrupos = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L'];
+
+    letrasGrupos.forEach(letra => {
+        // Obtenemos los resultados calculados previamente
+        let ranking = calcular(letra);
+        if (ranking.length >= 3) {
+            terceros.push({
+                grupo: letra,
+                equipo: ranking[2][0],
+                pts: ranking[2][1].pts,
+                dg: ranking[2][1].dg
+            });
+        }
+    });
+
+    // Ordenar: 1ro por Puntos, 2do por Diferencia de Goles
+    terceros.sort((a, b) => b.pts - a.pts || b.dg - a.dg);
+
+    // Renderizar
+    const tbody = document.querySelector('#tabla-terceros tbody');
+    tbody.innerHTML = terceros.map((t, i) => `
+        <tr>
+            <td>${i + 1}</td>
+            <td>Grupo ${t.grupo}</td>
+            <td>${t.equipo}</td>
+            <td>${t.pts}</td>
+            <td>${t.dg}</td>
+        </tr>
+    `).join('');
+
+    // Mostrar sección
+    mostrarSeccion('seccion-terceros', null);
+}
 init();
