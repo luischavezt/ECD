@@ -163,8 +163,13 @@
                 <table id="tablaL"><thead><tr><th>Pos</th><th>Equipo</th><th>PTS</th><th>DG</th></tr></thead><tbody></tbody></table>
 				<div id="partidosL" class="partidos"></div>
             </section>
+			
 			<!-- Agregado -->
-			<section id="seccionEstadisticas" class="seccion oculto">
+			<section id="seccionEstadisticas" class="seccion oculto" style="background: #111a24; color: #ffffff; padding: 20px; position: relative;">
+				<div onclick="document.getElementById('seccionEstadisticas').classList.add('oculto')" 
+					 style="position: absolute; top: 10px; right: 20px; cursor: pointer; font-size: 28px; color: #ff0000; font-weight: bold;">
+					&times;
+				</div>
                 <h2>📊 Estadísticas Generales</h2>
                 <table style="width: 100%; text-align: left; border-collapse: collapse;">
 					<thead>
@@ -422,7 +427,6 @@
 			<button onclick="exportarPronosticosPorFecha()" style="padding: 10px; border-radius: 8px; background: #28a745; color: white; font-weight: bold; cursor: pointer; border: none; margin-left: 10px;">
 			📅 Exportar x Fecha de partido
 			</button>
-		<br><br>
 		<select id="selectorFase" onchange="iniciarExportacion()" style="padding: 10px; border-radius: 8px; background: #DAF527; font-weight: bold; cursor: pointer; border: none;">
 			<option value="">📸 Exportar x Fase</option>
 			<option value="16vos">16vos de Final</option>
@@ -447,15 +451,21 @@
 				📊 Ver Estadísticas Generales
 				</button>
 			</div>
+			
 			<!-- Agregado -->
-			<button onclick="mostrarMejoresTerceros()" style="background:#3B9CF7; color:#000; padding:10px; border:none; cursor:pointer; font-weight:bold;">
+			<button onclick="mostrarMejoresTerceros()" style="background:#3B9CF7; color:#fff; padding:10px; border:none; cursor:pointer; font-weight:regular;">
 			Ver Mejores 3ros 
 			</button>
 
-			<div id="seccion-terceros" class="seccion oculto" style="padding: 20px; background: #fff; color: #000;">
-				<table id="tabla-terceros" style="width:100%; border-collapse: collapse; text-align: center;">
+			<div id="seccion-terceros" class="seccion oculto" style="padding: 20px; background: #fff; color: #000; position: relative;">
+				<div onclick="cerrarSeccion()" style="position: absolute; top: 10px; right: 15px; cursor: pointer; font-size: 28px; color: #ff0000; font-weight: bold;">
+					&times;
+				</div>
+
+				<table id="tabla-terceros" style="width:100%; border-collapse: collapse; text-align: center; margin-top: 20px;">
 					<thead>
-						<tr style="background-color: #2c3e50; color: #ffffff;"><th style="padding: 10px;">#</th><th style="padding: 10px;">Grupo</th><th style="padding: 10px;">Equipo</th><th style="padding: 10px;">Pts</th><th style="padding: 10px;">DG</th>
+						<tr style="background-color: #2c3e50; color: #ffffff;">
+							<th style="padding: 10px;">#</th><th style="padding: 10px;">Grupo</th><th style="padding: 10px;">Equipo</th><th style="padding: 10px;">Pts</th><th style="padding: 10px;">DG</th>
 						</tr>
 					</thead>
 					<tbody></tbody>
