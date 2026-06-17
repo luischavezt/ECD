@@ -255,3 +255,8 @@ table {
     border-collapse: collapse;
     width: 100%;
 }
+
+/* Esto aplica el color de fondo a las primeras 8 filas del cuerpo de la tabla */
+#tabla-terceros tbody tr:nth-child(-n+8) {
+    background-color: #e0f7fa;
+}
