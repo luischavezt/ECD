@@ -1,7 +1,7 @@
 .header-container {
     display: flex;          /* Activa el diseño en línea */
     align-items: center;    /* Centra verticalmente las imágenes */
-    justify-content: space-between; /* Espacia las imágenes a los lados */
+    justify-content: center; /* Espacia las imágenes a los lados */
     gap: 15px;              /* Un poco de espacio entre ellas */
     margin-bottom: 20px;
 }
