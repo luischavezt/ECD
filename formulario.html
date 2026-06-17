@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<link rel="stylesheet" href="formulario.css">
+    <title>Propuestas para mi Distrito</title>
+    <style>
+        body { font-family: sans-serif; background-color: #f4f7f6; padding: 20px; line-height: 1.6; }
+        .container { max-width: 500px; margin: auto; background: white; padding: 25px; border-radius: 12px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
+        h2 { color: #2c3e50; text-align: center; }
+        label { display: block; margin: 15px 0 5px; font-weight: bold; }
+        input, select, textarea { width: 100%; padding: 12px; margin-bottom: 10px; border: 1px solid #ccc; border-radius: 6px; box-sizing: border-box; }
+        button { width: 100%; padding: 15px; background-color: #27ae60; color: white; border: none; border-radius: 6px; font-size: 16px; cursor: pointer; }
+        button:hover { background-color: #219150; }
+        #msg { text-align: center; margin-top: 15px; font-weight: bold; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+	 <div class="header-container">
+		<img src="D:/RECURSOS/Boris.png" alt="Logo2" class="img-logo2">
+		<img src="D:/RECURSOS/CentralBoris.png" alt="Logo1" class="img-logo1">
+	</div>
+    <h2>Nuestra Ciudad, Nuestro Futuro</h2>
+    <p>Cuéntanos qué necesita tu barrio para mejorar.</p>
+    
+    <form id="formSugerencia">
+		<label>Nombre (Opcional)</label>
+		<input type="text" id="nombre" placeholder="¿Cómo te llamas?">
+
+		<label>Rango de Edad</label>
+		<select id="edad">
+			<option value="18-25">18 a 25 años</option>
+			<option value="26-40">26 a 40 años</option>
+			<option value="41-60">41 a 60 años</option>
+			<option value="+60">Más de 60 años</option>
+		</select>
+		
+        <label>Sector / Barrio</label>
+        <select id="sector">
+            <option value="Wanchaq">Wanchaq antiguo</option>
+            <option value="Huascar">Huascar</option>
+            <option value="SantaMonica">Santa Monica</option>
+        </select>
+
+        <label>Categoría</label>
+		<p>Seleccione en que te gustaria haya mas inversion</p>
+		<div class="grid-categorias">
+			<button type="button" class="btn-categoria" onclick="seleccionar('Seguridad')">
+				<img src="D:/RECURSOS/Seguridad.png" alt="Seguridad">
+				<span>Seguridad</span>
+			</button>
+			<button type="button" class="btn-categoria" onclick="seleccionar('Limpieza')">
+				<img src="D:/RECURSOS/Limpieza.png" alt="Limpieza">
+				<span>Limpieza</span>
+			</button>
+			<button type="button" class="btn-categoria" onclick="seleccionar('Infraestructura')">
+				<img src="D:/RECURSOS/Obras.png" alt="Infraestructura">
+				<span>Infraestructura</span>
+			</button>
+			<button type="button" class="btn-categoria" onclick="seleccionar('AreasVerdes')">
+				<img src="D:/RECURSOS/AVerde.png" alt="Áreas Verdes">
+				<span>Áreas Verdes</span>
+			</button>
+		</div>
+
+		<input type="hidden" id="categoriaSeleccionada" value="">
+
+        <label>Tu Propuesta</label>
+        <textarea id="descripcion" rows="4" placeholder="Ej: Falta iluminación en la calle..." required></textarea>
+
+        <label>Te gustaria que tengamos una reunion tecnica en tu Barrio? (Dejanos tu whatsapp)</label>
+        <input type="tel" id="telefono" autocomplete="tel" placeholder="Ej: 51999888777">
+
+        <button type="submit">Enviar Propuesta</button>
+    </form>
+
+    <div id="msg"></div>
+	<img src="D:/RECURSOS/flores.png" alt="Logo" style="width: 100%; height: auto; display: block; border-radius: 8px">
+</div>
+
+<script>
+    const form = document.getElementById('formSugerencia');
+    const msg = document.getElementById('msg');
+
+    form.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        msg.innerText = "Enviando...";
+
+        const datos = {
+			sector: document.getElementById('sector').value,
+			nombre: document.getElementById('nombre').value || "Anónimo", // Si está vacío, guarda "Anónimo"
+			edad: document.getElementById('edad').value,
+			categoria: document.getElementById('categoria').value,
+			descripcion: document.getElementById('descripcion').value,
+			telefono: document.getElementById('telefono').value
+		};
+
+        // Aquí iría tu lógica de Supabase (sb.rpc)
+        console.log("Datos capturados:", datos);
+        
+        // Simulación de éxito
+        msg.innerText = "✅ ¡Gracias! Tu propuesta ha sido recibida.";
+        form.reset();
+    });
+</script>
+
+	<script src="formulario.js"></script>
+</body>
+</html>

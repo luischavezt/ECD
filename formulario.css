@@ -1,0 +1,59 @@
+.header-container {
+    display: flex;          /* Activa el diseño en línea */
+    align-items: center;    /* Centra verticalmente las imágenes */
+    justify-content: space-between; /* Espacia las imágenes a los lados */
+    gap: 15px;              /* Un poco de espacio entre ellas */
+    margin-bottom: 20px;
+}
+
+.img-logo1 {
+    width: 60%;             /* Ajusta según el tamaño que prefieras */
+    height: auto;
+    border-radius: 8px;
+}
+
+.img-logo2 {
+    width: 35%;             /* Ajusta para que la suma sea aprox 100% */
+    max-width: 150px;       /* Evita que crezca demasiado */
+    height: auto;
+}
+.grid-categorias {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px; /* Espacio entre botones */
+    margin-bottom: 20px;
+}
+
+.btn-categoria {
+    background-color: #27ae60; /* El color verde que se ve en la imagen */
+    color: white;              /* Texto en blanco para resaltar */
+    border: none;              /* Quitamos el borde */
+    padding: 20px 10px;        /* Espacio interno para que crezca */
+    border-radius: 8px;
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    transition: transform 0.2s;
+}
+
+.btn-categoria:active {
+    transform: scale(0.95);    /* Pequeño efecto al presionar */
+}
+
+.btn-categoria img {
+    width: 50px;               /* Ajusta el tamaño del icono aquí */
+    height: 50px;
+    object-fit: contain;
+    margin-bottom: 10px;
+}
+
+.container {
+    max-width: 500px;
+    margin: auto;
+    background-color: #f0f0f0; /* Fondo gris claro */
+    padding: 25px;
+    border-radius: 12px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+}
