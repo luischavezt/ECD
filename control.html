@@ -57,10 +57,14 @@
 					
 					// Checkbox + Nombre
 					div.innerHTML = `
-						<label style="cursor:pointer; width: 100%; display: flex; justify-content: space-between;">
-						<span style="font-weight: normal;"><input type="checkbox" value="${e.Num}" data-nombre="${e.Nombres}"> ${e.Nombres}</span>
-						<span style="color: #7f8c8d; font-size: 0.9em; font-weight: normal;">${e.Seccion}</span>
-						</label>
+						<label style="cursor:pointer; width: 100%; display: flex; justify-content: space-between; align-items: center;">
+        					<span style="font-weight: normal; font-size: 0.85em;">
+            				<input type="checkbox" value="${e.Num}" data-nombre="${e.Nombres}"> ${e.Nombres}
+        					</span>
+        					<span style="color: #7f8c8d; font-size: 0.8em; font-weight: normal;">
+           					 ${e.Seccion}
+        					</span>
+    					</label>
 					`;
 					contenedor.appendChild(div);
 				}
