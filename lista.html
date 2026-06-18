@@ -42,25 +42,31 @@
             }, {});
 
             // Renderizar
-            const div = document.getElementById('contenedorReporte');
-            div.innerHTML = ""; 
+			const div = document.getElementById('contenedorReporte');
+			div.innerHTML = ""; 
 
-            for (let grado in agrupado) {
-                let htmlGrado = `<div class="reporte-card"><h2>${grado} Primaria</h2>`;
-                
-                for (let seccion in agrupado[grado]) {
-                    htmlGrado += `<h3>Sección: ${seccion}</h3>`;
-                    
-                    for (let deporte in agrupado[grado][seccion]) {
-                        htmlGrado += `<h4>${deporte}</h4><ul>`;
-                        agrupado[grado][seccion][deporte].forEach(nombre => {
-                            htmlGrado += `<li>👤 ${nombre}</li>`;
-                        });
-                        htmlGrado += `</ul>`;
-                    }
-                }
-                div.innerHTML += htmlGrado + `</div>`;
-            }
+			// Ordenamos los grados (si es necesario)
+			const gradosOrdenados = Object.keys(agrupado).sort();
+
+			for (let grado of gradosOrdenados) {
+				let htmlGrado = `<div class="reporte-card"><h2>${grado} Primaria</h2>`;
+				
+				// AQUÍ ESTÁ EL CAMBIO: Obtenemos las secciones y las ordenamos
+				const seccionesOrdenadas = Object.keys(agrupado[grado]).sort();
+				
+				for (let seccion of seccionesOrdenadas) {
+					htmlGrado += `<h3>Sección: ${seccion}</h3>`;
+					
+					for (let deporte in agrupado[grado][seccion]) {
+						htmlGrado += `<h4>${deporte}</h4><ul>`;
+						agrupado[grado][seccion][deporte].forEach(nombre => {
+							htmlGrado += `<li>👤 ${nombre}</li>`;
+						});
+						htmlGrado += `</ul>`;
+					}
+				}
+				div.innerHTML += htmlGrado + `</div>`;
+			}
         }
         generarReporte();
     </script>
