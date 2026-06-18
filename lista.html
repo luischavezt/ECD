@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reporte Deportes</title>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <style>
+        body { font-family: 'Segoe UI', sans-serif; background-color: #f4f7f6; padding: 15px; }
+        .reporte-card { background: white; padding: 15px; margin-bottom: 15px; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+        h1 { color: #2c3e50; text-align: center; }
+        h2 { color: #f39c12; border-bottom: 2px solid #f39c12; margin-top: 20px; text-transform: capitalize; }
+        h3 { color: #34495e; background: #eee; padding: 8px; border-radius: 5px; margin: 10px 0; }
+        h4 { color: #27ae60; margin: 5px 0 0 10px; text-transform: uppercase; font-size: 0.9em; }
+        ul { list-style: none; padding-left: 20px; margin: 5px 0; }
+        li { padding: 5px 0; border-bottom: 1px solid #f0f0f0; font-size: 0.95em; }
+    </style>
+</head>
+<body>
+
+    <h1>Reporte de Inscripciones</h1>
+    <div id="contenedorReporte">Cargando datos...</div>
+
+    <script>
+        const sb = supabase.createClient('https://pcfajfdswgibzzmbjanp.supabase.co', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBjZmFqZmRzd2dpYnp6bWJqYW5wIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODEyNzgyMTYsImV4cCI6MjA5Njg1NDIxNn0.X3crcTOH9kPprVJKszu8E9hd68fcXxyXt3nvzm3MbjE');
+
+        async function generarReporte() {
+            const { data, error } = await sb.from('registros').select('*');
+            if (error) {
+                document.getElementById('contenedorReporte').innerText = "Error al cargar datos: " + error.message;
+                return;
+            }
+
+            // Agrupar datos
+            const agrupado = data.reduce((acc, curr) => {
+                const { grado, seccion, disciplina, nombre } = curr;
+                if (!acc[grado]) acc[grado] = {};
+                if (!acc[grado][seccion]) acc[grado][seccion] = {};
+                if (!acc[grado][seccion][disciplina]) acc[grado][seccion][disciplina] = [];
+                acc[grado][seccion][disciplina].push(nombre);
+                return acc;
+            }, {});
+
+            // Renderizar
+            const div = document.getElementById('contenedorReporte');
+            div.innerHTML = ""; 
+
+            for (let grado in agrupado) {
+                let htmlGrado = `<div class="reporte-card"><h2>${grado} Primaria</h2>`;
+                
+                for (let seccion in agrupado[grado]) {
+                    htmlGrado += `<h3>Sección: ${seccion}</h3>`;
+                    
+                    for (let deporte in agrupado[grado][seccion]) {
+                        htmlGrado += `<h4>${deporte}</h4><ul>`;
+                        agrupado[grado][seccion][deporte].forEach(nombre => {
+                            htmlGrado += `<li>👤 ${nombre}</li>`;
+                        });
+                        htmlGrado += `</ul>`;
+                    }
+                }
+                div.innerHTML += htmlGrado + `</div>`;
+            }
+        }
+        generarReporte();
+    </script>
+</body>
+</html>
