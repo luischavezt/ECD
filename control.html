@@ -23,9 +23,8 @@
         <h2>Registro de Pago</h2>
         
         <label>Selecciona estudiante(s):</label>
-		<small> Solo apareceran los estudiantes que aun faltan pagar</small>
-        <select id="selectEstudiante" multiple style="height: 180px;"></select>
-        <small><i>(Si estas en una PC, mantén presionado la tecla <b>Ctrl</b> para seleccionar varios estudiantes)</i></small>
+		<div id="listaEstudiantes" style="border: 1px solid #ddd; height: 250px; overflow-y: auto; padding: 10px; border-radius: 8px;">
+		</div>
 
         <label style="margin-top: 15px;">Adjuntar Comprobante:</label>
         <input type="file" id="fileInput" accept="image/*">
@@ -38,51 +37,50 @@
         const supabaseClient = supabase.createClient('https://viozqipplhkcxacpryrr.supabase.co', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZpb3pxaXBwbGhrY3hhY3ByeXJyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODE3ODMwMjUsImV4cCI6MjA5NzM1OTAyNX0.j8Qc-tVeIJH_4_UvwJtZhIqNcbSJ2zsZia6UpwPyuFA');
 
        window.addEventListener('load', async () => {
-			const sel = document.getElementById('selectEstudiante');
+		const contenedor = document.getElementById('listaEstudiantes');
+		const { data: estudiantes } = await supabaseClient.from('Estudiantes').select('Num, Nombres, Seccion');
+		const { data: pagos } = await supabaseClient.from('Pagos').select('estudiante_id');
+		
+		if (estudiantes) {
+			const idsPagados = new Set(pagos ? pagos.map(p => p.estudiante_id) : []);
+			contenedor.innerHTML = "";
 			
-			// 1. Obtener lista de estudiantes (asegúrate de incluir 'Seccion')
-			const { data: estudiantes, error: errorE } = await supabaseClient.from('Estudiantes').select('Num, Nombres, Seccion');
-			
-			// 2. Obtener lista de estudiantes que YA PAGARON
-			const { data: pagos, error: errorP } = await supabaseClient.from('Pagos').select('estudiante_id');
-			
-			if (estudiantes) {
-				const idsPagados = new Set(pagos ? pagos.map(p => p.estudiante_id) : []);
-				
-				sel.innerHTML = "";
-				
-				estudiantes.forEach(e => {
-					// Solo agregar al select si NO está en la lista de pagados
-					if (!idsPagados.has(e.Num)) {
-						let o = document.createElement('option');
-						o.value = e.Num; 
-						// Aquí concatenamos el nombre con la sección
-						o.text = `${e.Nombres} - ${e.Seccion}`; 
-						sel.add(o);
-					}
-				});
-
-				if (sel.options.length === 0) {
-					sel.innerHTML = "<option disabled>Todos los estudiantes ya pagaron</option>";
+			estudiantes.forEach(e => {
+				if (!idsPagados.has(e.Num)) {
+					// Creamos un div para cada fila
+					const div = document.createElement('div');
+					div.style.display = "flex";
+					div.style.justifyContent = "space-between";
+					div.style.padding = "5px 0";
+					div.style.borderBottom = "1px solid #eee";
+					
+					// Checkbox + Nombre
+					div.innerHTML = `
+						<label style="cursor:pointer; width: 100%; display: flex; justify-content: space-between;">
+						<span style="font-weight: normal;"><input type="checkbox" value="${e.Num}" data-nombre="${e.Nombres}"> ${e.Nombres}</span>
+						<span style="color: #7f8c8d; font-size: 0.9em; font-weight: normal;">${e.Seccion}</span>
+						</label>
+					`;
+					contenedor.appendChild(div);
 				}
+			});
+		}
+	});
+
+				window.enviar = async function() {
+			const checkboxes = document.querySelectorAll('#listaEstudiantes input[type="checkbox"]:checked');
+			const file = document.getElementById('fileInput').files[0];
+			const msg = document.getElementById('mensaje');
+			
+			const seleccionados = Array.from(checkboxes).map(chk => ({
+				id: chk.value,
+				nombre: chk.getAttribute('data-nombre')
+			}));
+
+			if (!file || seleccionados.length === 0) {
+				msg.innerText = "Error: Elige una foto y selecciona al menos un estudiante.";
+				return;
 			}
-		});
-
-        window.enviar = async function() {
-            const file = document.getElementById('fileInput').files[0];
-            const sel = document.getElementById('selectEstudiante');
-            const msg = document.getElementById('mensaje');
-            
-            // Obtener todos los seleccionados
-            const seleccionados = Array.from(sel.selectedOptions).map(opt => ({
-                id: opt.value,
-                nombre: opt.text
-            }));
-
-            if (!file || seleccionados.length === 0) { 
-                msg.innerText = "Error: Elige una foto y selecciona al menos un estudiante."; 
-                return; 
-            }
             
             msg.innerText = "Enviando comprobante...";
 
