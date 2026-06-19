@@ -39,14 +39,22 @@ function crearRueda() {
     const contenedor = document.getElementById('rueda');
     if (!contenedor) return;
     contenedor.innerHTML = '';
+    
     const numLetras = 20;
-    const radio = 180;
+    // Usamos el tamaño real del contenedor (offsetWidth)
+    const radio = (contenedor.offsetWidth / 2) - 30; // 30px de margen para que no toquen el borde
+    const centroX = contenedor.offsetWidth / 2;
+    const centroY = contenedor.offsetHeight / 2;
+
     for (let i = 0; i < numLetras; i++) {
         const div = document.createElement('div');
         div.className = 'letra';
         const angulo = (i / numLetras) * 2 * Math.PI - Math.PI / 2;
-        div.style.left = (200 + radio * Math.cos(angulo) - 20) + 'px';
-        div.style.top = (200 + radio * Math.sin(angulo) - 20) + 'px';
+        
+        // Posicionamiento dinámico relativo al centro del contenedor
+        div.style.left = (centroX + radio * Math.cos(angulo) - 20) + 'px';
+        div.style.top = (centroY + radio * Math.sin(angulo) - 20) + 'px';
+        
         div.innerText = String.fromCharCode(65 + i);
         contenedor.appendChild(div);
     }
