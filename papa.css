@@ -163,3 +163,11 @@ button:hover { background-color: #219150; }
         font-size: 0.9em !important;
     }
 }
+
+@media (max-width: 600px) {
+    /* Mantenemos el tamaño original de 400px en JS, pero lo encogemos visualmente en móvil */
+    .rueda {
+        transform: scale(0.6); /* Esto encoge la rueda un 40% automáticamente */
+        margin: -60px auto !important; /* Ajustamos el margen para que no quede mucho espacio vacío */
+    }
+}
