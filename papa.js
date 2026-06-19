@@ -9,7 +9,9 @@ const bancoDePreguntas = [
 	{ id: 7, pregunta: "¿El Papa Leon XIV, cuando fue ordenado como Cardenal?", opciones: ["Diciembre 2022", "Enero 2023", "Setiembre 2023", "Enero 2024"], correcta: 2 },
 	{ id: 8, pregunta: "¿En que fecha fue elegio como Papa?", opciones: ["8 mayo 2024", "18 junio 2025", "8 mayo 2025", "18 julio 2025"], correcta: 2 }, 
 	{ id: 9, pregunta: "¿Que numero de Papa nacido en el continente americano es?", opciones: ["El 1ro", "El 2do", "El 3ro", "El 4to"], correcta: 1 }, 
-	{ id: 10, pregunta: "¿En que ciudades trabajo en Peru?", opciones: ["Piura, Chulucanas, Lima y Cusco", "Cajamarca, Chulucanas, Pucallpa y Chiclayo", "Piura, Chulucanas, Trujillo y Chiclayo", "Piura, Tumbes, Chulucanas y Cajamarca"], correcta: 2 }
+	{ id: 10, pregunta: "¿En que ciudades trabajo en Peru?", opciones: ["Piura, Chulucanas, Lima y Cusco", "Cajamarca, Chulucanas, Pucallpa y Chiclayo", "Piura, Chulucanas, Trujillo y Chiclayo", "Piura, Tumbes, Chulucanas y Cajamarca"], correcta: 2 },
+	{ id: 11, pregunta: "¿Como se llama la reunion donde eligen al Papa?", opciones: ["Concilio", "Conclave", "Jubileo", "Junta de cardenales"], correcta: 1 }, 
+	{ id: 12, pregunta: "¿Cual es el termino en latin que se usa para avisar que se eligio a un Papa?", opciones: ["Vivat Papam", "Electus Papam", "Magnum Papam", "Habemus Papam"], correcta: 3 }
 ];
 
 let preguntaActual = 0, aciertos = 0, tiempoInicio = null, cronometroInterval = null, preguntasJuego = [];
@@ -27,9 +29,11 @@ function actualizarRankingBar() {
             if (ranking[i]) {
                 const mins = Math.floor(ranking[i].tiempo / 60);
                 const segs = ranking[i].tiempo % 60;
-                span.innerText = `${i + 1}º ${ranking[i].nombre}: ${String(mins).padStart(2,'0')}:${String(segs).padStart(2,'0')}`;
+                const tiempoFormateado = `${String(mins).padStart(2,'0')}:${String(segs).padStart(2,'0')}`;
+                // Mostramos: 1º Nombre: X aciertos en 00:00
+                span.innerText = `${i + 1}º ${ranking[i].nombre}: ${ranking[i].aciertos} aciertos en ${tiempoFormateado}`;
             } else {
-                span.innerText = `${i + 1}º: --:--`;
+                span.innerText = `${i + 1}º: ---`;
             }
         }
     }
@@ -39,22 +43,14 @@ function crearRueda() {
     const contenedor = document.getElementById('rueda');
     if (!contenedor) return;
     contenedor.innerHTML = '';
-    
     const numLetras = 20;
-    // Usamos el tamaño real del contenedor (offsetWidth)
-    const radio = (contenedor.offsetWidth / 2) - 30; // 30px de margen para que no toquen el borde
-    const centroX = contenedor.offsetWidth / 2;
-    const centroY = contenedor.offsetHeight / 2;
-
+    const radio = 180;
     for (let i = 0; i < numLetras; i++) {
         const div = document.createElement('div');
         div.className = 'letra';
         const angulo = (i / numLetras) * 2 * Math.PI - Math.PI / 2;
-        
-        // Posicionamiento dinámico relativo al centro del contenedor
-        div.style.left = (centroX + radio * Math.cos(angulo) - 20) + 'px';
-        div.style.top = (centroY + radio * Math.sin(angulo) - 20) + 'px';
-        
+        div.style.left = (200 + radio * Math.cos(angulo) - 20) + 'px';
+        div.style.top = (200 + radio * Math.sin(angulo) - 20) + 'px';
         div.innerText = String.fromCharCode(65 + i);
         contenedor.appendChild(div);
     }
@@ -124,13 +120,28 @@ function finalizarJuego() {
     const nombre = prompt("¡Trivia terminada! Ingresa tu apodo:");
     
     let ranking = JSON.parse(localStorage.getItem('ranking') || '[]');
-    ranking.push({ nombre: nombre || "Anónimo", tiempo: totalSeg });
-    ranking.sort((a, b) => a.tiempo - b.tiempo);
+    
+    // Guardamos nombre, aciertos y tiempo
+    ranking.push({ 
+        nombre: nombre || "Anónimo", 
+        aciertos: aciertos, 
+        tiempo: totalSeg 
+    });
+
+    // Lógica de ordenamiento: 
+    // 1. Mayor cantidad de aciertos
+    // 2. Si hay empate, menor tiempo
+    ranking.sort((a, b) => {
+        if (b.aciertos !== a.aciertos) {
+            return b.aciertos - a.aciertos;
+        }
+        return a.tiempo - b.tiempo;
+    });
+
     localStorage.setItem('ranking', JSON.stringify(ranking.slice(0, 3)));
     
     actualizarRankingBar();
     
-    // Limpiamos la pantalla sin borrar la estructura
     document.getElementById('pregunta').innerText = "¡Juego Terminado!";
     document.getElementById('opciones').innerHTML = '';
     document.getElementById('mensaje').innerHTML = `<button onclick="location.reload()">Jugar de nuevo</button>`;
