@@ -1,47 +1,58 @@
-/* --- Estilos Generales --- */
+/* --- Variables de Diseño --- */
+:root {
+    --primary-color: #3498db;
+    --accent-color: #00ffcc;
+    --dark-bg: #1a1a1a;
+    --body-bg: #f4f7f6;
+}
+
 body {
     font-family: 'Segoe UI', sans-serif;
     text-align: center;
-    background-color: #f4f7f6;
-    padding: 20px;
+    background-color: var(--body-bg);
+    padding: 10px;
     margin: 0;
 }
 
-h1 { color: #2c3e50; }
+h1 { color: #2c3e50; font-size: 1.5em; }
 
-/* --- Barra de Ranking (Fija) --- */
+/* --- Barra de Ranking (Optimizada) --- */
 .ranking-bar {
-    background: #1a1a1a;
-    color: #00ffcc;
-    padding: 10px;
+    background: var(--dark-bg);
+    color: var(--accent-color);
+    padding: 8px;
     border-radius: 10px;
-    margin: 0 auto 10px auto;
-    border: 2px solid #00ffcc;
+    border: 2px solid var(--accent-color);
     max-width: 800px;
+    margin: 0 auto 10px auto;
 }
+
+.ranking-bar h3 { margin: 0 0 5px 0; font-size: 1em; }
 
 #ranking-container {
     display: flex;
     justify-content: center;
-    gap: 30px;
+    gap: 15px;
     font-weight: bold;
-    font-size: 1em;
+    font-size: 0.9em;
 }
 
-/* --- Rueda --- */
+/* --- Rueda Responsiva --- */
 .rueda {
     position: relative;
-    width: 400px;
-    height: 400px;
+    width: 250px;
+    height: 250px;
+    max-width: 90vw;
+    max-height: 90vw;
     border: 3px solid #34495e;
     border-radius: 50%;
-    margin: 30px auto;
+    margin: 20px auto;
 }
 
 .letra {
-    width: 40px;
-    height: 40px;
-    background-color: #3498db;
+    width: 30px;
+    height: 30px;
+    background-color: var(--primary-color);
     color: white;
     border-radius: 50%;
     position: absolute;
@@ -49,117 +60,56 @@ h1 { color: #2c3e50; }
     align-items: center;
     justify-content: center;
     font-weight: bold;
+    font-size: 0.8em;
     cursor: pointer;
     transition: transform 0.2s, background-color 0.2s;
 }
 
-.letra:hover { transform: scale(1.2); background-color: #2980b9; }
+.letra:hover { transform: scale(1.1); background-color: #2980b9; }
 
-/* --- Juego y Preguntas --- */
-#juego { margin-top: 20px; }
-
-#pregunta { 
-    font-weight: bold; 
-    font-size: 1.4em; 
-    margin: 20px 0; 
+.letra.resaltada {
+    background-color: #e74c3c !important;
+    transform: scale(1.2);
+    border: 2px solid white;
+    z-index: 10;
 }
+
+/* --- Juego --- */
+#pregunta { font-weight: bold; font-size: 1.1em; margin: 15px 0; }
 
 #opciones {
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 12px;
-    margin: 0 auto;
+    gap: 10px;
     max-width: 500px;
+    margin: 0 auto;
 }
 
-/* --- Botones de Opciones --- */
 #opciones button {
     width: 100%;
-    padding: 15px;
-    cursor: pointer;
-    border: 2px solid #3498db;
+    padding: 12px;
+    border: 2px solid var(--primary-color);
     background: white;
-    color: #333;
     border-radius: 8px;
-    font-size: 1em;
-    transition: all 0.3s ease;
+    font-size: 0.9em;
+    cursor: pointer;
 }
 
-#opciones button:hover:not(:disabled) {
-    background-color: #3498db;
-    color: white;
-}
-
-/* Estado de selección (clase aplicada por JS) */
-#opciones button.seleccionada {
-    background-color: #3498db !important;
-    color: white !important;
-    font-weight: bold;
-}
-
-/* --- Botones Generales y Mensajes --- */
+/* --- Botones Generales --- */
 button {
-    padding: 10px 25px;
-    font-size: 1em;
+    padding: 10px 20px;
     background-color: #27ae60;
     color: white;
     border: none;
     border-radius: 5px;
     cursor: pointer;
-    transition: background 0.3s;
 }
 
-button:hover { background-color: #219150; }
-
-#mensaje {
-    margin-top: 20px;
-    font-size: 1.2em;
-    font-weight: bold;
-    min-height: 60px;
-}
-
-.letra.resaltada {
-    background-color: #e74c3c !important; /* Rojo brillante */
-    transform: scale(1.3);               /* Un poco más grande */
-    border: 3px solid white;             /* Borde blanco para mayor contraste */
-    z-index: 10;                         /* Asegura que esté por encima */
-}
-
-/* --- Adaptación mejorada para Celulares --- */
+/* --- Adaptación Celular --- */
 @media (max-width: 600px) {
-    /* Reducimos la rueda significativamente para que quepa todo */
-    .rueda {
-        width: 250px !important;  /* Tamaño fijo más pequeño */
-        height: 250px !important;
-        margin: 10px auto !important; /* Menos margen vertical */
-    }
-
-    /* Ajustamos las letras para que quepan en la rueda pequeña */
-    .letra {
-        width: 30px !important;
-        height: 30px !important;
-        font-size: 0.8em !important;
-    }
-
-    /* Ajustamos los textos para que no se amontonen */
-    h1 { font-size: 1.3em !important; margin: 10px 0 !important; }
-    
-    #pregunta { 
-        font-size: 1em !important; 
-        margin: 10px 0 !important; 
-    }
-
-    /* Ranking: Apilado verticalmente para ganar espacio */
     #ranking-container {
         flex-direction: column;
         gap: 2px;
-        font-size: 0.8em;
-    }
-
-    /* Botones más compactos pero táctiles */
-    #opciones button {
-        padding: 12px !important;
-        font-size: 0.9em !important;
     }
 }
