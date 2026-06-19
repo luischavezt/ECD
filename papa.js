@@ -11,7 +11,13 @@ const bancoDePreguntas = [
 	{ id: 9, pregunta: "¿Que numero de Papa nacido en el continente americano es?", opciones: ["El 1ro", "El 2do", "El 3ro", "El 4to"], correcta: 1 }, 
 	{ id: 10, pregunta: "¿En que ciudades trabajo en Peru?", opciones: ["Piura, Chulucanas, Lima y Cusco", "Cajamarca, Chulucanas, Pucallpa y Chiclayo", "Piura, Chulucanas, Trujillo y Chiclayo", "Piura, Tumbes, Chulucanas y Cajamarca"], correcta: 2 },
 	{ id: 11, pregunta: "¿Como se llama la reunion donde eligen al Papa?", opciones: ["Concilio", "Conclave", "Jubileo", "Junta de cardenales"], correcta: 1 }, 
-	{ id: 12, pregunta: "¿Cual es el termino en latin que se usa para avisar que se eligio a un Papa?", opciones: ["Vivat Papam", "Electus Papam", "Magnum Papam", "Habemus Papam"], correcta: 3 }
+	{ id: 12, pregunta: "¿Cual es el termino en latin que se usa para avisar que se eligio a un Papa?", opciones: ["Vivat Papam", "Electus Papam", "Magnum Papam", "Habemus Papam"], correcta: 3 },
+	{ id: 13, pregunta: "¿Cual es el deporte preferido del Papa Leon XIV?", opciones: ["Tenis", "Futbol", "Basket", "Voley"], correcta: 0 }, 
+	{ id: 14, pregunta: "¿De que equipo de Beisbol es seguidor el Papa Leon XIV?", opciones: ["Red Soxs", "White Soxs", "New York Yankies", "Dodgers"], correcta: 1 },
+	{ id: 15, pregunta: "¿Cuantos años tiene el Papa Leon XIV?", opciones: ["65", "68", "70", "72"], correcta: 2 },
+	{ id: 16, pregunta: "¿El Papa Leon XIV tiene un doctorado en?", opciones: ["Teologia", "Humanidades", "Filosofia", "Derecho Canonico"], correcta: 3 },
+	{ id: 17, pregunta: "¿De que diocesis fue Obispo entre los años 2015 y 2023?", opciones: ["Trujillo", "Lima", "Piura", "Chiclayo"], correcta: 3 },
+	{ id: 18, pregunta: "¿Cual es el ultimo pais que ha visitado el Papa Leon XIV en 2026?", opciones: ["Argelia", "Turquia", "España", "Italia"], correcta: 2 }
 ];
 
 let preguntaActual = 0, aciertos = 0, tiempoInicio = null, cronometroInterval = null, preguntasJuego = [];
