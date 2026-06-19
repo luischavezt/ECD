@@ -2,7 +2,6 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-	<meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Inscripción Deportiva</title>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
@@ -17,7 +16,7 @@
 <body>
 
 <div class="form-container"> 
-<img src="https://luischavezt.github.io/ECD/imagenes/pumalogo.png" alt="Logo0" style="width: 100%; height:auto; display: block; border-radius: 8px">
+	<img src="D:/pumalogo.png" alt="Logo0" style="width: 100%; height:auto; display: block; border-radius: 8px">
     <div id="paso1">
 		<h2>Registro Deportivo</h2>
 		<h1>Casa Naranja</h1>
@@ -78,12 +77,25 @@
         document.getElementById('paso2').classList.remove('hidden');
     }
 
+	function enviarAlertaWhatsApp(disciplina, grado) {
+    const telefono = "+51986877480"; // Ej: +51999888777 (incluye el +)
+    const apiKey = "1688149"; 
+    const mensaje = `¡Alerta! La disciplina de ${disciplina} en ${grado} ha llegado a su cupo máximo de 5 inscritos.`;
+    
+    // URL que envía el mensaje
+    const url = `https://api.callmebot.com/whatsapp.php?phone=${telefono}&text=${encodeURIComponent(mensaje)}&apikey=${apiKey}`;
+    
+    fetch(url)
+        .then(() => console.log("Notificación enviada a tu WhatsApp"))
+        .catch(err => console.error("Error al enviar:", err));
+	}
+
     function volver() {
         document.getElementById('paso1').classList.remove('hidden');
         document.getElementById('paso2').classList.add('hidden');
     }
 
-    // Lógica de envío a Supabase
+    // Lógica de envío a Supabase (BLOQUE ACTUALIZADO)
     document.getElementById('btnEnviar').addEventListener('click', async () => {
         const nombre = document.getElementById('nombre').value;
         const grado = document.getElementById('grado').value;
@@ -98,6 +110,7 @@
 
         msg.innerText = "Enviando...";
 
+        // Llamada a la nueva función RPC
         const { data, error } = await sb.rpc('registrar_participante', { 
             nombre: nombre,
             grado: grado,
@@ -107,13 +120,24 @@
         
         if (error) {
             msg.innerText = "❌ Error en la conexión: " + error.message;
-        } else if (data === 'Exito') {
-            msg.innerText = "✅ ¡Inscripción exitosa!";
-            document.getElementById('nombre').value = ''; // Limpiar campo
-        } else if (data === 'Lleno') {
-            msg.innerText = "❌ Cupo agotado para esta disciplina.";
         } else {
-            msg.innerText = "⚠️ " + data;
+            // data ahora es un array con el resultado [{estado: '...', conteo: ...}]
+            const resultado = data[0]; 
+            
+            if (resultado.estado === 'Exito') {
+                msg.innerText = "✅ Inscripción exitosa. Estudiante #" + resultado.conteo;
+                document.getElementById('nombre').value = ''; // Limpiar campo
+                
+                // Si llegamos al cupo 5, disparamos la alerta
+                if (resultado.conteo === 5) {
+                    enviarAlertaWhatsApp(disciplina, grado);
+                }
+				
+            } else if (resultado.estado === 'Lleno') {
+                msg.innerText = "❌ Cupo agotado para esta disciplina.";
+            } else {
+                msg.innerText = "⚠️ " + resultado.estado;
+            }
         }
     });
 </script>
