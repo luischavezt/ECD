@@ -7,7 +7,7 @@ const bancoDePreguntas = [
 	{ id: 5, pregunta: "¿El Papa Leon XIV, en que año fue ordenado como Sacerdote?", opciones: ["1981", "1982", "1983", "1984"], correcta: 1 }, 
 	{ id: 6, pregunta: "¿El Papa Leon XIV, en que año obtuvo la nacionalidad peruana?", opciones: ["2015", "2016", "2017", "2018"], correcta: 0 }, 
 	{ id: 7, pregunta: "¿El Papa Leon XIV, cuando fue ordenado como Cardenal?", opciones: ["Diciembre 2022", "Enero 2023", "Setiembre 2023", "Enero 2024"], correcta: 2 },
-	{ id: 8, pregunta: "¿En que fecha fue elegio como Papa?", opciones: ["8 mayo 2024", "18 junio 2025", "28 mayo 2025", "18 julio 2025"], correcta: 2 }, 
+	{ id: 8, pregunta: "¿En que fecha fue elegio como Papa?", opciones: ["8 mayo 2024", "18 junio 2025", "8 mayo 2025", "18 julio 2025"], correcta: 2 }, 
 	{ id: 9, pregunta: "¿Que numero de Papa nacido en el continente americano es?", opciones: ["El 1ro", "El 2do", "El 3ro", "El 4to"], correcta: 1 }, 
 	{ id: 10, pregunta: "¿En que ciudades trabajo en Peru?", opciones: ["Piura, Chulucanas, Lima y Cusco", "Cajamarca, Chulucanas, Pucallpa y Chiclayo", "Piura, Chulucanas, Trujillo y Chiclayo", "Piura, Tumbes, Chulucanas y Cajamarca"], correcta: 2 }
 ];
