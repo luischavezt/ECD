@@ -94,22 +94,26 @@ function iniciarTrivia() {
 function cargarPregunta(index) {
     preguntaActual = index;
     const data = preguntasJuego[index];
-    document.getElementById('pregunta').innerText = `Pregunta ${index + 1}: ${data.pregunta}`;
     
-    // Resaltar círculo
+    // 1. Actualizar texto
+    const preguntaEl = document.getElementById('pregunta');
+    preguntaEl.innerText = `Pregunta ${index + 1}: ${data.pregunta}`;
+    
+    // 2. Resaltar letra (Lógica que ya tenías)
     document.querySelectorAll('.letra').forEach((el, i) => {
         el.classList.toggle('resaltada', i === index);
     });
 
+    // 3. Renderizar botones
     const divOpciones = document.getElementById('opciones');
-    divOpciones.innerHTML = ''; // SOLO borra las opciones antiguas
-    document.getElementById('mensaje').innerHTML = '';
+    divOpciones.innerHTML = ''; // Limpia lo anterior
+    divOpciones.style.display = 'flex'; // Asegura que sea visible
     
     data.opciones.forEach((opcion, i) => {
         const btn = document.createElement('button');
         btn.innerText = opcion;
         btn.onclick = () => verificarRespuesta(i, data.correcta, btn);
-        divOpciones.appendChild(btn);
+        divOpciones.appendChild(btn); // Inyecta el botón
     });
 }
 
