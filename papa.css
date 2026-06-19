@@ -133,21 +133,21 @@ button:hover { background-color: #219150; }
     }
 
     .rueda {
-        width: 300px;  /* Reducimos el tamaño de la rueda */
-        height: 300px;
+        width: 400px;  /* Reducimos el tamaño de la rueda */
+        height: 400px;
         margin: 20px auto;
     }
 
     .letra {
-        width: 35px;   /* Letras un poco más pequeñas */
-        height: 35px;
+        width: 45px;   /* Letras un poco más pequeñas */
+        height: 45px;
     }
 
     h1 { font-size: 1.5em; }
 
     #ranking-container {
         gap: 10px;      /* Menos espacio entre puestos en el ranking */
-        font-size: 0.9em;
+        font-size: 1em;
     }
 
     #opciones {
