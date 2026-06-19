@@ -126,50 +126,40 @@ button:hover { background-color: #219150; }
     z-index: 10;                         /* Asegura que esté por encima */
 }
 
-/* --- Adaptación para Celulares --- */
+/* --- Adaptación mejorada para Celulares --- */
 @media (max-width: 600px) {
-    body {
-        padding: 5px; /* Menos padding para ganar espacio */
-    }
-
-    .container {
-        padding: 5px;
-    }
-
-    /* Reducimos la rueda un poco, pero mantenemos buen tamaño */
+    /* Reducimos la rueda significativamente para que quepa todo */
     .rueda {
-        width: 85vw; /* Ocupa el 85% del ancho de la pantalla */
-        height: 85vw;
-        margin: 15px auto;
-        border-width: 2px;
+        width: 250px !important;  /* Tamaño fijo más pequeño */
+        height: 250px !important;
+        margin: 10px auto !important; /* Menos margen vertical */
     }
 
-    /* Ajustamos el tamaño de las letras basado en el ancho de pantalla */
+    /* Ajustamos las letras para que quepan en la rueda pequeña */
     .letra {
-        width: 8vw; 
-        height: 8vw;
-        font-size: 3vw; /* La letra crece proporcionalmente */
+        width: 30px !important;
+        height: 30px !important;
+        font-size: 0.8em !important;
     }
 
-    h1 { font-size: 1.2em; margin-bottom: 10px; }
-
-    #pregunta { font-size: 1.1em; padding: 0 10px; }
-
-    /* Ranking más compacto pero legible */
-    .ranking-bar {
-        padding: 8px;
-        font-size: 0.85em;
-    }
+    /* Ajustamos los textos para que no se amontonen */
+    h1 { font-size: 1.3em !important; margin: 10px 0 !important; }
     
-    #ranking-container {
-        gap: 5px;
-        flex-direction: column; /* Apila el ranking en vertical si hay poco espacio */
+    #pregunta { 
+        font-size: 1em !important; 
+        margin: 10px 0 !important; 
     }
 
-    /* Botones más grandes para facilitar el toque con el dedo */
+    /* Ranking: Apilado verticalmente para ganar espacio */
+    #ranking-container {
+        flex-direction: column;
+        gap: 2px;
+        font-size: 0.8em;
+    }
+
+    /* Botones más compactos pero táctiles */
     #opciones button {
-        padding: 18px; /* Más área táctil */
-        font-size: 1em;
-        margin: 5px 0;
+        padding: 12px !important;
+        font-size: 0.9em !important;
     }
 }
