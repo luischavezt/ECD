@@ -9,7 +9,7 @@ const bancoDePreguntas = [
 	{ id: 7, pregunta: "¿El Papa Leon XIV, cuando fue ordenado como Cardenal?", opciones: ["Diciembre 2022", "Enero 2023", "Setiembre 2023", "Enero 2024"], correcta: 2 },
 	{ id: 8, pregunta: "¿En que fecha fue elegio como Papa?", opciones: ["8 mayo 2024", "18 junio 2025", "8 mayo 2025", "18 julio 2025"], correcta: 2 }, 
 	{ id: 9, pregunta: "¿Que numero de Papa nacido en el continente americano es?", opciones: ["El 1ro", "El 2do", "El 3ro", "El 4to"], correcta: 1 }, 
-	{ id: 10, pregunta: "¿En que ciudades trabajo en Peru?", opciones: ["Piura, Chulucanas, Lima y Cusco", "Cajamarca, Chulucanas, Pucallpa y Chiclayo", "Piura, Chulucanas, Trujillo y Chiclayo", "Piura, Tumbes, Chulucanas y Cajamarca"], correcta: 2 },
+	{ id: 10, pregunta: "¿El Papa, en que ciudades trabajo en Peru?", opciones: ["Piura, Chulucanas, Lima y Cusco", "Cajamarca, Chulucanas, Pucallpa y Chiclayo", "Piura, Chulucanas, Trujillo y Chiclayo", "Piura, Tumbes, Chulucanas y Cajamarca"], correcta: 2 },
 	{ id: 11, pregunta: "¿Como se llama la reunion donde eligen al Papa?", opciones: ["Concilio", "Conclave", "Jubileo", "Junta de cardenales"], correcta: 1 }, 
 	{ id: 12, pregunta: "¿Cual es el termino en latin que se usa para avisar que se eligio a un Papa?", opciones: ["Vivat Papam", "Electus Papam", "Magnum Papam", "Habemus Papam"], correcta: 3 },
 	{ id: 13, pregunta: "¿Cual es el deporte preferido del Papa Leon XIV?", opciones: ["Tenis", "Futbol", "Basket", "Voley"], correcta: 0 }, 
