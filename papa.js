@@ -17,7 +17,8 @@ const bancoDePreguntas = [
 	{ id: 15, pregunta: "¿Cuantos años tiene el Papa Leon XIV?", opciones: ["65", "68", "70", "72"], correcta: 2 },
 	{ id: 16, pregunta: "¿El Papa Leon XIV tiene un doctorado en?", opciones: ["Teologia", "Humanidades", "Filosofia", "Derecho Canonico"], correcta: 3 },
 	{ id: 17, pregunta: "¿De que diocesis fue Obispo entre los años 2015 y 2023?", opciones: ["Trujillo", "Lima", "Piura", "Chiclayo"], correcta: 3 },
-	{ id: 18, pregunta: "¿Cual es el ultimo pais que ha visitado el Papa Leon XIV en 2026?", opciones: ["Argelia", "Turquia", "España", "Italia"], correcta: 2 }
+	{ id: 18, pregunta: "¿Cual es el ultimo pais que ha visitado el Papa Leon XIV en 2026?", opciones: ["Argelia", "Turquia", "España", "Italia"], correcta: 2 },
+	{ id: 19, pregunta: "¿Por que eligio el nombre de Leon XIV?", opciones: ["Porque le gusta el nombre Leon", "Por el interes en la inteligencia artificial", "Por seguir las enseñanzas de su antecesor", "Por el interes en los trabajadores y la justicia social"], correcta: 3 }
 ];
 
 let preguntaActual = 0, aciertos = 0, tiempoInicio = null, cronometroInterval = null, preguntasJuego = [];
