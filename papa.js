@@ -43,14 +43,27 @@ function crearRueda() {
     const contenedor = document.getElementById('rueda');
     if (!contenedor) return;
     contenedor.innerHTML = '';
+
     const numLetras = 20;
-    const radio = 180;
+    // Usamos el ancho actual del contenedor
+    const diametro = contenedor.offsetWidth;
+    const centro = diametro / 2;
+    // El radio es el centro menos el margen para que las bolitas quepan
+    const radio = centro - 25; 
+
     for (let i = 0; i < numLetras; i++) {
         const div = document.createElement('div');
         div.className = 'letra';
+        
         const angulo = (i / numLetras) * 2 * Math.PI - Math.PI / 2;
-        div.style.left = (200 + radio * Math.cos(angulo) - 20) + 'px';
-        div.style.top = (200 + radio * Math.sin(angulo) - 20) + 'px';
+        
+        // Ajustamos la posición restando la mitad del tamaño de la bolita (15px)
+        const posX = centro + radio * Math.cos(angulo) - 15;
+        const posY = centro + radio * Math.sin(angulo) - 15;
+        
+        div.style.left = posX + 'px';
+        div.style.top = posY + 'px';
+        
         div.innerText = String.fromCharCode(65 + i);
         contenedor.appendChild(div);
     }
