@@ -2,13 +2,45 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Inscripción Deportiva</title>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
-        body { font-family: sans-serif; display: flex; justify-content: center; padding: 50px; background-color: #f4f4f9; }
-        .form-container { background: #F2972E; padding: 2rem; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); width: 100%; max-width: 400px; }
-        input, select, button { width: 100%; padding: 10px; margin: 10px 0; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box; }
-        button { background-color: #007bff; color: white; border: none; cursor: pointer; }
+        /* Ajustes de legibilidad */
+        body { 
+            font-family: sans-serif; 
+            display: flex; 
+            justify-content: center; 
+            padding: 20px; /* Reducido de 50px para aprovechar espacio */
+            background-color: #f4f4f9; 
+            font-size: 16px; /* Asegura un tamaño base legible */
+        }
+        .form-container { 
+            background: #F2972E; 
+            padding: 2rem; 
+            border-radius: 12px; 
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1); 
+            width: 100%; 
+            max-width: 400px; 
+        }
+        /* Agrandamos elementos de formulario */
+        input, select, button { 
+            width: 100%; 
+            padding: 15px; /* Más padding para tocar mejor con el dedo */
+            margin: 10px 0; 
+            border: 1px solid #ccc; 
+            border-radius: 8px; 
+            box-sizing: border-box; 
+            font-size: 16px; /* Importante para que iOS no haga zoom al enfocar */
+        }
+        h1, h2 { text-align: center; color: white; }
+        button { 
+            background-color: #007bff; 
+            color: white; 
+            border: none; 
+            cursor: pointer; 
+            font-weight: bold;
+        }
         .hidden { display: none; }
         .btn-secondary { background-color: #6c757d; }
     </style>
@@ -16,25 +48,24 @@
 <body>
 
 <div class="form-container"> 
-	<img src="https://luischavezt.github.io/ECD/imagenes/pumalogo.png" alt="Logo0" style="width: 100%; height:auto; display: block; border-radius: 8px">
+    <img src="https://luischavezt.github.io/ECD/imagenes/pumalogo.png" alt="Logo" style="width: 100%; height:auto; display: block; border-radius: 8px">
     <div id="paso1">
-		<h2>Registro Deportivo</h2>
-		<h1>Casa Naranja</h1>
-		
+        <h2>Registro Deportivo</h2>
+        <h1>Casa Naranja</h1>
+        
         <p><strong>Selecciona el Año/Grado</strong></p>
         <select id="grado">
             <option value="1ro">1ro Primaria</option>
             <option value="2do">2do Primaria</option>
             <option value="3ro">3ro Primaria</option>
             <option value="4to">4to Primaria</option>
-			<option value="5to">5to Primaria</option>
-			<option value="6to">6to Primaria</option>
+            <option value="5to">5to Primaria</option>
+            <option value="6to">6to Primaria</option>
         </select>
         <button onclick="irAlRegistro()">Continuar</button>
     </div>
 
     <div id="paso2" class="hidden">
-        
         <h2 id="tituloGrado"></h2>
         
         <p>Nombres y apellidos</p>
@@ -54,11 +85,11 @@
             <option value="voley">Voley</option>
             <option value="balonmano">Balon Mano</option>
         </select>
-        <p style="font-size: 13px;"><i>Nota: El cupo maximo para cada Grado es de 5 inscritos por disciplina</i></p>
-		
+        <p style="font-size: 14px;"><i>Nota: El cupo máximo para cada Grado es de 5 inscritos por disciplina</i></p>
+        
         <button id="btnEnviar">Enviar Inscripción</button>
         <button class="btn-secondary" onclick="volver()">Volver</button>
-        <p id="mensaje"></p>
+        <p id="mensaje" style="text-align:center; font-weight:bold;"></p>
     </div>
 </div>
 
