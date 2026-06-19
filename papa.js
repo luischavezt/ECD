@@ -48,20 +48,37 @@ function actualizarRankingBar() {
 function crearRueda() {
     const contenedor = document.getElementById('rueda');
     if (!contenedor) return;
+    
+    // Limpiamos contenido previo
     contenedor.innerHTML = '';
+    
+    // Obtenemos las dimensiones reales del contenedor
+    const rect = contenedor.getBoundingClientRect();
+    const centro = rect.width / 2;
+    
+    // El radio debe ser menor al centro para que las letras no se salgan
+    // Restamos el radio de la letra (o la mitad de su tamaño) para centrarla
+    const radio = centro - 30; 
     const numLetras = 20;
-    const radio = 180;
+
     for (let i = 0; i < numLetras; i++) {
         const div = document.createElement('div');
         div.className = 'letra';
+        
+        // Ángulo para distribuir las letras en círculo
         const angulo = (i / numLetras) * 2 * Math.PI - Math.PI / 2;
-        div.style.left = (200 + radio * Math.cos(angulo) - 20) + 'px';
-        div.style.top = (200 + radio * Math.sin(angulo) - 20) + 'px';
+        
+        // Posicionamos basándonos en el centro calculado
+        const x = centro + radio * Math.cos(angulo);
+        const y = centro + radio * Math.sin(angulo);
+        
+        div.style.left = x + 'px';
+        div.style.top = y + 'px';
         div.innerText = String.fromCharCode(65 + i);
+        
         contenedor.appendChild(div);
     }
 }
-
 function iniciarTrivia() {
     preguntasJuego = [...bancoDePreguntas].sort(() => Math.random() - 0.5).slice(0, 20);
     aciertos = 0;
