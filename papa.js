@@ -125,6 +125,16 @@ function verificarRespuesta(seleccionada, correcta, btnElement) {
     const esCorrecto = (seleccionada === correcta);
     if (esCorrecto) aciertos++;
     
+    // --- ESTA ES LA PARTE QUE DEBES AÑADIR/CAMBIAR ---
+    // Seleccionamos la bolita actual (la que está resaltada)
+    const bolitaActual = document.querySelector('.letra.resaltada');
+    if (bolitaActual) {
+        bolitaActual.classList.remove('resaltada'); // Quitamos el resaltado de "en curso"
+        // Añadimos una clase permanente según el resultado
+        bolitaActual.classList.add(esCorrecto ? 'correcta' : 'incorrecta');
+    }
+    // --------------------------------------------------
+
     const divMensaje = document.getElementById('mensaje');
     divMensaje.innerHTML = `<p style="color: ${esCorrecto ? 'green' : 'red'}; font-weight:bold">${esCorrecto ? '¡CORRECTO!' : 'INCORRECTO'}</p>`;
     if (!esCorrecto) divMensaje.innerHTML += `<p>La respuesta era: <strong>${preguntasJuego[preguntaActual].opciones[correcta]}</strong></p>`;
