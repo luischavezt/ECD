@@ -138,6 +138,24 @@ button:hover { background-color: #219150; }
     z-index: 10;                         /* Asegura que esté por encima */
 }
 
+.mosaico-grid {
+    display: grid;
+    /* Usamos 1fr para que las fotos ocupen el máximo espacio disponible */
+    grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); 
+    gap: 10px;
+    padding: 0 10px;
+    max-width: 900px;
+    margin: 20px auto;
+}
+
+.foto-mosaico { 
+    width: 100% !important; 
+    height: 150px !important; /* <--- Cambia esto a 200px si quieres que se vea más grande */
+    object-fit: cover; 
+    border-radius: 8px; /* Un poco más de redondez se ve mejor */
+    display: block;
+}
+
 @media (max-width: 600px) {
     /* 1. Ajustamos el contenedor de la rueda */
     .rueda {
