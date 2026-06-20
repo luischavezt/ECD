@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Incluir Supabase desde CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <link rel="stylesheet" href="papa.css">
+    <title>Viaje de Su Santidad León XIV al Perú</title>
+</head>
+<body>
+
+    <!-- 1. Título Principal -->
+    <header>
+		<h1>Viaje de Su Santidad León XIV al Perú</h1>
+		<section id="contador-regresivo">
+			<div class="counter-container">
+				<p>Faltan para la visita de Su Santidad:</p>
+				<div id="countdown" class="countdown-display">
+					<span id="dias">0</span> días
+				</div>
+			</div>
+		</section>
+		<img src="https://thfvnext.bing.com/th?id=OIF.7gCRpg%2ftvIk%2bN4pfftiu%2fg&r=0&cb=thfvnextfalcon2&rs=1&pid=ImgDetMain&o=7&rm=3" alt="Papa León XIV" class="foto-papa">
+	</header>
+
+    <!-- 2. Sección: Envío de Mensaje de Bienvenida -->
+    <h2>Envía tu mensaje de bienvenida</h2>
+	<p>Los mensajes que se envien se entregaran a su Santidad, en un libro como recuerdo de su visita a nuestra ciudad</p>
+	<section id="seccion-mensaje">
+        <form id="formulario-mensaje">
+			<input type="text" id="usuario-nombre" placeholder="Nombre y apellido" required>
+			<input type="text" id="distrito" placeholder="Tu distrito" required>
+			
+			<select id="grupo-etareo" required>
+				<option value="" disabled selected>Selecciona tu edad</option>
+				<option value="12-18">12 a 18 años</option>
+				<option value="19-30">19 a 30 años</option>
+				<option value="31-50">31 a 50 años</option>
+				<option value="50+">Más de 50 años</option>
+			</select>
+			
+			<textarea id="usuario-mensaje" placeholder="Tu mensaje de bienvenida..." maxlength="200" required></textarea>
+			
+			<div class="checkbox-container">
+				<input type="checkbox" id="autorizacion" name="autorizacion" required>
+				<label for="autorizacion">Autorizo que mi mensaje se haga público en el evento de bienvenida del Papa.</label>
+			</div>
+			
+			<input type="file" id="usuario-foto" accept="image/*" required>
+			
+			<div class="checkbox-container">
+				<input type="checkbox" id="autorizacionfoto" name="autorizacionfoto" required>
+				<label for="autorizacionfoto">Autorizo que mi fotografía se haga pública en el mosaico de imágenes.</label>
+			</div> 
+			<small><i>NOTA: La fotografia que se adjunte debe estar relacionada a una actividad religiosa en familia, con el projimo, en su parroquia, o dibujos realizados aluscivos a la visita del Papa Leon XIV</i></small>
+			<button type="submit">Enviar Mensaje y Foto</button>
+		</form>
+    </section>
+	
+	<hr class="divisor"> 
+    <!-- 3. Sección: Trivia (Tu código original adaptado) -->
+    <h2>Averiguemos cuanto sabes de la vida del Papa León XIV</h2><section id="seccion-trivia">
+        <div class="ranking-bar">
+            <h3>🏆 MEJORES TIEMPOS 🏆</h3>
+            <div id="ranking-container">
+                <span id="rank-1">1º: ---</span>
+                <span id="rank-2">2º: ---</span>
+                <span id="rank-3">3º: ---</span>
+            </div>
+        </div>
+
+        <div class="container">
+            <h2>Juega esta Trivia</h2>
+            <div id="cronometro">Tiempo: <span id="timer">00:00</span></div>
+            <div id="rueda" class="rueda"></div>
+            <div id="juego">
+                <h2 id="pregunta">Haz clic en empezar</h2>
+                <div id="opciones"></div>
+                <div id="mensaje"></div>
+                <button onclick="iniciarTrivia()">¡EMPEZAR!</button>
+            </div>
+        </div>
+    </section>
+	<hr class="divisor">
+	
+	<section id="seccion-voluntarios" class="seccion-contenedor">
+		<h1>Necesitamos tu Apoyo</h1>
+		<h2>¿Quieres ser un voluntario?</h2>
+		<p>Únete al equipo de bienvenida para el Papa León XIV.</p>
+		
+		<form id="formulario-voluntario" class="voluntario-grid">
+			<input type="text" placeholder="Nombre completo" required>
+			<input type="number" placeholder="DNI" min="0" max="9" required>
+			<input type="email" placeholder="Correo electrónico" required>
+			<input type="tel" placeholder="Número de celular" required>
+			<input type="text" placeholder="Lugar de procedencia" required>
+			<input type="number" placeholder="Edad" min="1" max="80" required>
+			<button type="submit" class="btn-secundario">Inscribirse</button>
+			<p id="mensaje-exito" style="display:none; color: #27ae60; font-weight: bold; grid-column: span 2; text-align: center;">
+				¡Gracias por inscribirte! Nos pondremos en contacto contigo pronto.
+			</p>
+		</form>
+	</section>
+		<hr class="divisor">
+		
+		<section id="seccion-estadisticas">
+		<h2>Estadísticas Generales</h2>
+		
+		<div class="stats-grid">
+			<div class="stat-card">
+				<h3>Mensajes recibidos</h3>
+				<p id="total-mensajes">0</p>
+			</div>
+			<div class="stat-card">
+				<h3>Distrito mas participativo</h3>
+				<p id="distrito-top" style="font-size: 1.1em; padding-top: 10px;">---</p>
+				<small id="distrito-count" style="color: #ffffff; display: block;">0 mensajes</small>
+			</div>
+			<div class="stat-card">
+				<h3>Fotos compartidas</h3>
+				<p id="total-fotos">0</p>
+			</div>
+			<div class="stat-card">
+				<h3>Edad mas participativa</h3>
+				<p id="edad-top" style="font-size: 1.1em; padding-top: 10px;">---</p>
+				<small id="edad-count" style="color: #ffffff; display: block;">0 mensajes</small>
+			</div>
+			<div class="stat-card">
+				<h3>Voluntarios inscritos</h3>
+				<p id="total-voluntarios">0</p>
+			</div>
+		</div>
+	</section>
+	<hr class="divisor">
+    <!-- 4. Sección: Mosaico de fotos -->
+    <section id="seccion-mosaico">
+        <h2>Mosaico de fotografias enviadas</h2>
+        <div id="mosaico-contenedor" class="mosaico-grid">
+            <!-- Aquí Supabase inyectará las fotos dinámicamente -->
+			<img src="https://live.staticflickr.com/6109/6273678657_95e84ae7db_b.jpg" alt="Mosaico" class="foto-mosaico">
+			
+        </div>
+    </section>
+
+    <script src="papa.js"></script>
+</body>
+</html>
