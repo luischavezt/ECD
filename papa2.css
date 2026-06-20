@@ -179,3 +179,12 @@ input, textarea, select {
     text-align: center; font-weight: bold; margin-bottom: 20px;
 }
 .countdown-display { font-size: 1.5em; color: #00ffcc; margin-top: 5px; }
+
+/* --- Ajuste para la foto principal --- */
+.foto-papa {
+    max-width: 300px; /* Ajusta este valor (ej. 200px o 400px) según tu gusto */
+    width: 100%;      /* Hace que nunca sea más ancha que la pantalla del celular */
+    height: auto;     /* Mantiene la proporción de la foto intacta */
+    margin: 15px auto;
+    border-radius: 10px; /* Opcional: le da esquinas redondeadas elegantes */
+}
