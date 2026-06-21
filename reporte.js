@@ -1,3 +1,4 @@
+// Asegúrate de que la URL termine en /0
 const featureLayerUrl = "https://services8.arcgis.com/2qDHoDLqu6VOlf1y/arcgis/rest/services/service_a460c8ca552247aa85da14fa64d84882/FeatureServer/0";
 
 async function cargarDatos() {
@@ -8,9 +9,10 @@ async function cargarDatos() {
         window.datosGlobales = data.features;
 
         let html = `<table><tr><th>Foto</th><th>Nombre</th><th>Disciplina</th></tr>`;
+        
         for (const f of data.features) {
             const attr = f.attributes;
-            // Verificamos si tiene adjuntos para mostrar el icono correcto
+            // Consultamos la API para saber si hay adjuntos
             const resp = await fetch(`${featureLayerUrl}/${attr.OBJECTID}/attachments?f=json`);
             const adj = await resp.json();
             const tieneFoto = (adj.attachmentInfos && adj.attachmentInfos.length > 0);
@@ -25,6 +27,7 @@ async function cargarDatos() {
     } catch (e) { console.error(e); }
 }
 
+// Lógica del botón para generar el PDF con fotos
 document.getElementById('btn-generar').addEventListener('click', async () => {
     const { jsPDF } = window.jspdf;
     const doc = new jsPDF();
@@ -34,7 +37,7 @@ document.getElementById('btn-generar').addEventListener('click', async () => {
         const attr = f.attributes;
         const objectId = attr.OBJECTID;
         
-        // 1. Intentar descargar la imagen real
+        // 1. Obtener la imagen real del servidor
         try {
             const resp = await fetch(`${featureLayerUrl}/${objectId}/attachments?f=json`);
             const data = await resp.json();
@@ -44,22 +47,21 @@ document.getElementById('btn-generar').addEventListener('click', async () => {
                 const response = await fetch(imgUrl);
                 const blob = await response.blob();
                 
-                // 2. Convertir a Base64 (vital para que el PDF la entienda)
+                // 2. Convertir imagen a Base64 para el PDF
                 const base64Img = await new Promise((resolve) => {
                     const reader = new FileReader();
                     reader.onloadend = () => resolve(reader.result);
                     reader.readAsDataURL(blob);
                 });
-                
                 doc.addImage(base64Img, 'JPEG', 20, y, 30, 30);
             }
-        } catch (e) { console.error("Error al obtener la foto:", e); }
+        } catch (e) { console.error("Error cargando foto:", e); }
 
-        doc.text(`Nombre: ${attr.nombre || 'N/A'}`, 60, y + 10);
-        doc.text(`Disciplina: ${attr.disciplina || 'N/A'}`, 60, y + 20);
+        doc.text(`Nombre: ${attr.nombre}`, 60, y + 10);
+        doc.text(`Disciplina: ${attr.disciplina}`, 60, y + 20);
         y += 40;
     }
-    doc.save("Reporte.pdf");
+    doc.save("Reporte_Completo.pdf");
 });
 
 cargarDatos();
