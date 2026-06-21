@@ -51,33 +51,35 @@ document.getElementById('btn-generar').addEventListener('click', async () => {
         const nombre = attr.nombre || 'Sin nombre';
         const disciplina = attr.disciplina || 'N/A';
 
-        // 1. Intentar obtener el adjunto desde la capa
-        const photoUrl = `${featureLayerUrl}/${objectId}/attachments?f=json`;
+        // 1. Consultar adjuntos para este ID específico
+        const attachmentsUrl = `${featureLayerUrl}/${objectId}/attachments?f=json`;
         
         try {
-            const resp = await fetch(photoUrl);
+            const resp = await fetch(attachmentsUrl);
             const data = await resp.json();
 
-            // 2. Si existen adjuntos, convertirlos a Base64
+            // 2. Si hay adjuntos, descargamos el primero
             if (data.attachmentInfos && data.attachmentInfos.length > 0) {
-                const imgUrl = `${featureLayerUrl}/${objectId}/attachments/${data.attachmentInfos[0].id}`;
+                const attachmentId = data.attachmentInfos[0].id;
+                const imgUrl = `${featureLayerUrl}/${objectId}/attachments/${attachmentId}`;
                 
+                // Convertir a Base64 para jsPDF
                 const response = await fetch(imgUrl);
                 const blob = await response.blob();
-                
                 const base64Img = await new Promise((resolve) => {
                     const reader = new FileReader();
                     reader.onloadend = () => resolve(reader.result);
                     reader.readAsDataURL(blob);
                 });
                 
+                // Dibujar la imagen
                 doc.addImage(base64Img, 'JPEG', 20, y, 30, 30);
             }
         } catch (err) {
-            console.error("Error al cargar la foto:", err);
+            console.error("Error procesando adjunto:", err);
         }
 
-        // 3. Escribir texto al lado
+        // 3. Dibujar textos
         doc.setFontSize(12);
         doc.text(`Nombre: ${nombre}`, 60, y + 10);
         doc.text(`Disciplina: ${disciplina}`, 60, y + 20);
@@ -90,5 +92,4 @@ document.getElementById('btn-generar').addEventListener('click', async () => {
     }
     doc.save("Reporte_Completo.pdf");
 });
-
 cargarDatos();
