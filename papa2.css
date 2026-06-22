@@ -82,6 +82,7 @@ button {
 button:hover { background-color: #219150; }
 
 /* --- Secciones de Formulario --- */
+/* Cambia esto en tu CSS */
 #seccion-mensaje, #seccion-alojamiento, #seccion-voluntarios {
     background: #ffffff; 
     padding: 30px; 
@@ -184,29 +185,8 @@ input, textarea, select {
 }
 .countdown-display { font-size: 1.5em; color: #00ffcc; margin-top: 5px; }
 
-/* --- Ajuste para la foto principal --- */
-.foto-papa {
-    max-width: 300px; /* Ajusta este valor (ej. 200px o 400px) según tu gusto */
-    width: 100%;      /* Hace que nunca sea más ancha que la pantalla del celular */
-    height: auto;     /* Mantiene la proporción de la foto intacta */
-    margin: 15px auto;
-    border-radius: 10px; /* Opcional: le da esquinas redondeadas elegantes */
-}
-
-.mosaico-grid {
-    display: grid;
-    /* Usamos 1fr para que las fotos ocupen el máximo espacio disponible */
-    grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); 
-    gap: 10px;
-    padding: 0 10px;
-    max-width: 900px;
-    margin: 20px auto;
-}
-
-.foto-mosaico { 
-    width: 100% !important; 
-    height: 150px !important; /* <--- Cambia esto a 200px si quieres que se vea más grande */
-    object-fit: cover; 
-    border-radius: 8px; /* Un poco más de redondez se ve mejor */
-    display: block;
+.titulo-splash {
+    color: #D91023;
+    text-align: center;
+    font-weight: bold;
 }
