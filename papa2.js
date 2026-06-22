@@ -220,7 +220,7 @@ function actualizarCuentaRegresiva() {
     if (diferenciaDias > 0) {
         // Faltan días
         countdown.style.color = '';
-        countdown.innerText = `Faltan ${diferenciaDias} días`;
+        countdown.innerText = `${diferenciaDias} días`;
     }
     else if (diferenciaDias === 0) {
         // Hoy llega
