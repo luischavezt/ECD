@@ -195,7 +195,7 @@ function alternarSeccion() {
 }
 
 function actualizarCuentaRegresiva() {
-    const fechaVisita = new Date('2026-11-10T00:00:00');
+    const fechaVisita = new Date('2026-11-04T00:00:00');
     const hoy = new Date();
 
     // Eliminar horas para comparar solo fechas
