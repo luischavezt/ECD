@@ -192,7 +192,7 @@ input, textarea, select {
 }
 
 .foto-papa {
-    width: 100%;        /* La imagen intentará ocupar el 100% de su contenedor */
+    width: 80%;        /* La imagen intentará ocupar el 100% de su contenedor */
     max-width: 300px;   /* Aquí controlas el tamaño máximo. Ajusta este número (ej. 200px, 250px) hasta que se vea como quieres */
     height: auto;       /* Esto es vital para que no se deforme */
     display: block;     /* Ayuda a centrarla mejor */
