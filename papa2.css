@@ -26,7 +26,7 @@ h1 { color: #2c3e50; }
     align-items: center;    /* Centramos horizontalmente */
     gap: 8px;              /* Espacio entre cada línea */
     font-weight: bold;
-    font-size: 0.9em;      /* Reducimos un poco el tamaño para móviles */
+    font-size: 0.7em;      /* Reducimos un poco el tamaño para móviles */
 }
 
 /* --- Rueda --- */
