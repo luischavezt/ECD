@@ -181,21 +181,62 @@ function finalizarJuego() {
     document.getElementById('mensaje').innerHTML = `<button onclick="location.reload()">Jugar de nuevo</button>`;
 }
 
+function alternarSeccion() {
+    const seccion = document.getElementById('seccion-alojamiento');
+    // Obtenemos el radio button que el usuario acaba de seleccionar
+    const seleccion = document.querySelector('input[name="alojamiento"]:checked');
+
+    // Si seleccionó 'si', mostramos el formulario. En cualquier otro caso, lo ocultamos.
+    if (seleccion && seleccion.value === 'si') {
+        seccion.style.display = 'block';
+    } else {
+        seccion.style.display = 'none';
+    }
+}
+
 function actualizarCuentaRegresiva() {
     const fechaVisita = new Date('2026-11-10T00:00:00');
     const hoy = new Date();
-    
-    // Diferencia en milisegundos
-    const diferencia = fechaVisita - hoy;
-    
-    // Convertir a días
-    const dias = Math.ceil(diferencia / (1000 * 60 * 60 * 24));
-    
-    // Mostrar en el HTML
-    if (dias >= 0) {
-        document.getElementById('dias').innerText = dias;
-    } else {
-        document.getElementById('countdown').innerText = "¡El Papa ya está aquí!";
+
+    // Eliminar horas para comparar solo fechas
+    const fechaActual = new Date(
+        hoy.getFullYear(),
+        hoy.getMonth(),
+        hoy.getDate()
+    );
+
+    const fechaPapa = new Date(
+        fechaVisita.getFullYear(),
+        fechaVisita.getMonth(),
+        fechaVisita.getDate()
+    );
+
+    const diferenciaDias = Math.floor(
+        (fechaPapa - fechaActual) / (1000 * 60 * 60 * 24)
+    );
+
+    const countdown = document.getElementById('countdown');
+
+    if (diferenciaDias > 0) {
+        // Faltan días
+        countdown.style.color = '';
+        countdown.innerText = `Faltan ${diferenciaDias} días`;
+    }
+    else if (diferenciaDias === 0) {
+        // Hoy llega
+        countdown.style.color = 'green';
+        countdown.innerText = '🟢 Hoy llega el Papa';
+    }
+    else {
+        // Ya llegó
+        const diasEnPeru = Math.abs(diferenciaDias);
+
+        countdown.style.color = 'cyan';
+
+        countdown.innerText =
+            diasEnPeru === 1
+                ? '1 día en Perú'
+                : `${diasEnPeru} días en Perú`;
     }
 }
 
