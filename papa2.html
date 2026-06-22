@@ -16,7 +16,7 @@
 		<h3 style="color:red;">🕊️ 10 de Noviembre 2026 🕊️</h3>
 		<section id="contador-regresivo">
 			<div class="counter-container">
-				<p>Faltan para la visita de Su Santidad:</p>
+				<p>El Papa llegara a Peru en:</p>
 				<div id="countdown" class="countdown-display">
 					<span id="dias">0</span> días
 				</div>
@@ -59,7 +59,31 @@
 		</form>
     </section>
 	
-	<hr class="divisor">
+	<hr class="divisor"> 
+	
+	<div class="pregunta-alojamiento" style="text-align: center; margin: 20px 0;">
+			<h2>¿Te gustaría registrarte para brindar alojamiento a los visitantes?</h2>
+			<div style="display: flex; justify-content: center; gap: 30px; font-size: 1.2em;">
+				<label>
+					<input type="radio" name="alojamiento" value="si" onchange="alternarSeccion()"> Sí
+				</label>
+				<label>
+					<input type="radio" name="alojamiento" value="no" onchange="alternarSeccion()"> No
+				</label>
+			</div>
+		</div>
+
+	<section id="seccion-alojamiento" style="display: none; margin-top: 20px;">
+		<form id="formulario-mensaje">
+			<input type="text" placeholder="Tu Nombre completo">
+			<input type="text" placeholder="Tu Direccion">
+			<input type="tel" placeholder="Número de celular" required>
+			<button type="submit">Registrate</button>
+		</form>
+	</section>
+	
+	<hr class="divisor"> 
+
 	<img src="https://luischavezt.github.io/ECD/imagenes/Robert_Prevost.png" alt="Papa León XIV" class="foto-papa1">
 	<br>
 	<a href="https://luischavezt.github.io/ECD/RECURSOS/Papa.pdf" style="
@@ -75,8 +99,10 @@
 		Ver Ruta Turistica de Robert Prevost
 	</a>
 	
+	<hr class="divisor"> 
+	
 	<section id="mapa-ubicaciones">
-		<h2>Mapa de ubicacion de los Mensajes</h2>
+		<h2>Mapa interactivo con la ubicacion de Mensajes</h2>
 		<div class="map-container">
 			<iframe 
 				width="80%" 
@@ -88,6 +114,7 @@
 	</section>
 	
 	<hr class="divisor"> 
+	
     <!-- 3. Sección: Trivia (Tu código original adaptado) -->
     <h2>Averiguemos cuanto sabes de la vida del Papa León XIV</h2><section id="seccion-trivia">
         <div class="ranking-bar">
@@ -174,5 +201,6 @@
     </section>
 
     <script src="papa2.js"></script>
+	
 </body>
 </html>
