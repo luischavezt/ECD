@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css"/>
+    
+    <link rel="stylesheet" href="papa1.css">
+    <title>Viaje de Su Santidad León XIV al Perú</title>
+</head>
+
+<body>
+
+    <!-- 1. Título Principal -->
+    <header>
+		<h1>Viaje de Su Santidad León XIV al Perú</h1>
+		<h3 style="color:blue;">🕊️ 4 al 11 de Noviembre 2026 🕊️</h3>
+		<section id="contador-regresivo">
+			<div class="counter-container">
+				<p>El Papa llegara a Peru en:</p>
+				<div id="countdown" class="countdown-display">
+					<span id="dias">0</span> días
+				</div>
+			</div>
+		</section>
+		<p>Miles de peruanos estamos preparando la bienvenida al Papa Leon XIV<br>Comparte tu mensaje y forma parte del libro conmemorativo</p>
+		<img src="https://thfvnext.bing.com/th?id=OIF.7gCRpg%2ftvIk%2bN4pfftiu%2fg&r=0&cb=thfvnextfalcon2&rs=1&pid=ImgDetMain&o=7&rm=3" alt="Papa León XIV" class="foto-papa">
+	</header>
+
+    <!-- 2. Sección: Envío de Mensaje de Bienvenida -->
+	<h2>Agenda Preliminar</h2>
+	<table style="width: 75%; max-width: 600px; margin: 20px auto; border-collapse: collapse; font-family: 'Segoe UI', sans-serif; background-color: #ffffff; box-shadow: 0 4px 10px rgba(0,0,0,0.1);">
+    <thead>
+    <thead>
+        <tr style="background-color: #27F5F2;">
+            <th style="border: 1px solid #ddd; padding: 12px; text-align: center;">Fecha</th>
+            <th style="border: 1px solid #ddd; padding: 12px; text-align: center;">Ciudad</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td style="border: 1px solid #ddd; padding: 10px;">4 y 5 noviembre</td>
+            <td style="border: 1px solid #ddd; padding: 10px;">Lima</td>
+        </tr>
+        <tr>
+            <td style="border: 1px solid #ddd; padding: 10px;">6 y 7 noviembre</td>
+            <td style="border: 1px solid #ddd; padding: 10px;">Chiclayo y Piura</td>
+        </tr>
+        <tr>
+            <td style="border: 1px solid #ddd; padding: 10px;">8 y 9 noviembre</td>
+            <td style="border: 1px solid #ddd; padding: 10px;">Cusco</td>
+        </tr>
+        <tr>
+            <td style="border: 1px solid #ddd; padding: 10px;">10 noviembre</td>
+            <td style="border: 1px solid #ddd; padding: 10px;">Iquitos</td>
+        </tr>
+        <tr>
+            <td style="border: 1px solid #ddd; padding: 10px;">11 noviembre</td>
+            <td style="border: 1px solid #ddd; padding: 10px;">Pucallpa</td>
+        </tr>
+    </tbody>
+	</table>
+	<p>🕊️ - 🕊️  -🕊️</p>
+
+	<hr class="divisor"> 
+	
+    <h2>Envía tu mensaje de bienvenida</h2>
+	<p>Los mensajes que se envien se entregaran a su Santidad, compilados en un libro como recuerdo de su visita a nuestra ciudad</p>
+	<section id="seccion-mensaje">
+        <form id="formulario-mensaje" onsubmit="registrarMensaje(event)">
+			<input type="text" id="usuario-nombre" placeholder="Nombre y apellido" required>
+			<input type="text" id="distrito" placeholder="Tu distrito" required>
+			<input type="text" id="parroquia" placeholder="Tu parroquia" required>
+			<select id="grupo-etareo" required>
+				<option value="" disabled selected>Selecciona tu edad</option>
+				<option value="12-18">12 a 18 años</option>
+				<option value="19-30">19 a 30 años</option>
+				<option value="31-50">31 a 50 años</option>
+				<option value="50+">Más de 50 años</option>
+			</select>
+			
+			<textarea id="usuario-mensaje" placeholder="Tu mensaje de bienvenida..." maxlength="200" required></textarea>
+			
+			<div class="checkbox-container">
+				<input type="checkbox" id="autorizacion" name="autorizacion">
+				<label for="autorizacion" style="color:blue;">Autorizo que mi mensaje se haga público en el evento de bienvenida del Papa.</label>
+			</div>
+			
+			<input type="file" id="usuario-foto" accept="image/*">
+			
+			<div class="checkbox-container">
+				<input type="checkbox" id="autorizacionfoto" name="autorizacionfoto">
+				<label for="autorizacion" style="color:blue;">Autorizo que mi fotografía se haga pública en el mosaico de imágenes.</label>
+			</div> 
+			<small><i>NOTA: La fotografia que se adjunte debe estar relacionada a una actividad religiosa en familia, con el projimo, en su parroquia, o dibujos realizados aluscivos a la visita del Papa Leon XIV</i></small>
+			<button type="submit">Enviar Mensaje y Foto</button>
+			<p id="mensaje-exito-form" style="display:none; color: #27ae60; font-weight: bold; text-align: center; margin-top: 10px;">
+				¡Mensaje y foto enviados con éxito!
+			</p>
+		</form>
+		<br>
+		<div class="stats-grid">
+    		<div class="stat-card">
+				<h3>Mensajes recibidos</h3>
+				<p id="total-mensajes">0</p>
+			</div>
+			<div class="stat-card">
+				<h3>Fotos compartidas</h3>
+				<p id="total-fotos">0</p>
+			</div>
+		</div>
+		<div style="text-align: center; margin-top: 20px;">
+			<button type="button" onclick="mostrarMensajesEnPagina()" 
+					style="padding: 10px 20px; cursor: pointer; background-color: #2784F5; color: white; border: none; border-radius: 5px;">
+				Ver los mensajes recientes
+			</button>
+		</div>
+		<div id="contenedor-mensajesb" style="display: none; border: 2px solid #ccc; padding: 20px; background: white; position: relative;">
+			<button onclick="document.getElementById('contenedor-mensajesb').style.display='none'" 
+					style="position: absolute; top: 10px; right: 10px; background: red; color: white; border: none; font-weight: bold; cursor: pointer; padding: 5px 10px;">
+				X
+			</button>
+
+			<h2>Lista de Mensajes</h2>
+			<table id="tabla-mensajes" border="1" style="width: 100%; border-collapse: collapse;">
+				<thead>
+					<tr>
+						<th>Nombre</th>
+						<th>Mensaje</th>
+					</tr>
+				</thead>
+				<tbody id="cuerpo-tabla"></tbody>
+			</table>
+		</div>
+	</section>
+	
+	<hr class="divisor"> 
+	
+	<div class="pregunta-alojamiento" style="text-align: center; margin: 20px 0;">
+			<h2>¿Te gustaría registrarte para brindar alojamiento a los visitantes?</h2>
+			<div style="display: flex; justify-content: center; gap: 30px; font-size: 1.2em;">
+				<label>
+					<input type="radio" name="alojamiento" value="si" onchange="alternarSeccion()"> Sí
+				</label>
+				<label>
+					<input type="radio" name="alojamiento" value="no" onchange="alternarSeccion()"> No
+				</label>
+			</div>
+		</div>
+	<p>En caso este interesado, previamente coordinaremos con Ud para visitarlo y evaluar la posibilidad de otorgarle un Certificado de Alojamiento Recomendado</p>
+	<section id="seccion-alojamiento" style="display: none; margin-top: 20px;">
+		<form id="formulario-mensaje">
+			<input type="text" placeholder="Tu Nombre completo" required>
+			<input type="text" placeholder="Tu Distrito" required>
+			<input type="text" placeholder="Tu Direccion" required>
+			<input type="tel" placeholder="Número de celular" required>
+			<button type="submit">Registrate</button>
+		</form>
+	</section>
+	
+	<hr class="divisor"> 
+
+	<section id="mapa-ubicaciones">
+		<h3>Mapa interactivo con la ubicacion de Mensajes</h3>
+		<a href="https://ventastelematica.maps.arcgis.com/apps/mapviewer/index.html?webmap=9156571170dd4d54b1ffdb7e651f7de1" style="
+		display: inline-block;
+		padding: 12px 24px;
+		background-color: #007BFF;
+		color: white;
+		text-decoration: none;
+		border-radius: 5px;
+		font-family: Arial, sans-serif;
+		font-weight: bold;
+		text-align: center;
+		width="80%";
+		height="400px"  frameborder="0">
+		Ver Mapa
+		</a>
+	</section>
+	
+	<hr class="divisor"> 
+	
+    <!-- 3. Sección: Trivia (Tu código original adaptado) -->
+    <h2>Averiguemos cuanto sabes de la vida del Papa León XIV</h2><section id="seccion-trivia">
+        <div class="ranking-bar">
+            <h3>🏆 MEJORES TIEMPOS 🏆</h3>
+            <div id="ranking-container">
+                <span id="rank-1">1º: ---</span>
+                <span id="rank-2">2º: ---</span>
+                <span id="rank-3">3º: ---</span>
+            </div>
+        </div>
+
+        <div class="container">
+            <h2>Juega esta Trivia</h2>
+            <div id="cronometro">Tiempo: <span id="timer">00:00</span></div>
+            <div id="rueda" class="rueda"></div>
+            <div id="juego">
+                <h2 id="pregunta">Haz clic en empezar</h2>
+                <div id="opciones"></div>
+                <div id="mensaje"></div>
+                <button onclick="iniciarTrivia()">¡EMPEZAR!</button>
+            </div>
+        </div>
+    </section>
+	<hr class="divisor">
+	
+	<section id="seccion-voluntarios" class="seccion-contenedor">
+		<h1>Necesitamos tu Apoyo</h1>
+		<h2>¿Quieres ser un voluntario?</h2>
+		<p>Únete al equipo de bienvenida para el Papa León XIV.</p>
+		
+		<form id="formulario-voluntario" class="voluntario-grid" onsubmit="registrarVoluntario(event)">
+			<input type="text" name="nombre" placeholder="Nombre completo" required>
+			<input type="text" name="dni" placeholder="DNI" required>
+			<input type="email" name="correo" placeholder="Correo electrónico" required>
+			<input type="tel" name="celular" placeholder="Número de celular" required>
+			<input type="text" name="procedencia" placeholder="Lugar de procedencia" required>
+			<input type="number" name="edad" placeholder="Edad" min="1" max="80" required>
+			<button type="submit" class="btn-secundario">Inscribirse</button>
+			<p id="mensaje-exito" style="display:none; color: #27ae60; font-weight: bold; grid-column: span 2; text-align: center;">
+				¡Gracias por inscribirte! Nos pondremos en contacto contigo pronto.
+			</p>
+		</form>
+		<br>
+		<div class="stat-card">
+				<h3>Voluntarios inscritos</h3>
+				<p id="total-voluntarios">0</p>
+			</div>
+	</section>
+	
+		<hr class="divisor">
+		
+	<section id="seccion-estadisticas">
+		<h2>Estadísticas Generales</h2>
+		
+		<div class="stats-grid">
+			<div class="stat-card">
+				<h3>Distrito mas participativo</h3>
+				<p id="distrito-top" style="font-size: 1.1em; padding-top: 10px;">---</p>
+				<small id="distrito-count" style="color: #ffffff; display: block;">0 mensajes</small>
+			</div>
+			<div class="stat-card">
+				<h3>Edad mas participativa</h3>
+				<p id="edad-top" style="font-size: 1.1em; padding-top: 10px;">---</p>
+				<small id="edad-count" style="color: #ffffff; display: block;">0 mensajes</small>
+			</div>
+		</div>
+	</section>
+	
+	<hr class="divisor">
+
+	<img src="https://luischavezt.github.io/ECD/imagenes/Robert_Prevost.png" alt="Papa León XIV" class="foto-papa">
+	<br>
+	<a href="https://luischavezt.github.io/ECD/RECURSOS/Papa.pdf" style="
+		display: inline-block;
+		padding: 12px 24px;
+		background-color: #007BFF;
+		color: white;
+		text-decoration: none;
+		border-radius: 5px;
+		font-family: Arial, sans-serif;
+		font-weight: bold;
+		text-align: center;">
+		Ver Ruta Turistica de Robert Prevost
+	</a>
+	
+	<hr class="divisor">
+	
+    <!-- 4. Sección: Mosaico de fotos -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css"/>
+	<section id="seccion-mosaico">
+		<h2>Galeria de fotografías enviadas</h2>
+		<p>Estas son las Ultimas fotos que nos compartieron...</p>
+		
+		<div class="swiper mySwiper">
+			<div class="swiper-wrapper" id="swiper-contenedor-fotos">
+				</div>
+			<div class="swiper-pagination"></div>
+		</div>
+	</section>
+
+	<script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+    <script src="papa1.js"></script>
+	
+</body>
+</html>
