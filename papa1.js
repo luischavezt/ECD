@@ -446,9 +446,12 @@ async function cargarCarrusel() {
 		const slide = document.createElement('div');
 		slide.className = 'swiper-slide';
 		
-		// IMPORTANTE: Quita el style="width:100%; height:..." que tenías antes
-		// Deja solo la etiqueta img limpia, el CSS se encargará de todo
-		slide.innerHTML = `<img src="${item.foto_url}" alt="Foto enviada">`; 
+		// --- ESTA ES LA NUEVA LÍNEA CON EL ENLACE ---
+		slide.innerHTML = `
+			<a href="${item.foto_url}" target="_blank">
+				<img src="${item.foto_url}" alt="Foto enviada">
+			</a>
+		`;
 		
 		contenedor.appendChild(slide);
 	});
