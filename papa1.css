@@ -1,0 +1,239 @@
+/* --- Estilos Generales --- */
+body {
+    font-family: 'Segoe UI', sans-serif;
+    text-align: center;
+    background-color: #f4f7f6;
+    padding: 20px;
+    margin: 0;
+}
+
+h1 { color: #2c3e50; }
+
+/* --- Barra de Ranking --- */
+.ranking-bar {
+    background: #2c3e50;
+    color: #00ffcc;
+    padding: 15px;
+    border-radius: 10px;
+    margin: 20px auto;
+    border: 2px solid #00ffcc;
+    max-width: 800px;
+}
+
+#ranking-container {
+    display: flex;
+    flex-direction: column; /* Cambiamos a columna para que se apilen */
+    align-items: center;    /* Centramos horizontalmente */
+    gap: 8px;              /* Espacio entre cada línea */
+    font-weight: bold;
+    font-size: 0.8em;      /* Reducimos un poco el tamaño para móviles */
+}
+
+/* --- Rueda --- */
+.rueda {
+    position: relative;
+    width: 400px;
+    height: 400px;
+    border: 3px solid #34495e;
+    border-radius: 50%;
+    margin: 30px auto;
+}
+
+.letra {
+    width: 40px; height: 40px;
+    background-color: #3498db; color: white;
+    border-radius: 50%; position: absolute;
+    display: flex; align-items: center; justify-content: center;
+    font-weight: bold; cursor: pointer;
+    transition: transform 0.2s, background-color 0.2s;
+    transform: translate(-50%, -50%);
+}
+
+.letra:hover { transform: scale(1.2); background-color: #2980b9; }
+
+/* --- Juego y Preguntas --- */
+#juego { margin-top: 20px; }
+#pregunta { font-weight: bold; font-size: 1.4em; margin: 20px 0; }
+#opciones { display: flex; flex-direction: column; align-items: center; gap: 12px; margin: 0 auto; max-width: 500px; }
+
+#opciones button {
+    width: 100%; 
+    padding: 15px; 
+    cursor: pointer;
+    border: 2px solid #3498db; 
+    background: white;
+    color: #333 !important;
+    font-weight: 500;
+    border-radius: 8px; 
+    font-size: 1em; 
+    transition: all 0.3s ease;
+}
+
+#opciones button:hover:not(:disabled) { 
+    background-color: #3498db; 
+    color: white !important; 
+}
+#opciones button.seleccionada { background-color: #3498db !important; color: white !important; font-weight: bold; }
+
+/* --- Botones Generales --- */
+button {
+    padding: 10px 25px; font-size: 1em; background-color: #27ae60;
+    color: white; border: none; border-radius: 5px; cursor: pointer;
+}
+button:hover { background-color: #219150; }
+
+/* --- Secciones de Formulario --- */
+/* Cambia esto en tu CSS */
+#seccion-mensaje, #seccion-alojamiento, #seccion-voluntarios {
+    background: #ffffff; 
+    padding: 30px; 
+    border-radius: 15px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+    margin: 20px auto; 
+    max-width: 600px; 
+    border: 1px solid #e0e0e0;
+}
+
+#formulario-mensaje, .voluntario-grid {
+    display: grid; gap: 15px; margin-top: 20px;
+}
+
+.voluntario-grid { grid-template-columns: 1fr 1fr; }
+.voluntario-grid button { grid-column: span 2; }
+
+input, textarea, select {
+    width: 100%; padding: 12px; border: 1px solid #ccc;
+    border-radius: 8px; box-sizing: border-box; font-family: inherit;
+}
+
+/* --- Estadísticas (Optimizado para móvil) --- */
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    gap: 15px;
+    margin: 20px auto;
+    padding: 0 10px;
+    max-width: 900px;
+}
+
+.stat-card {
+    background: #2c3e50;
+    border: 2px solid #00ffcc;
+    color: #ffffff;
+    padding: 15px;
+    border-radius: 12px;
+    text-align: center;
+}
+
+.stat-card p {
+    font-size: 1.8em;
+    font-weight: bold;
+    color: #00ffcc;
+    margin: 5px 0 0 0;
+}
+
+/* --- Mosaico (Optimizado para móvil)
+.mosaico-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+    gap: 10px;
+    padding: 0 10px;
+    max-width: 900px;
+    margin: 20px auto;
+}
+
+.foto-item { background: white; padding: 5px; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
+.foto-mosaico { 
+    width: 100% !important; 
+    height: 100px !important; 
+    object-fit: cover; 
+    border-radius: 5px; 
+    display: block; 
+}
+
+*/
+/* --- Línea Divisoria --- */
+.divisor { border: 0; height: 4px; background: #E8BE38; width: 80%; margin: 40px auto; border-radius: 2px; }
+
+/* --- Responsividad --- */
+@media (max-width: 600px) {
+    .voluntario-grid { grid-template-columns: 1fr; }
+    .voluntario-grid button { grid-column: span 1; }
+    .rueda { width: 250px !important; height: 250px !important; }
+}
+
+/* --- Checkbox y Botones de Formulario --- */
+.checkbox-container {
+    display: flex; align-items: center; gap: 10px;
+    font-size: 0.9em; color: #555; text-align: left; margin: 5px 0 15px 0;
+}
+.checkbox-container input { width: auto; cursor: pointer; }
+
+#formulario-mensaje button {
+    background-color: #27ae60 !important;
+    color: white !important;
+    padding: 15px;
+    font-size: 1.1em;
+    width: 100%;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+}
+#formulario-mensaje button:hover { background-color: #219150 !important; }
+
+#contador-regresivo {
+    background: #2c3e50; color: white; padding: 10px;
+    text-align: center; font-weight: bold; margin-bottom: 20px;
+}
+.countdown-display { font-size: 1.5em; color: #00ffcc; margin-top: 5px; }
+
+.titulo-splash {
+    color: #D91023;
+    text-align: center;
+    font-weight: bold;
+}
+
+.foto-papa {
+    width: 80%;        /* La imagen intentará ocupar el 100% de su contenedor */
+    max-width: 300px;   /* Aquí controlas el tamaño máximo. Ajusta este número (ej. 200px, 250px) hasta que se vea como quieres */
+    height: auto;       /* Esto es vital para que no se deforme */
+    display: block;     /* Ayuda a centrarla mejor */
+    margin: 0 auto;     /* Centra la imagen horizontalmente */
+}
+
+#contenedor-mensajesb {
+    max-width: 800px; 
+    margin: 20px auto; /* Centra la ventana */
+    box-shadow: 0px 0px 10px rgba(0,0,0,0.2); /* Una sombra elegante */
+    border-radius: 8px; /* Bordes redondeados */
+}
+
+/* Asegura que el contenedor no se deforme */
+.mySwiper {
+    width: 100% !important;
+    max-width: 800px;
+    margin: 20px auto;
+}
+
+/* El slide necesita una altura fija */
+.swiper-slide {
+    height: 250px !important;
+    border-radius: 8px;
+    overflow: hidden;
+    background-color: #f0f0f0;
+}
+
+/* La imagen debe ignorar el tamaño original y ocupar el 100% */
+.swiper-slide img {
+    width: 100% !important;
+    height: 100% !important;
+    object-fit: cover !important;
+    object-position: center !important;
+    cursor: pointer; /* Indica al usuario que la foto es interactiva */
+    transition: transform 0.3s ease;
+}
+
+/* Efecto visual al pasar el mouse */
+.swiper-slide img:hover {
+    transform: scale(1.05); /* Un pequeño zoom elegante */
+}
