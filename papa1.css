@@ -109,7 +109,8 @@ input, textarea, select {
 /* --- Estadísticas (Optimizado para móvil) --- */
 .stats-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    /* Cambia esto: */
+    grid-template-columns: 1fr 1fr; 
     gap: 15px;
     margin: 20px auto;
     padding: 0 10px;
