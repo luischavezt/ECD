@@ -451,7 +451,7 @@ async function cargarCarrusel() {
 			<a href="${item.foto_url}" target="_blank">
 				<img src="${item.foto_url}" alt="Foto enviada">
 			</a>
-		`;
+		`; 
 		
 		contenedor.appendChild(slide);
 	});
@@ -486,6 +486,6 @@ async function cargarCarrusel() {
         });
     }
 }
-
+  
 // Ejecutar al cargar
 actualizarCuentaRegresiva();
