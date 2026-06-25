@@ -391,8 +391,8 @@ async function mostrarMensajesEnPagina() {
     } else {
         data.forEach(item => {
             const fila = `<tr>
-                <td style="padding: 10px; border-bottom: 1px solid #ddd;">${item.nombre_apellido}</td>
-                <td style="padding: 10px; border-bottom: 1px solid #ddd;">${item.mensaje}</td>
+                <td style="padding: 10px; border-bottom: 1px solid #ddd; color: gold;">${item.nombre_apellido}</td>
+                <td style="padding: 10px; border-bottom: 1px solid #ddd; color: gray;">${item.mensaje}</td>
             </tr>`;
             cuerpoTabla.innerHTML += fila;
         });
