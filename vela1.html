@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Prueba de Vela</title>
+    <link rel="stylesheet" href="vela1.css">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+</head>
+<body>
+<h2>Petitorios de Oracion</h2>
+<p> Si quieres orar por alguien, hazlo aqui para que se registren en un mapa:</p>
+<div id="seccion-mensaje">
+    <form id="formulario-mensaje">
+        <input type="text" id="nombres" placeholder="Tu nombre" required>
+		<p style="margin-top: 5px; margin-bottom: 5px;">Escoge el tipo de Peticion</p>
+        <select id="tipoPeticion" required>
+            <option value="Salud">Por Salud</option>
+            <option value="Familia">Por la Familia</option>
+            <option value="Trabajo">Por Trabajo</option>
+        </select>
+        <textarea id="peticion" placeholder="Tu petición" maxlength="100" oninput="actualizarContador(this)"></textarea>
+		<p id="contador" style="margin-top: -10px; margin-bottom: 5px;">0 / 100 caracteres</p>
+        <input type="text" id="ciudad" placeholder="Tu ciudad">
+        <button type="button" id="btnPreparar">Enviar Peticion</button>
+        <p id="mensajeEstado"></p>
+    </form>
+</div>
+
+<div id="contenedorVela">
+    <div id="svgVela">
+        <div class="base-vela"></div>
+        <div id="llamaVisual"></div>
+    </div>
+    <p>Desliza hacia arriba o haz clic para encender</p>
+</div>
+
+<a href="https://telematica.maps.arcgis.com/apps/dashboards/4ba1d4a8c0654c749da85ead580e928b" target="_blank" class="boton-mapav">
+    Ver Mapa de Luminarias
+</a>
+
+<script src="vela1.js"></script>
+</body>
+</html>
