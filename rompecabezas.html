@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+	<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+	<link rel="stylesheet" href="rompecabezas.css">
+    <title>Rompecabezas Rampa</title>
+</head>
+<body>
+	<h1 style="margin-bottom: 35px; text-align: center; color: white; font-weight: bold;">
+        ¡Arma el Rompecabezas y Gana!
+    </h1>
+	
+    <div id="leaderboard">
+        <h3>🏆 MEJORES TIEMPOS 🏆</h3>
+        <ul id="scores-list">
+            <li class="score-item">1°: <span>--:--</span></li>
+            <li class="score-item">2°: <span>--:--</span></li>
+            <li class="score-item">3°: <span>--:--</span></li>
+        </ul>
+    </div>
+
+    <div id="ui-panel">
+        <div id="timer">00:00</div>
+        <button id="reset-btn">Reiniciar</button>
+    </div>
+
+    <div id="main-game-layout">
+        
+        <div id="game-container">
+            <div id="board-grid">
+                <div class="grid-slot"></div><div class="grid-slot"></div><div class="grid-slot"></div>
+                <div class="grid-slot"></div><div class="grid-slot"></div><div class="grid-slot"></div>
+                <div class="grid-slot"></div><div class="grid-slot"></div><div class="grid-slot"></div>
+            </div>
+
+            <div id="name-modal" class="modal-screen">
+                <h2>¡Lo lograste!</h2>
+                <p id="time-report">Tu tiempo fue de --:--</p>
+                <p>Ingresa tu nombre para el cuadro de honor:</p>
+                <input type="text" id="player-name" placeholder="Tu Nombre o Iniciales" maxlength="12">
+                <button id="save-score-btn">Guardar Récord</button>
+            </div>
+
+            <div id="win-screen" class="modal-screen">
+                <h2>¡Felicitaciones!</h2>
+                <p>El marcador ha sido actualizado.</p>
+                <button id="restart-btn">Siguiente Imagen</button>
+            </div>
+        </div>
+
+        <div id="guide-panel">
+            <span>Guía Visual</span>
+            <div id="preview-image"></div>
+        </div>
+
+    </div>
+	
+<script src="rompecabezas.js"></script>
+</body>
+</html>
+
