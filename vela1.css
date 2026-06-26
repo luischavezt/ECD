@@ -1,0 +1,157 @@
+/* 1. Estructura general */
+body { 
+    font-family: sans-serif; 
+    background-color: #f9f9f9; 
+    display: flex; 
+    flex-direction: column; 
+    align-items: center; 
+    padding: 20px; 
+}
+
+/* 2. Tarjeta del formulario */
+#seccion-mensaje { 
+    background: #ffffff; 
+    padding: 30px; 
+    border-radius: 15px; 
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1); 
+    width: 100%; 
+    max-width: 400px; 
+    border: 1px solid #e0e0e0; 
+}
+
+#formulario-mensaje { 
+    display: grid; 
+    gap: 15px; 
+}
+
+/* 3. Estilos de inputs */
+input, select, textarea { 
+    width: 100%; 
+    padding: 12px; 
+    border: 1px solid #ccc; 
+    border-radius: 8px; 
+    box-sizing: border-box; 
+    font-size: 16px;
+}
+
+textarea { 
+    margin-bottom: 5px; 
+}
+
+button { 
+    background-color: #27ae60; 
+    color: white; 
+    padding: 12px; 
+    border: none; 
+    border-radius: 8px; 
+    cursor: pointer; 
+    font-weight: bold; 
+    transition: background 0.3s;
+}
+
+button:hover { background-color: #219150; }
+
+#peticion {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; /* Cambia el tipo de letra */
+    font-size: 14px;      /* Cambia el tamaño de la letra */
+    color: #333;          /* Cambia el color del texto */
+    line-height: 1.5;     /* Mejora la separación entre líneas */
+    height: 100px;        /* Define una altura fija si quieres que sea más grande */
+    resize: none;         /* Evita que el usuario lo deforme manualmente */
+    padding: 10px;        /* Espacio interior */
+}
+
+/* 4. Estilos de la Vela */
+/* Cambia esto en tu CSS */
+#contenedorVela { 
+    display: block; /* Antes estaba en none */
+    text-align: center;
+    margin: 10px 0;
+    padding: 10px;
+    background: #fdfdfd;
+    border-radius: 15px;
+    border: 1px dashed #ddd; /* Un borde sutil para marcar la zona */
+    width: 100%;
+}
+
+#svgVela { 
+    position: relative; 
+    width: 100px; 
+    height: 175px; 
+    margin:  auto; 
+}
+
+.base-vela { 
+    position: absolute; 
+    bottom: 0; 
+    left: 40px; 
+    width: 20px; 
+    height: 80px; 
+    background: #fdfdfd; 
+    border-radius: 2px;
+    box-shadow: inset -5px 0 10px rgba(0,0,0,0.1);
+    border: 1px solid #eee;
+}
+
+/* Mejora visual de la llama */
+#llamaVisual {
+    position: absolute;
+    top: 30px;
+    left: 35px;
+    width: 30px;
+    height: 50px;
+    border-radius: 50% 50% 20% 20%;
+    transition: all 0.4s ease; /* Transición más suave */
+    opacity: 0;
+    transform: scale(1.0); /* Empieza pequeña */
+    background: transparent;
+}
+
+/* Esta clase se añade por JS al encender */
+.llama-encendida {
+    opacity: 1 !important;
+    transform: scale(1.5); /* Crece un poco al encenderse */
+    box-shadow: 0 0 20px 5px rgba(255, 255, 255, 0.6); /* El brillo resaltante */
+}
+
+/* Colores con brillo específico */
+.color-salud { 
+    background: radial-gradient(circle, #ffffff 10%, #3498db 60%, #1a5276 100%) !important; 
+    box-shadow: 0 0 20px #3498db, 0 0 40px #21618c !important; 
+}
+
+/* Familia: Naranja-Naranja */
+.color-familia { 
+    background: radial-gradient(circle, #ffffff 10%, #E88031 60%, #a04000 100%) !important; 
+    box-shadow: 0 0 20px #E88031, 0 0 40px #d35400 !important; 
+}
+
+/* Trabajo: Amarillo-Amarillo */
+.color-trabajo { 
+    background: radial-gradient(circle, #ffffff 10%, #f1c40f 60%, #b7950b 100%) !important; 
+    box-shadow: 0 0 20px #f1c40f, 0 0 40px #d4ac0d !important; 
+}
+
+/* 5. Botón del Mapa */
+.boton-mapav { 
+    display: block; 
+    width: 100%; 
+    max-width: 400px; 
+    margin-top: 15px; 
+    padding: 15px; 
+    background-color: #f39c12; 
+    color: white; 
+    text-align: center; 
+    text-decoration: none; 
+    border-radius: 8px; 
+    font-weight: bold; 
+}
+
+/* 6. Contador */
+#contador { 
+    font-size: 11px; 
+    color: #888; 
+    margin: -10px 0 0 5px; 
+    text-align: left; 
+    font-weight: 500; 
+}
