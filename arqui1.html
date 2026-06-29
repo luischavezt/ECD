@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Diseñador Neón Pro</title>
+    <style>
+        body { background: #080808; color: white; display: flex; flex-direction: column; align-items: center; font-family: sans-serif; overflow: hidden; }
+        
+        #plano {
+            width: 600px; height: 600px;
+            background-image: linear-gradient(#333 1px, transparent 1px), 
+                              linear-gradient(90deg, #333 1px, transparent 1px);
+            background-size: 30px 30px; 
+            border: 4px solid #f0f; 
+            box-shadow: 0 0 20px #f0f;
+            position: relative; 
+            margin-top: 20px; 
+            cursor: crosshair;
+        }
+
+        .objeto {
+            position: absolute; width: 28px; height: 28px; cursor: pointer;
+            transition: transform 0.3s ease;
+            display: flex; align-items: center; justify-content: center;
+        }
+
+        /* ESTILO CUBO MODIFICADO */
+        .cuadrado { 
+            border-radius: 2px;
+            /* Degradado para dar efecto 3D */
+            background: linear-gradient(135deg, rgba(255,255,255,0.4) 0%, rgba(0,0,0,0.3) 100%);
+            /* Sombras internas para profundidad */
+            box-shadow: inset 2px 2px 5px rgba(255,255,255,0.3), inset -2px -2px 5px rgba(0,0,0,0.5);
+            border: 1px solid rgba(0,0,0,0.2);
+        }
+        
+        .circulo { border-radius: 50%; box-shadow: 0 0 10px currentColor; }
+        
+        .triangulo { 
+            background: transparent !important; box-shadow: none !important;
+            border-bottom: 28px solid currentColor; border-right: 28px solid transparent; 
+            width: 0; height: 0;
+        }
+
+        .toolbar { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 20px; background: #1a1a1a; padding: 15px; border-radius: 8px; align-items: center; justify-content: center; }
+        .btn { padding: 10px 15px; cursor: pointer; border: 1px solid #444; color: white; background: #333; font-weight: bold; }
+        .btn:hover { background: #444; }
+        .btn-parar { background-color: maroon; border-color: red; color: red; }
+        .btn-parar:hover { background-color: red; }
+        .contador { font-size: 1.5em; font-weight: bold; color: magenta; margin: 0 20px; cursor: pointer; user-select: none; }
+        .contador-parado { color: red; }
+        .instrucciones { margin-top: 10px; font-size: 14px; color: #888; }
+    </style>
+</head>
+<body>
+
+    <h1>DISEÑADOR NEÓN PRO</h1>
+
+    <div class="toolbar">
+        <button class="btn" onclick="setMode('muro', 'orange', 'cuadrado')">Naranja</button>
+        <button class="btn" onclick="setMode('puerta', 'maroon', 'cuadrado')">Marron</button>
+        <button class="btn" onclick="setMode('ventana', 'skyblue', 'cuadrado')">Celeste</button>
+		<button class="btn" onclick="setMode('mueble', 'yellow', 'cuadrado')">Amarillo</button>
+        <button class="btn" onclick="setMode('planta', 'green', 'circulo')">Circulo</button>
+        <button class="btn" onclick="setMode('triangulo', 'white', 'triangulo')">Triángulo</button>
+        <div class="contador" id="contador" ondblclick="reiniciarContador()">00:00:00</div>
+        <button class="btn btn-parar" onclick="pararContador()">Parar</button>
+        <select id="formaSelector">
+            <option value="cuadrado">Cuadrado</option>
+            <option value="circulo">Círculo</option>
+            <option value="triangulo">Triángulo</option>
+        </select>
+        <input type="color" id="colorPicker" value="#ffffff">
+    </div>
+
+    <div class="instrucciones">
+        Clic para colocar | <b>Clic simple:</b> Girar | <b>SHIFT + Clic:</b> Cambiar color | <b>Doble clic:</b> Borrar
+    </div>
+
+    <div id="plano"></div>
+
+    <script>
+        const plano = document.getElementById('plano');
+        let modo = { tipo: null, color: null, forma: 'cuadrado' };
+        let tiempo = 0;
+        let intervalo;
+        let corriendo = true;
+
+        function setMode(tipo, color, forma) {
+            modo.tipo = tipo;
+            modo.color = color;
+            modo.forma = forma;
+            document.getElementById('colorPicker').value = color;
+            document.getElementById('formaSelector').value = forma;
+        }
+
+        function actualizarContador() {
+            tiempo++;
+            let segundos = Math.floor(tiempo % 60);
+            let minutos = Math.floor((tiempo / 60) % 60);
+            let horas = Math.floor(tiempo / 3600);
+            let h = horas < 10 ? '0' + horas : horas;
+            let m = minutos < 10 ? '0' + minutos : minutos;
+            let s = segundos < 10 ? '0' + segundos : segundos;
+            document.getElementById('contador').innerText = h + ':' + m + ':' + s;
+        }
+
+        function pararContador() {
+            clearInterval(intervalo);
+            corriendo = false;
+            document.getElementById('contador').classList.add('contador-parado');
+        }
+
+        function reiniciarContador() {
+            pararContador();
+            tiempo = 0;
+            document.getElementById('contador').innerText = '00:00:00';
+            corriendo = true;
+            intervalo = setInterval(actualizarContador, 1000);
+            document.getElementById('contador').classList.remove('contador-parado');
+        }
+
+        intervalo = setInterval(actualizarContador, 1000);
+
+        plano.onclick = function(e) {
+            if (e.target === plano && modo.tipo && corriendo) {
+                let x = Math.floor((e.pageX - plano.offsetLeft) / 30) * 30;
+                let y = Math.floor((e.pageY - plano.offsetTop) / 30) * 30;
+
+                const obj = document.createElement('div');
+                obj.className = 'objeto ' + document.getElementById('formaSelector').value;
+                let color = document.getElementById('colorPicker').value;
+                
+                // Aplicar color según forma
+                if (obj.classList.contains('triangulo')) {
+                    obj.style.borderBottomColor = color;
+                } else {
+                    obj.style.backgroundColor = color;
+                }
+                obj.style.color = color;
+                obj.style.left = x + 'px';
+                obj.style.top = y + 'px';
+
+                // Interacción: Girar o Cambiar Color
+                obj.onclick = (e) => {
+                    e.stopPropagation();
+                    if (e.shiftKey) {
+                        let newColor = document.getElementById('colorPicker').value;
+                        if (obj.classList.contains('triangulo')) obj.style.borderBottomColor = newColor;
+                        else obj.style.backgroundColor = newColor;
+                        obj.style.color = newColor;
+                    } else {
+                        let rot = parseInt(obj.dataset.rot || 0) + 90;
+                        obj.style.transform = `rotate(${rot}deg)`;
+                        obj.dataset.rot = rot;
+                    }
+                };
+
+                obj.ondblclick = () => obj.remove();
+                plano.appendChild(obj);
+            }
+        };
+    </script>
+</body>
+</html>
