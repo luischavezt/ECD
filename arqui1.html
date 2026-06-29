@@ -2,6 +2,7 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <title>Diseñador Neón Pro</title>
     <style>
         body { background: #080808; color: white; display: flex; flex-direction: column; align-items: center; font-family: sans-serif; overflow: hidden; }
@@ -24,36 +25,15 @@
             display: flex; align-items: center; justify-content: center;
         }
 
-        .cuadrado { 
-            border-radius: 2px;
-            background: linear-gradient(135deg, rgba(255,255,255,0.4) 0%, rgba(0,0,0,0.3) 100%);
-            box-shadow: inset 2px 2px 5px rgba(255,255,255,0.3), inset -2px -2px 5px rgba(0,0,0,0.5);
-            border: 1px solid rgba(0,0,0,0.2);
-        }
-        
+        .cuadrado { border-radius: 2px; background: linear-gradient(135deg, rgba(255,255,255,0.4) 0%, rgba(0,0,0,0.3) 100%); box-shadow: inset 2px 2px 5px rgba(255,255,255,0.3), inset -2px -2px 5px rgba(0,0,0,0.5); border: 1px solid rgba(0,0,0,0.2); }
         .circulo { border-radius: 50%; box-shadow: 0 0 10px currentColor; }
-        
-        .triangulo { 
-            background: transparent !important; box-shadow: none !important;
-            border-bottom: 28px solid currentColor; border-right: 28px solid transparent; 
-            width: 0; height: 0;
-        }
+        .triangulo { background: transparent !important; box-shadow: none !important; border-bottom: 28px solid currentColor; border-right: 28px solid transparent; width: 0; height: 0; }
 
-        .toolbar { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 20px; background: #1a1a1a; padding: 15px; border-radius: 8px; align-items: center; justify-content: center; }
-        
-        /* Botones de color (Cuadrados) */
-        .btn-color {
-            width: 30px; height: 30px; border: 2px solid #555; cursor: pointer;
-            border-radius: 4px; transition: transform 0.2s, border-color 0.2s;
-        }
-        .btn-color:hover { transform: scale(1.1); border-color: white; }
-
+        .toolbar { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 20px; background: #1a1a1a; padding: 15px; border-radius: 8px; align-items: center; justify-content: center; max-width: 800px; }
+        .btn-color { width: 30px; height: 30px; border: 2px solid #555; cursor: pointer; border-radius: 4px; transition: transform 0.2s; }
         .btn { padding: 10px 15px; cursor: pointer; border: 1px solid #444; color: white; background: #333; font-weight: bold; }
-        .btn:hover { background: #444; }
-        
-        .btn-parar { background-color: maroon; border-color: red; color: white; }
-        .btn-continuar { background-color: green; border-color: lime; color: white; }
-        
+        .btn-parar { background-color: maroon; border-color: red; }
+        .btn-continuar { background-color: green; border-color: lime; }
         .contador { font-size: 1.5em; font-weight: bold; color: magenta; margin: 0 10px; cursor: pointer; user-select: none; }
         .contador-parado { color: red; }
         .instrucciones { margin-top: 10px; font-size: 14px; color: #888; }
@@ -64,121 +44,126 @@
     <h1>DISEÑADOR NEÓN PRO</h1>
 
     <div class="toolbar">
-        <div class="btn-color" style="background: orange;" onclick="setMode('muro', 'orange', 'cuadrado')" title="Naranja"></div>
-		<div class="btn-color" style="background: red;" onclick="setMode('mueble2', 'red', 'cuadrado')" title="Rojo"></div>
-        <div class="btn-color" style="background: maroon;" onclick="setMode('puerta', 'maroon', 'cuadrado')" title="Marrón"></div>
-        <div class="btn-color" style="background: skyblue;" onclick="setMode('ventana', 'skyblue', 'cuadrado')" title="Celeste"></div>
-        <div class="btn-color" style="background: yellow;" onclick="setMode('mueble', 'yellow', 'cuadrado')" title="Amarillo"></div>
-		<div class="btn-color" style="background: blue;" onclick="setMode('mueble1', 'blue', 'cuadrado')" title="Azul"></div>
-		<div class="btn-color" style="background: green;" onclick="setMode('mueble1', 'green', 'cuadrado')" title="Verde"></div>
-		
-        
+        <div class="btn-color" style="background: orange;" onclick="setMode('muro', 'orange', 'cuadrado')"></div>
+        <div class="btn-color" style="background: red;" onclick="setMode('mueble2', 'red', 'cuadrado')"></div>
+        <div class="btn-color" style="background: maroon;" onclick="setMode('puerta', 'maroon', 'cuadrado')"></div>
+        <div class="btn-color" style="background: skyblue;" onclick="setMode('ventana', 'skyblue', 'cuadrado')"></div>
+        <div class="btn-color" style="background: yellow;" onclick="setMode('mueble', 'yellow', 'cuadrado')"></div>
+        <div class="btn-color" style="background: blue;" onclick="setMode('mueble1', 'blue', 'cuadrado')"></div>
+        <div class="btn-color" style="background: green;" onclick="setMode('mueble1', 'green', 'cuadrado')"></div>
         <button class="btn" onclick="setMode('planta', 'green', 'circulo')">Círculo</button>
         <button class="btn" onclick="setMode('triangulo', 'white', 'triangulo')">Triángulo</button>
-        
         <div class="contador" id="contador" ondblclick="reiniciarContador()">00:00:00</div>
-        
         <button class="btn btn-parar" onclick="pararContador()">Parar</button>
         <button class="btn btn-continuar" onclick="continuarContador()">Continuar</button>
-        
-        <select id="formaSelector">
-            <option value="cuadrado">Cuadrado</option>
-            <option value="circulo">Círculo</option>
-            <option value="triangulo">Triángulo</option>
-        </select>
+		<select id="formaSelector"><option value="cuadrado">Cuadrado</option><option value="circulo">Círculo</option><option value="triangulo">Triángulo</option></select>
         <input type="color" id="colorPicker" value="#ffffff">
+        <button class="btn" onclick="toggleGrid()">Ocultar Grilla</button>
+        <button class="btn" onclick="guardarDiseno()">Guardar Diseño</button>
+        <button class="btn" onclick="cargarDiseno()">Cargar Diseño</button>
+        <button class="btn" style="background: purple;" onclick="descargarDiseno()">Descargar PNG</button>
+        
     </div>
 
-    <div class="instrucciones">
-        Clic para colocar | <b>Clic simple:</b> Girar | <b>SHIFT + Clic:</b> Cambiar color | <b>Doble clic:</b> Borrar
-    </div>
-
+    <div class="instrucciones">Clic para colocar | <b>Clic simple:</b> Girar | <b>SHIFT + Clic:</b> Cambiar color | <b>Doble clic:</b> Borrar</div>
     <div id="plano"></div>
 
     <script>
         const plano = document.getElementById('plano');
         let modo = { tipo: null, color: null, forma: 'cuadrado' };
-        let tiempo = 0;
-        let intervalo;
-        let corriendo = true;
+        let tiempo = 0, intervalo, corriendo = true;
+        let funcionCrearOriginal;
 
         function setMode(tipo, color, forma) {
-            modo.tipo = tipo;
-            modo.color = color;
-            modo.forma = forma;
+            modo.tipo = tipo; modo.color = color; modo.forma = forma;
             document.getElementById('colorPicker').value = color;
             document.getElementById('formaSelector').value = forma;
         }
 
         function actualizarContador() {
             tiempo++;
-            let segundos = Math.floor(tiempo % 60);
-            let minutos = Math.floor((tiempo / 60) % 60);
-            let horas = Math.floor(tiempo / 3600);
-            document.getElementById('contador').innerText = 
-                (horas < 10 ? '0' + horas : horas) + ':' + 
-                (minutos < 10 ? '0' + minutos : minutos) + ':' + 
-                (segundos < 10 ? '0' + segundos : segundos);
+            let s = Math.floor(tiempo % 60), m = Math.floor((tiempo / 60) % 60), h = Math.floor(tiempo / 3600);
+            document.getElementById('contador').innerText = (h<10?'0'+h:h)+':'+(m<10?'0'+m:m)+':'+(s<10?'0'+s:s);
         }
 
-        function pararContador() {
-            clearInterval(intervalo);
-            corriendo = false;
-            document.getElementById('contador').classList.add('contador-parado');
+        function pararContador() { clearInterval(intervalo); corriendo = false; document.getElementById('contador').classList.add('contador-parado'); }
+        function continuarContador() { if (!corriendo) { intervalo = setInterval(actualizarContador, 1000); corriendo = true; document.getElementById('contador').classList.remove('contador-parado'); } }
+        function toggleGrid() { plano.style.backgroundImage = (plano.style.backgroundImage === 'none') ? 'linear-gradient(#333 1px, transparent 1px), linear-gradient(90deg, #333 1px, transparent 1px)' : 'none'; }
+        
+        function guardarDiseno() {
+            let diseño = [];
+            document.querySelectorAll('#plano .objeto').forEach(obj => {
+                diseño.push({ left: obj.style.left, top: obj.style.top, color: obj.style.backgroundColor || obj.style.borderBottomColor, forma: obj.className.replace('objeto ', ''), rot: obj.dataset.rot || 0 });
+            });
+            localStorage.setItem('miDisenoNeon', JSON.stringify(diseño));
+            alert("¡Diseño guardado!");
         }
 
-        function continuarContador() {
-            if (!corriendo) {
-                intervalo = setInterval(actualizarContador, 1000);
-                corriendo = true;
-                document.getElementById('contador').classList.remove('contador-parado');
-            }
+        function cargarDiseno() {
+            const data = localStorage.getItem('miDisenoNeon');
+            if (!data) return alert("Nada guardado.");
+            let importedData = JSON.parse(data);
+            const contenedorTemporal = document.createElement('div');
+            contenedorTemporal.style.position = 'absolute'; contenedorTemporal.style.pointerEvents = 'none';
+            plano.appendChild(contenedorTemporal);
+
+            importedData.forEach(item => {
+                const obj = document.createElement('div');
+                obj.className = 'objeto ' + item.forma;
+                obj.style.left = item.left; obj.style.top = item.top; obj.style.transform = `rotate(${item.rot}deg)`;
+                if (item.forma.includes('triangulo')) obj.style.borderBottomColor = item.color; else obj.style.backgroundColor = item.color;
+                contenedorTemporal.appendChild(obj);
+            });
+
+            document.addEventListener('mousemove', (e) => {
+                const rect = plano.getBoundingClientRect();
+                contenedorTemporal.style.left = (e.clientX - rect.left) + 'px';
+                contenedorTemporal.style.top = (e.clientY - rect.top) + 'px';
+            });
+
+            plano.onclick = function fijarDiseno(e) {
+                plano.onclick = funcionCrearOriginal;
+                const hijos = Array.from(contenedorTemporal.children);
+                hijos.forEach(obj => {
+                    const rect = obj.getBoundingClientRect(), planoRect = plano.getBoundingClientRect();
+                    obj.style.left = Math.round((rect.left - planoRect.left) / 30) * 30 + 'px';
+                    obj.style.top = Math.round((rect.top - planoRect.top) / 30) * 30 + 'px';
+                    obj.style.pointerEvents = 'auto';
+                    obj.onclick = (e) => { e.stopPropagation(); if (e.shiftKey) obj.style.backgroundColor = document.getElementById('colorPicker').value; else { let r = parseInt(obj.dataset.rot || 0) + 90; obj.style.transform = `rotate(${r}deg)`; obj.dataset.rot = r; } };
+                    obj.ondblclick = () => obj.remove();
+                    plano.appendChild(obj);
+                });
+                contenedorTemporal.remove();
+            };
         }
 
-        function reiniciarContador() {
-            pararContador();
-            tiempo = 0;
-            document.getElementById('contador').innerText = '00:00:00';
+        function descargarDiseno() {
+            const fondo = plano.style.backgroundImage, border = plano.style.border, shadow = plano.style.boxShadow, bg = plano.style.backgroundColor;
+            plano.style.backgroundImage = 'none'; plano.style.backgroundColor = 'transparent'; plano.style.border = 'none'; plano.style.boxShadow = 'none';
+            html2canvas(plano, { backgroundColor: null }).then(c => {
+                const l = document.createElement('a'); l.download = 'diseno.png'; l.href = c.toDataURL('image/png'); l.click();
+                plano.style.backgroundImage = fondo; plano.style.border = border; plano.style.boxShadow = shadow; plano.style.backgroundColor = bg;
+            });
         }
 
+        function reiniciarContador() { pararContador(); tiempo = 0; document.getElementById('contador').innerText = '00:00:00'; }
         intervalo = setInterval(actualizarContador, 1000);
 
-        plano.onclick = function(e) {
+        funcionCrearOriginal = function(e) {
             if (e.target === plano && modo.tipo && corriendo) {
                 let x = Math.floor((e.pageX - plano.offsetLeft) / 30) * 30;
                 let y = Math.floor((e.pageY - plano.offsetTop) / 30) * 30;
-
                 const obj = document.createElement('div');
                 obj.className = 'objeto ' + document.getElementById('formaSelector').value;
                 let color = document.getElementById('colorPicker').value;
-                
-                if (obj.classList.contains('triangulo')) {
-                    obj.style.borderBottomColor = color;
-                } else {
-                    obj.style.backgroundColor = color;
-                }
-                obj.style.color = color;
-                obj.style.left = x + 'px';
-                obj.style.top = y + 'px';
-
-                obj.onclick = (e) => {
-                    e.stopPropagation();
-                    if (e.shiftKey) {
-                        let newColor = document.getElementById('colorPicker').value;
-                        if (obj.classList.contains('triangulo')) obj.style.borderBottomColor = newColor;
-                        else obj.style.backgroundColor = newColor;
-                        obj.style.color = newColor;
-                    } else {
-                        let rot = parseInt(obj.dataset.rot || 0) + 90;
-                        obj.style.transform = `rotate(${rot}deg)`;
-                        obj.dataset.rot = rot;
-                    }
-                };
-
+                if (obj.classList.contains('triangulo')) obj.style.borderBottomColor = color; else obj.style.backgroundColor = color;
+                obj.style.left = x + 'px'; obj.style.top = y + 'px';
+                obj.onclick = (e) => { e.stopPropagation(); if (e.shiftKey) { let c = document.getElementById('colorPicker').value; obj.style.backgroundColor = obj.style.borderBottomColor = c; } else { let r = parseInt(obj.dataset.rot || 0) + 90; obj.style.transform = `rotate(${r}deg)`; obj.dataset.rot = r; } };
                 obj.ondblclick = () => obj.remove();
                 plano.appendChild(obj);
             }
         };
+        plano.onclick = funcionCrearOriginal;
     </script>
 </body>
 </html>
