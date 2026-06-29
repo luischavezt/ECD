@@ -24,12 +24,9 @@
             display: flex; align-items: center; justify-content: center;
         }
 
-        /* ESTILO CUBO MODIFICADO */
         .cuadrado { 
             border-radius: 2px;
-            /* Degradado para dar efecto 3D */
             background: linear-gradient(135deg, rgba(255,255,255,0.4) 0%, rgba(0,0,0,0.3) 100%);
-            /* Sombras internas para profundidad */
             box-shadow: inset 2px 2px 5px rgba(255,255,255,0.3), inset -2px -2px 5px rgba(0,0,0,0.5);
             border: 1px solid rgba(0,0,0,0.2);
         }
@@ -43,11 +40,21 @@
         }
 
         .toolbar { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 20px; background: #1a1a1a; padding: 15px; border-radius: 8px; align-items: center; justify-content: center; }
+        
+        /* Botones de color (Cuadrados) */
+        .btn-color {
+            width: 30px; height: 30px; border: 2px solid #555; cursor: pointer;
+            border-radius: 4px; transition: transform 0.2s, border-color 0.2s;
+        }
+        .btn-color:hover { transform: scale(1.1); border-color: white; }
+
         .btn { padding: 10px 15px; cursor: pointer; border: 1px solid #444; color: white; background: #333; font-weight: bold; }
         .btn:hover { background: #444; }
-        .btn-parar { background-color: maroon; border-color: red; color: red; }
-        .btn-parar:hover { background-color: red; }
-        .contador { font-size: 1.5em; font-weight: bold; color: magenta; margin: 0 20px; cursor: pointer; user-select: none; }
+        
+        .btn-parar { background-color: maroon; border-color: red; color: white; }
+        .btn-continuar { background-color: green; border-color: lime; color: white; }
+        
+        .contador { font-size: 1.5em; font-weight: bold; color: magenta; margin: 0 10px; cursor: pointer; user-select: none; }
         .contador-parado { color: red; }
         .instrucciones { margin-top: 10px; font-size: 14px; color: #888; }
     </style>
@@ -57,14 +64,23 @@
     <h1>DISEÑADOR NEÓN PRO</h1>
 
     <div class="toolbar">
-        <button class="btn" onclick="setMode('muro', 'orange', 'cuadrado')">Naranja</button>
-        <button class="btn" onclick="setMode('puerta', 'maroon', 'cuadrado')">Marron</button>
-        <button class="btn" onclick="setMode('ventana', 'skyblue', 'cuadrado')">Celeste</button>
-		<button class="btn" onclick="setMode('mueble', 'yellow', 'cuadrado')">Amarillo</button>
-        <button class="btn" onclick="setMode('planta', 'green', 'circulo')">Circulo</button>
+        <div class="btn-color" style="background: orange;" onclick="setMode('muro', 'orange', 'cuadrado')" title="Naranja"></div>
+		<div class="btn-color" style="background: red;" onclick="setMode('mueble2', 'red', 'cuadrado')" title="Rojo"></div>
+        <div class="btn-color" style="background: maroon;" onclick="setMode('puerta', 'maroon', 'cuadrado')" title="Marrón"></div>
+        <div class="btn-color" style="background: skyblue;" onclick="setMode('ventana', 'skyblue', 'cuadrado')" title="Celeste"></div>
+        <div class="btn-color" style="background: yellow;" onclick="setMode('mueble', 'yellow', 'cuadrado')" title="Amarillo"></div>
+		<div class="btn-color" style="background: blue;" onclick="setMode('mueble1', 'blue', 'cuadrado')" title="Azul"></div>
+		<div class="btn-color" style="background: green;" onclick="setMode('mueble1', 'green', 'cuadrado')" title="Verde"></div>
+		
+        
+        <button class="btn" onclick="setMode('planta', 'green', 'circulo')">Círculo</button>
         <button class="btn" onclick="setMode('triangulo', 'white', 'triangulo')">Triángulo</button>
+        
         <div class="contador" id="contador" ondblclick="reiniciarContador()">00:00:00</div>
+        
         <button class="btn btn-parar" onclick="pararContador()">Parar</button>
+        <button class="btn btn-continuar" onclick="continuarContador()">Continuar</button>
+        
         <select id="formaSelector">
             <option value="cuadrado">Cuadrado</option>
             <option value="circulo">Círculo</option>
@@ -99,10 +115,10 @@
             let segundos = Math.floor(tiempo % 60);
             let minutos = Math.floor((tiempo / 60) % 60);
             let horas = Math.floor(tiempo / 3600);
-            let h = horas < 10 ? '0' + horas : horas;
-            let m = minutos < 10 ? '0' + minutos : minutos;
-            let s = segundos < 10 ? '0' + segundos : segundos;
-            document.getElementById('contador').innerText = h + ':' + m + ':' + s;
+            document.getElementById('contador').innerText = 
+                (horas < 10 ? '0' + horas : horas) + ':' + 
+                (minutos < 10 ? '0' + minutos : minutos) + ':' + 
+                (segundos < 10 ? '0' + segundos : segundos);
         }
 
         function pararContador() {
@@ -111,13 +127,18 @@
             document.getElementById('contador').classList.add('contador-parado');
         }
 
+        function continuarContador() {
+            if (!corriendo) {
+                intervalo = setInterval(actualizarContador, 1000);
+                corriendo = true;
+                document.getElementById('contador').classList.remove('contador-parado');
+            }
+        }
+
         function reiniciarContador() {
             pararContador();
             tiempo = 0;
             document.getElementById('contador').innerText = '00:00:00';
-            corriendo = true;
-            intervalo = setInterval(actualizarContador, 1000);
-            document.getElementById('contador').classList.remove('contador-parado');
         }
 
         intervalo = setInterval(actualizarContador, 1000);
@@ -131,7 +152,6 @@
                 obj.className = 'objeto ' + document.getElementById('formaSelector').value;
                 let color = document.getElementById('colorPicker').value;
                 
-                // Aplicar color según forma
                 if (obj.classList.contains('triangulo')) {
                     obj.style.borderBottomColor = color;
                 } else {
@@ -141,7 +161,6 @@
                 obj.style.left = x + 'px';
                 obj.style.top = y + 'px';
 
-                // Interacción: Girar o Cambiar Color
                 obj.onclick = (e) => {
                     e.stopPropagation();
                     if (e.shiftKey) {
