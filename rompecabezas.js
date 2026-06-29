@@ -22,7 +22,9 @@ let finalTimeMs = 0;
 let currentImageUrl = '';
 
 function getNewImageUrl() {
-    const misImagenes = ['https://luischavezt.github.io/ECD/imagenes/dis1.jpg', 'https://luischavezt.github.io/ECD/imagenes/dis2.jpg'];
+    const misImagenes = ['https://luischavezt.github.io/ECD/imagenes/dis1.jpg', 'https://luischavezt.github.io/ECD/imagenes/dis2.jpg', 
+                         'https://luischavezt.github.io/ECD/imagenes/dis3.jpg', 'https://luischavezt.github.io/ECD/imagenes/dis4.jpg',
+                        'https://luischavezt.github.io/ECD/imagenes/dis5.jpg', 'https://luischavezt.github.io/ECD/imagenes/dis6.jpg'];
     return misImagenes[Math.floor(Math.random() * misImagenes.length)];
 }
 
