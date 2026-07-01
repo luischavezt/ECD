@@ -22,10 +22,20 @@ const bancoDePreguntas = [
 ];
 
 let preguntaActual = 0, aciertos = 0, tiempoInicio = null, cronometroInterval = null, preguntasJuego = [];
+// SUPABASE Variable global pero sin inicializar aún
+const supabaseUrl = 'https://yojalmwhmibubowkxure.supabase.co';
+const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InlvamFsbXdobWlidWJvd2t4dXJlIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODIyMTkyMDIsImV4cCI6MjA5Nzc5NTIwMn0.wPmPcHoMLQJZHdmo93ONLhVe3oCeTS3NKO7lZkjtLl0';
 
 document.addEventListener("DOMContentLoaded", () => {
+    window.clienteSupabase = supabase.createClient(supabaseUrl, supabaseKey);
+    
     crearRueda();
     actualizarRankingBar();
+    actualizarCuentaRegresiva();
+    actualizarContadorVoluntarios(); 
+	actualizarEstadisticasMensajes();
+	cargarEstadisticas();
+	cargarCarrusel();
 });
 
 function actualizarRankingBar() {
@@ -239,6 +249,374 @@ function actualizarCuentaRegresiva() {
                 : `${diasEnPeru} días en Perú`;
     }
 }
+
+async function registrarVoluntario(event) {
+    event.preventDefault();
+
+    const form = document.getElementById('formulario-voluntario');
+    const formData = new FormData(form);
+
+    const { error } = await window.clienteSupabase
+      .from('Voluntarios')
+      .insert([
+        {
+          nombre_completo: formData.get('nombre'),
+          dni: formData.get('dni'),
+          correo: formData.get('correo'),
+          celular: formData.get('celular'),
+          procedencia: formData.get('procedencia'),
+          edad: parseInt(formData.get('edad'))
+        }
+      ]);
+
+    if (error) {
+      alert('Error al inscribirse: ' + error.message);
+    } else {
+      form.reset();
+      document.getElementById('mensaje-exito').style.display = 'block';
+      
+      // --- ESTO ES LO NUEVO ---
+      actualizarContadorVoluntarios(); 
+    }
+}
+
+async function actualizarContadorVoluntarios() {
+    // .count({ head: true, count: 'exact' }) es la forma más rápida de obtener el total
+    const { count, error } = await window.clienteSupabase
+        .from('Voluntarios')
+        .select('*', { count: 'exact', head: true });
+
+    if (!error) {
+        document.getElementById('total-voluntarios').innerText = count;
+    } else {
+        console.error("Error al contar:", error);
+    }
+}
+
+async function registrarMensaje(event) {
+    event.preventDefault();
+
+    const fileInput = document.getElementById('usuario-foto');
+    let fotoUrl = null; // Empezamos sin URL
+
+    // 1. Solo intentamos subir la foto SI el usuario seleccionó una
+    if (fileInput.files && fileInput.files.length > 0) {
+        const file = fileInput.files[0];
+        const fileName = `foto_${Date.now()}_${file.name}`;
+        
+        const { error: uploadError } = await window.clienteSupabase.storage
+            .from('fotos-bienvenida')
+            .upload(fileName, file);
+
+        if (uploadError) {
+            alert('Error al subir la foto: ' + uploadError.message);
+            return; // Detenemos si hubo error real al subir
+        }
+
+        // Obtener la URL pública
+        const { data: publicUrlData } = window.clienteSupabase.storage
+            .from('fotos-bienvenida')
+            .getPublicUrl(fileName);
+        fotoUrl = publicUrlData.publicUrl;
+    }
+
+    // 2. Guardar el registro en la tabla (usando minúsculas: 'mensajes')
+    const { error: insertError } = await window.clienteSupabase
+        .from('Mensajes') 
+        .insert([{
+            nombre_apellido: document.getElementById('usuario-nombre').value,
+            distrito: document.getElementById('distrito').value,
+            parroquia: document.getElementById('parroquia').value,
+            grupo_etareo: document.getElementById('grupo-etareo').value,
+            mensaje: document.getElementById('usuario-mensaje').value,
+            autorizo_mensaje: document.getElementById('autorizacion').checked,
+            autorizo_foto: document.getElementById('autorizacionfoto').checked,
+            foto_url: fotoUrl // Si no hubo foto, guardará 'null' correctamente
+        }]);
+
+    if (insertError) {
+        alert('Error al guardar mensaje: ' + insertError.message);
+    } else {
+        const mensajeExito = document.getElementById('mensaje-exito-form');
+        mensajeExito.style.display = 'block';
+        document.getElementById('formulario-mensaje').reset();
+        
+        setTimeout(() => {
+            mensajeExito.style.display = 'none';
+        }, 5000);
+    }
+}
+
+async function actualizarEstadisticasMensajes() {
+    // Contamos el total de mensajes
+    const { count: totalMensajes, error: errorMensajes } = await window.clienteSupabase
+        .from('Mensajes')
+        .select('*', { count: 'exact', head: true });
+
+    // Contamos solo los que tienen foto (donde foto_url NO es null)
+    const { count: totalFotos, error: errorFotos } = await window.clienteSupabase
+        .from('Mensajes')
+        .select('*', { count: 'exact', head: true })
+        .not('foto_url', 'is', null);
+
+    if (!errorMensajes) {
+        document.getElementById('total-mensajes').innerText = totalMensajes || 0;
+    }
+    if (!errorFotos) {
+        document.getElementById('total-fotos').innerText = totalFotos || 0;
+    }
+}
+
+async function mostrarMensajesEnPagina() {
+    const contenedor = document.getElementById('contenedor-mensajesb');
+    const cuerpoTabla = document.getElementById('cuerpo-tabla');
+    
+    // 1. Consultar datos a Supabase
+    const { data, error } = await window.clienteSupabase
+        .from('Mensajes')
+        .select('nombre_apellido, mensaje')
+        .order('created_at', { ascending: false }); // Opcional: los más recientes primero
+
+    if (error) {
+        alert("Error al cargar los mensajes: " + error.message);
+        return;
+    }
+
+    // 2. Limpiar tabla antes de mostrar nuevos datos
+    cuerpoTabla.innerHTML = '';
+
+    // 3. Llenar tabla
+    if (data.length === 0) {
+        cuerpoTabla.innerHTML = '<tr><td colspan="2" style="text-align:center;">Aún no hay mensajes</td></tr>';
+    } else {
+        data.forEach(item => {
+            const fila = `<tr>
+                <td style="padding: 10px; border-bottom: 1px solid #ddd; color: gold;">${item.nombre_apellido}</td>
+                <td style="padding: 10px; border-bottom: 1px solid #ddd; color: gray;">${item.mensaje}</td>
+            </tr>`;
+            cuerpoTabla.innerHTML += fila;
+        });
+    }
+
+    // 4. Mostrar el contenedor
+    contenedor.style.display = 'block';
+}
+
+async function cargarEstadisticas() {
+  const { data, error } = await window.clienteSupabase.rpc('obtener_estadisticas');
+
+  if (error) {
+    console.error("Error al obtener estadísticas:", error);
+    return;
+  }
+
+  if (data && data.length > 0) {
+    const s = data[0]; 
+    
+    // Estos IDs son los que me indicaste que tienes en tu HTML
+    document.getElementById('distrito-top').innerText = s.distrito_top || "---";
+    document.getElementById('distrito-count').innerText = (s.distrito_total || 0) + " mensajes";
+    
+    document.getElementById('edad-top').innerText = s.edad_top ? s.edad_top + " años" : "---";
+    document.getElementById('edad-count').innerText = (s.edad_total || 0) + " mensajes";
+  }
+}
+
+async function cargarCarrusel() {
+    // 1. Consulta a Supabase
+    const { data, error } = await window.clienteSupabase
+        .from('Mensajes')
+        .select('foto_url')
+        .not('foto_url', 'is', null)
+        .order('id', { ascending: false });
+
+    if (error) {
+        console.error("Error al cargar fotos:", error);
+        return;
+    }
+
+    const contenedor = document.getElementById('swiper-contenedor-fotos');
+    if (!contenedor) return;
+    
+    // Limpiamos contenido previo
+    contenedor.innerHTML = '';
+    
+    // 2. Generar el HTML de cada slide
+    data.forEach(item => {
+		const slide = document.createElement('div');
+		slide.className = 'swiper-slide';
+		
+		// --- ESTA ES LA NUEVA LÍNEA CON EL ENLACE ---
+		slide.innerHTML = `
+			<a href="${item.foto_url}" target="_blank">
+				<img src="${item.foto_url}" alt="Foto enviada">
+			</a>
+		`; 
+		
+		contenedor.appendChild(slide);
+	});
+
+    // 3. Inicializar Swiper
+    if (typeof Swiper !== 'undefined') {
+        new Swiper(".mySwiper", {
+            loop: true, // Esto hace que el movimiento sea infinito
+            autoplay: { 
+                delay: 2500, 
+                disableOnInteraction: false 
+            },
+            pagination: { 
+                el: ".swiper-pagination", 
+                clickable: true 
+            },
+            // Configuración responsiva
+            breakpoints: {
+                320: {
+                    slidesPerView: 2, // 2 fotos en celulares
+                    spaceBetween: 10
+                },
+                768: {
+                    slidesPerView: 3, // 3 fotos en tablets
+                    spaceBetween: 15
+                },
+                1024: {
+                    slidesPerView: 4, // 4 fotos en PC
+                    spaceBetween: 20
+                }
+            }
+        });
+    }
+}
+
+// 1. Inicialización de Supabase
+const supabaseClient = supabase.createClient(
+    'https://yojalmwhmibubowkxure.supabase.co', 
+    'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InlvamFsbXdobWlidWJvd2t4dXJlIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODIyMTkyMDIsImV4cCI6MjA5Nzc5NTIwMn0.wPmPcHoMLQJZHdmo93ONLhVe3oCeTS3NKO7lZkjtLl0'
+);
+
+// Elementos del DOM
+const btnPreparar = document.getElementById('btnPreparar');
+const contenedorVela = document.getElementById('contenedorVela');
+const llamaVisual = document.getElementById('llamaVisual');
+const mensajeEstado = document.getElementById('mensajeEstado');
+
+// NUEVO: Instancia de audio (asegúrate de que el archivo 'encender.mp3' esté en la misma carpeta)
+const audioVela = new Audio('encender.mp3');
+
+// Variables de control
+let ubicacionCapturada = null;
+
+// 2. Lógica de Encendido: Captura ubicación al hacer clic en la vela
+const encenderVela = async () => {
+    // Reproducir sonido al hacer clic
+    audioVela.currentTime = 0; 
+    audioVela.play().catch(e => console.log("Audio esperando interacción", e));
+
+    mensajeEstado.textContent = "Obteniendo tu ubicación...";
+    
+    try {
+        const position = await new Promise((resolve, reject) => {
+            navigator.geolocation.getCurrentPosition(resolve, reject, { timeout: 10000 });
+        });
+
+        ubicacionCapturada = {
+            lat: position.coords.latitude,
+            lon: position.coords.longitude
+        };
+
+        // Efecto visual
+        const tipo = document.getElementById('tipoPeticion').value;
+        llamaVisual.classList.remove('color-salud', 'color-familia', 'color-trabajo', 'llama-encendida');
+        llamaVisual.classList.add('llama-encendida');
+        
+        if (tipo === 'Salud') llamaVisual.classList.add('color-salud');
+        else if (tipo === 'Familia') llamaVisual.classList.add('color-familia');
+        else if (tipo === 'Trabajo') llamaVisual.classList.add('color-trabajo');
+
+        mensajeEstado.textContent = "¡Vela encendida! Ahora presiona 'Enviar Peticion'.";
+    } catch (err) {
+        console.error("Error ubicación:", err);
+        mensajeEstado.textContent = "Error al obtener ubicación. Por favor, acepta los permisos.";
+    }
+};
+
+contenedorVela.addEventListener('click', encenderVela);
+
+// 3. Lógica del Botón: Guardar en Supabase y ArcGIS
+btnPreparar.addEventListener('click', async () => {
+    if (!ubicacionCapturada) {
+        alert("Primero debes encender la vela haciendo clic sobre ella.");
+        return;
+    }
+
+    const datos = {
+        nombres: document.getElementById('nombres').value,
+        tipo: document.getElementById('tipoPeticion').value,
+        peticion: document.getElementById('peticion').value,
+        ciudad: document.getElementById('ciudad').value
+    };
+
+    if (!datos.nombres) {
+        alert("Por favor, ingresa tu nombre.");
+        return;
+    }
+
+    mensajeEstado.textContent = "Enviando información...";
+
+    try {
+        // Guardar en ambos
+        await Promise.all([
+            supabaseClient.from('Peticiones').insert([{ 
+                nombres: datos.nombres, 
+                tipo_peticion: datos.tipo, 
+                peticion: datos.peticion, 
+                ciudad: datos.ciudad 
+            }]),
+            enviarAarcGIS(datos, ubicacionCapturada.lat, ubicacionCapturada.lon)
+        ]);
+        
+        mensajeEstado.textContent = "¡Registro exitoso! Tu petición ha sido enviada.";
+        btnPreparar.disabled = true; // Deshabilitar para evitar duplicados
+
+    } catch (err) {
+        console.error("Error en el envío:", err);
+        mensajeEstado.textContent = "Error: " + (err.message || "No se pudo completar el envío.");
+    }
+});
+
+// 4. Función de envío a ArcGIS
+async function enviarAarcGIS(data, lat, lon) {
+    const url = "https://services.arcgis.com/cV76LyXeQIKRCTNC/arcgis/rest/services/survey123_b76d59fd842e4d3daf2427e7c99fab6d/FeatureServer/0/addFeatures";
+    
+    const feature = {
+        geometry: { x: lon, y: lat, spatialReference: { wkid: 4326 } },
+        attributes: {
+            nombre_y_apellido: data.nombres,
+            tipo_de_peticion: data.tipo,
+            peticion: data.peticion,
+            ciudad: data.ciudad
+        }
+    };
+
+    const params = new URLSearchParams();
+    params.append("f", "json");
+    params.append("features", JSON.stringify([feature]));
+
+    const response = await fetch(url, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        body: params
+    });
+    
+    return await response.json();
+}
+
+// 5. Contador de caracteres
+window.actualizarContador = function(textarea) {
+    const contador = document.getElementById('contador');
+    const longitud = textarea.value.length;
+    contador.textContent = `${longitud} / 100 caracteres`;
+    contador.style.color = (longitud >= 100) ? "red" : "#888";
+};
 
 // Ejecutar al cargar
 actualizarCuentaRegresiva();
