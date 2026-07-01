@@ -3,11 +3,16 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <!-- Incluir Supabase desde CDN -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css"/>
     <link rel="stylesheet" href="papa2.css">
+	<p style="text-align: center; padding: 40px; color: #7f8c8d; font-size: 0.9em; border-bottom: 1px solid #ccc; margin-bottom: 40px;">
+	"El tiempo de Dios es siempre perfecto".</p>
+	
     <title>Viaje de Su Santidad León XIV al Perú</title>
 </head>
+
 <body>
 
     <!-- 1. Título Principal -->
@@ -55,6 +60,7 @@
         </tr>
     </tbody>
 	</table>
+	<p style="color:red;">*Esta agenda aun NO es oficial</p>
 	<p>🕊️ - 🕊️  -🕊️</p>
 
 	<hr class="divisor"> 
@@ -62,7 +68,7 @@
     <h2>Envía tu mensaje de bienvenida</h2>
 	<p>Los mensajes que se envien se entregaran a su Santidad, compilados en un libro como recuerdo de su visita a nuestra ciudad</p>
 	<section id="seccion-mensaje">
-        <form id="formulario-mensaje">
+        <form id="formulario-mensaje" onsubmit="registrarMensaje(event)">
 			<input type="text" id="usuario-nombre" placeholder="Nombre y apellido" required>
 			<input type="text" id="distrito" placeholder="Tu distrito" required>
 			<input type="text" id="parroquia" placeholder="Tu parroquia" required>
@@ -77,31 +83,102 @@
 			<textarea id="usuario-mensaje" placeholder="Tu mensaje de bienvenida..." maxlength="200" required></textarea>
 			
 			<div class="checkbox-container">
-				<input type="checkbox" id="autorizacion" name="autorizacion" required>
+				<input type="checkbox" id="autorizacion" name="autorizacion">
 				<label for="autorizacion" style="color:blue;">Autorizo que mi mensaje se haga público en el evento de bienvenida del Papa.</label>
 			</div>
 			
-			<input type="file" id="usuario-foto" accept="image/*" required>
+			<input type="file" id="usuario-foto" accept="image/*">
 			
 			<div class="checkbox-container">
-				<input type="checkbox" id="autorizacionfoto" name="autorizacionfoto" required>
+				<input type="checkbox" id="autorizacionfoto" name="autorizacionfoto">
 				<label for="autorizacion" style="color:blue;">Autorizo que mi fotografía se haga pública en el mosaico de imágenes.</label>
 			</div> 
 			<small><i>NOTA: La fotografia que se adjunte debe estar relacionada a una actividad religiosa en familia, con el projimo, en su parroquia, o dibujos realizados aluscivos a la visita del Papa Leon XIV</i></small>
 			<button type="submit">Enviar Mensaje y Foto</button>
+			<p id="mensaje-exito-form" style="display:none; color: #27ae60; font-weight: bold; text-align: center; margin-top: 10px;">
+				¡Mensaje y foto enviados con éxito!
+			</p>
 		</form>
 		<br>
+		<section id="seccion-estadisticas-mensajes">
 		<div class="stats-grid">
     		<div class="stat-card">
 				<h3>Mensajes recibidos</h3>
 				<p id="total-mensajes">0</p>
 			</div>
 			<div class="stat-card">
-				<h3>Fotos compartidas</h3>
+				<h3>Fotos recibidas</h3>
 				<p id="total-fotos">0</p>
 			</div>
 		</div>
+		</section>	
+		<div style="text-align: center; margin-top: 20px;">
+			<button type="button" onclick="mostrarMensajesEnPagina()" 
+					style="padding: 10px 20px; cursor: pointer; background-color: #2784F5; color: white; border: none; border-radius: 5px;">
+				Ver los mensajes recientes
+			</button>
+		</div>
+		<div id="contenedor-mensajesb" style="display: none; border: 2px solid #ccc; padding: 20px; background: white; position: relative;">
+			<button onclick="document.getElementById('contenedor-mensajesb').style.display='none'" 
+					style="position: absolute; top: 10px; right: 10px; background: red; color: white; border: none; font-weight: bold; cursor: pointer; padding: 5px 10px;">
+				X
+			</button>
+
+			<h2>Lista de Mensajes</h2>
+			<table id="tabla-mensajes" border="1" style="width: 100%; border-collapse: collapse;">
+				<thead>
+					<tr>
+						<th>Nombre</th>
+						<th>Mensaje</th>
+					</tr>
+				</thead>
+				<tbody id="cuerpo-tabla"></tbody>
+			</table>
+		</div>
 	</section>
+	
+	<hr class="divisor"> 
+	
+	<h2>Petitorios de Oracion</h2>
+	<p> Enciende una vela por alguien que necesita tu oracion:</p>
+	<div id="seccion-mensaje">
+		<form id="formulario-mensaje">
+			<input type="text" id="nombres" placeholder="Tu nombre" required>
+			<p style="margin-top: 1px; margin-bottom: 1px; text-align: left; color: blue">Escoge el tipo de Peticion</p>
+			<select id="tipoPeticion" required>
+				<option value="Salud">Por Salud</option>
+				<option value="Familia">Por la Familia</option>
+				<option value="Trabajo">Por Trabajo</option>
+			</select>
+			<textarea id="peticion" placeholder="Tu petición" maxlength="100" oninput="actualizarContador(this)"></textarea>
+			<small id="contador" style="margin-top: -10px; margin-bottom: 5px; text-align: left; color: gray">0 / 100 caracteres</small>
+			<input type="text" id="ciudad" placeholder="Tu ciudad" required>
+			<div id="contenedorVela">
+				<div id="svgVela">
+					<div class="base-vela"></div>
+					<div id="llamaVisual"></div>
+				</div>
+				<p style="color: gray">Haz click para encender</p>
+			</div>
+			<button type="button" id="btnPreparar">Enviar Peticion</button>
+			<p id="mensajeEstado"></p>
+		</form>
+	</div>
+
+	<a href="https://telematica.maps.arcgis.com/apps/dashboards/4ba1d4a8c0654c749da85ead580e928b" style="
+	display: inline-block;
+		padding: 12px 24px;
+		background-color: #007BFF;
+		color: white;
+		text-decoration: none;
+		border-radius: 5px;
+		font-family: Arial, sans-serif;
+		font-weight: bold;
+		text-align: center;
+		width="80%";
+		height="400px"  frameborder="0">
+		Ver Mapa de Luminarias
+	</a>
 	
 	<hr class="divisor"> 
 	
@@ -179,13 +256,13 @@
 		<h2>¿Quieres ser un voluntario?</h2>
 		<p>Únete al equipo de bienvenida para el Papa León XIV.</p>
 		
-		<form id="formulario-voluntario" class="voluntario-grid">
-			<input type="text" placeholder="Nombre completo" required>
-			<input type="number" placeholder="DNI" min="0" max="9" required>
-			<input type="email" placeholder="Correo electrónico" required>
-			<input type="tel" placeholder="Número de celular" required>
-			<input type="text" placeholder="Lugar de procedencia" required>
-			<input type="number" placeholder="Edad" min="1" max="80" required>
+		<form id="formulario-voluntario" class="voluntario-grid" onsubmit="registrarVoluntario(event)">
+			<input type="text" name="nombre" placeholder="Nombre completo" required>
+			<input type="text" name="dni" placeholder="DNI" required>
+			<input type="email" name="correo" placeholder="Correo electrónico" required>
+			<input type="tel" name="celular" placeholder="Número de celular" required>
+			<input type="text" name="procedencia" placeholder="Lugar de procedencia" required>
+			<input type="number" name="edad" placeholder="Edad" min="1" max="80" required>
 			<button type="submit" class="btn-secundario">Inscribirse</button>
 			<p id="mensaje-exito" style="display:none; color: #27ae60; font-weight: bold; grid-column: span 2; text-align: center;">
 				¡Gracias por inscribirte! Nos pondremos en contacto contigo pronto.
@@ -197,6 +274,7 @@
 				<p id="total-voluntarios">0</p>
 			</div>
 	</section>
+	
 		<hr class="divisor">
 		
 	<section id="seccion-estadisticas">
@@ -217,7 +295,8 @@
 	</section>
 	
 	<hr class="divisor">
-
+	
+	<h2>Ruta Turistica de Robert Prevost en Chiclayo</h2>
 	<img src="https://luischavezt.github.io/ECD/imagenes/Robert_Prevost.png" alt="Papa León XIV" class="foto-papa">
 	<br>
 	<a href="https://luischavezt.github.io/ECD/RECURSOS/Papa.pdf" style="
@@ -230,23 +309,29 @@
 		font-family: Arial, sans-serif;
 		font-weight: bold;
 		text-align: center;">
-		Ver Ruta Turistica de Robert Prevost
+		Ver Ruta 
 	</a>
 	
 	<hr class="divisor">
 	
     <!-- 4. Sección: Mosaico de fotos -->
-    <section id="seccion-mosaico">
-        <h2>Mosaico de fotografias enviadas</h2>
-		<p> Con las fotografias que nos compartiste elaboraremos dia a dia un mosaico de fotos aluscivos al Papa y a nuestro Pais</p>
-        <div id="mosaico-contenedor" class="mosaico-grid">
-            <!-- Aquí Supabase inyectará las fotos dinámicamente -->
-			<img src="https://live.staticflickr.com/6109/6273678657_95e84ae7db_b.jpg" alt="Mosaico" class="foto-mosaico">
-			
-        </div>
-    </section>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css"/>
+	<section id="seccion-mosaico">
+		<h2>Galeria de fotografías enviadas</h2>
+		<p>Estas son las Ultimas fotos que nos compartieron con las que se elaborara el FotoMosaico</p>
+		
+		<div class="swiper mySwiper">
+			<div class="swiper-wrapper" id="swiper-contenedor-fotos">
+				</div>
+			<div class="swiper-pagination"></div>
+		</div>
+	</section>
 
+	<script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
     <script src="papa2.js"></script>
 	
 </body>
+<footer style="text-align: center; padding: 40px; color: #7f8c8d; font-size: 0.9em; border-top: 1px solid #ccc; margin-top: 40px;">
+    <p>"Esta plataforma es un aporte voluntario y gratuito al servicio de la Iglesia para la visita del Papa León XIV. © 2026.".</p>
+</footer>
 </html>
