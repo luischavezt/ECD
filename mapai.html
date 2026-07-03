@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="initial-scale=1, maximum-scale=1, user-scalable=no">
+  <title>Mapa de Lotes</title>
+  <style>
+    html, body, #viewDiv { padding: 0; margin: 0; height: 100%; width: 100%; }
+	/* Estilo moderno para la tarjeta del Lote */
+  .esri-popup__main-container {
+    border-radius: 20px !important;
+    padding: 10px;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.15) !important;
+  }
+  
+  /* Ocultar elementos extra que hacen que se vea como ArcGIS */
+  .esri-popup__header-container, .esri-popup__footer {
+    display: none !important;
+  }
+  </style>
+  <link rel="stylesheet" href="https://js.arcgis.com/4.29/esri/themes/light/main.css">
+  <script src="https://js.arcgis.com/4.29/init.js"></script> 
+  
+  <script>
+    require(["esri/Map", "esri/views/MapView", "esri/layers/FeatureLayer"], 
+    (Map, MapView, FeatureLayer) => {
+      
+      const map = new Map({ basemap: "streets-vector" });
+
+      const view = new MapView({
+        container: "viewDiv",
+        map: map,
+        center: [-71.97, -13.52],
+        zoom: 16
+      });
+
+      // Configuración del Popup (Ventana de información)
+      // Configuración del Popup con tus datos reales
+      const popupTemplate = {
+        title: "Lote {LOTE}, Manzana {MZ}", 
+        content: `
+          <div style="font-family: Arial; padding: 10px;">
+            <p><b>Ubicación:</b> {URB}</p>
+            <p><b>Vía:</b> {VIA}</p>
+            <p><b>Numeración:</b> {NUMERACION}</p>
+            <br>
+            <a href="https://wa.me/51984310233?text=Hola, quiero información sobre el Lote {LOTE} de la Manzana {MZ}" 
+               target="_blank"
+               style="display: inline-block; padding: 12px 20px; background: #25D366; color: white; text-decoration: none; border-radius: 8px; font-weight: bold; text-align: center;">
+               Contactar por WhatsApp
+            </a>
+          </div>
+        `
+      };
+
+      // Carga de la capa con el template
+      const lotesLayer = new FeatureLayer({
+        url: "https://services8.arcgis.com/2qDHoDLqu6VOlf1y/arcgis/rest/services/LOTES_PRUEBA/FeatureServer/0",
+        popupTemplate: popupTemplate
+      });
+
+      map.add(lotesLayer);
+
+      // Centrar el mapa automáticamente en los lotes al cargar
+      lotesLayer.when(() => {
+        return lotesLayer.queryExtent();
+      }).then((response) => {
+        view.goTo(response.extent);
+      }).catch((err) => {
+        console.error("Error al cargar la capa: ", err);
+      });
+    });
+  </script>
+  <style>
+  /* FORZAR LA TARJETA INFERIOR */
+  .esri-popup__main-container {
+    position: fixed !important;
+    bottom: 20px !important;
+    left: 10px !important;
+    right: 10px !important;
+    top: auto !important;
+    width: auto !important;
+    max-width: none !important;
+    border-radius: 20px !important;
+    box-shadow: 0 5px 20px rgba(0,0,0,0.3) !important;
+    z-index: 1000 !important;
+  }
+  /* Ocultar la flecha que apunta al lote para que no estorbe */
+  .esri-popup__pointer { display: none !important; }
+</style>
+</head>
+<body>
+  <div id="viewDiv"></div>
+</body>
+</html>
