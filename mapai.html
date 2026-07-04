@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="initial-scale=1, maximum-scale=1, user-scalable=no">
+  <title>Mapa de Lotes</title>
+  
+  <link rel="stylesheet" href="https://js.arcgis.com/4.29/esri/themes/light/main.css">
+  <script src="https://js.arcgis.com/4.29/init.js"></script> 
+
+  <style>
+    html, body, #viewDiv { padding: 0; margin: 0; height: 100%; width: 100%; }
+    
+    .esri-popup__main-container {
+      position: fixed !important;
+      bottom: 20px !important;
+      left: 10px !important;
+      right: 10px !important;
+      top: auto !important;
+      width: auto !important;
+      max-width: none !important;
+      border-radius: 20px !important;
+      box-shadow: 0 5px 20px rgba(0,0,0,0.3) !important;
+      z-index: 1000 !important;
+    }
+    .esri-popup__header-container, .esri-popup__footer, .esri-popup__pointer { 
+      display: none !important; 
+    }
+
+    .btn-container { display: flex; gap: 15px; margin: 20px 0; }
+    .btn-info { 
+        flex: 1; padding: 15px; background: #f8f9fa; border: 2px solid #e9ecef; 
+        border-radius: 12px; text-align: center; font-weight: bold; font-size: 16px; color: #333;
+    }
+    /* Estilo para los botones en una sola línea */
+    .action-row { display: flex; gap: 10px; margin-top: 10px; }
+    .action-btn { 
+        flex: 1; padding: 15px; color: white !important; text-decoration: none; 
+        border-radius: 12px; font-weight: bold; text-align: center; font-size: 14px; 
+    }
+  </style>
+  
+  <script>
+    require([
+      "esri/Map", "esri/views/MapView", "esri/layers/FeatureLayer", "esri/widgets/BasemapToggle"
+    ], (Map, MapView, FeatureLayer, BasemapGallery) => {
+      
+      const map = new Map({ basemap: "streets-vector" });
+      const view = new MapView({ container: "viewDiv", map: map, center: [-71.97, -13.52], zoom: 16 });
+
+      view.ui.add(new BasemapGallery({ view: view }), "top-right");
+
+      const popupTemplate = {
+        title: "Lote {LOTE}, Manzana {MZ}",
+        expressionInfos: [{
+            name: "area-formateada",
+            expression: "Text($feature.Shape__Area, '#,###.##')"
+        }, {
+            name: "status-color",
+            expression: `
+                var status = Upper($feature.STATUS);
+                if (status == 'DISPONIBLE') { return '#28a745'; }
+                else if (status == 'NO_DISPONIBLE') { return '#dc3545'; }
+                else { return '#6c757d'; }
+            `
+        }],
+        content: `
+            <div style="font-family: Arial, sans-serif; padding: 10px;">
+              <p><b>Status:</b> <span style="color: {expression/status-color}; font-weight: bold; text-transform: uppercase;">{STATUS}</span></p>
+              <p><b>Ubicación:</b> {URB}</p>
+              <p><b>Vía:</b> {VIA}</p>
+              <p><b>Numeración:</b> {NUMERACION}</p>
+              
+              <div class="btn-container">
+                 <div class="btn-info">S/ {PRECIO}</div>
+                 <div class="btn-info">{expression/area-formateada} m²</div>
+              </div>
+
+              <div class="action-row">
+                  <a href="https://wa.me/51984310233?text=Hola, quiero información sobre el Lote {LOTE} de la Manzana {MZ}" 
+                     target="_blank" class="action-btn" style="background: #25D366;">Consultas 💬</a>
+                  <a href="{FOTOS}" target="_blank" class="action-btn" style="background: #007bff;">Ver Foto</a>
+				  <a href="https://planner5d.com/es/pro/360walkthrough" target="_blank" class="action-btn" style="background: #ED45C3;">Ver Tour 360</a>
+              </div>
+            </div>
+        `
+      };
+
+      const lotesLayer = new FeatureLayer({
+        url: "https://services8.arcgis.com/2qDHoDLqu6VOlf1y/arcgis/rest/services/LOTES_PRUEBA/FeatureServer/0",
+        popupTemplate: popupTemplate,
+        renderer: {
+            type: "unique-value",
+            field: "STATUS",
+            defaultSymbol: { type: "simple-fill", color: [200, 200, 200, 0.5], outline: { color: [255, 255, 255, 1], width: 1 } },
+            uniqueValueInfos: [
+                { value: "DISPONIBLE", symbol: { type: "simple-fill", color: [34, 139, 34, 0.6], outline: { color: [255, 255, 255, 1], width: 1 } } },
+                { value: "NO_DISPONIBLE", symbol: { type: "simple-fill", color: [220, 20, 60, 0.6], outline: { color: [255, 255, 255, 1], width: 1 } } }
+            ]
+        }
+      });
+      
+      map.add(lotesLayer);
+      lotesLayer.when(() => lotesLayer.queryExtent()).then((response) => view.goTo(response.extent));
+    });
+  </script>
+</head>
+<body>
+	<header>
+		<h2 style="text-align: center; margin-bottom: 0;">Mapa Interactivo</h2>
+		<p style="text-align: center; margin-top: 1px;">Selecciona un lote para ver sus datos</p>
+	</header>
+	<div id="viewDiv"></div>
+</body>
+</html>
