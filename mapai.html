@@ -46,7 +46,7 @@
     ], (Map, MapView, FeatureLayer, BasemapGallery) => {
       
       const map = new Map({ basemap: "streets-vector" });
-      const view = new MapView({ container: "viewDiv", map: map, center: [-71.97, -13.52], zoom: 16 });
+      const view = new MapView({ container: "viewDiv", map: map, center: [-71.97, -13.52], zoom: 15 });
 
       view.ui.add(new BasemapGallery({ view: view }), "top-right");
 
