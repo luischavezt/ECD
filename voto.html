@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistema de Votación</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f4f7f6;
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+        }
+        header {
+            width: 100%;
+            max-width: 400px;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .foto-cap {
+            width: 100%;
+            max-width: 300px;
+            height: auto;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            width: 100%;
+            max-width: 400px;
+            text-align: center;
+        }
+        h2 { color: #333; margin-bottom: 20px; }
+        input[type="text"] {
+            width: 100%;
+            padding: 12px;
+            margin-bottom: 15px;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            box-sizing: border-box;
+        }
+        button {
+            width: 100%;
+            padding: 12px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: bold;
+        }
+        button:hover { background-color: #0056b3; }
+        .radio-group { text-align: left; margin: 20px 0; }
+        .radio-group label { display: block; padding: 10px; border: 1px solid #eee; margin-bottom: 10px; border-radius: 6px; cursor: pointer; }
+        #mensaje { font-weight: bold; margin: 15px 0; color: #555; }
+    </style>
+</head>
+<body>
+
+    <header>
+        <img src="https://luischavezt.github.io/ECD/imagenes/cap.png" alt="CAP" class="foto-cap">
+    </header>
+
+    <div class="container">
+        <h2>Sistema de Votación</h2>
+        <input type="text" id="capInput" placeholder="Ingresa tu CAP">
+        <button id="btnVerificar">Verificar</button>
+        <p id="mensaje"></p>
+
+        <div id="divVotacion" style="display:none;">
+            <p>Selecciona tu candidato:</p>
+            <div class="radio-group">
+                <label><input type="radio" name="lista" value="Lista 1"> Lista 1</label>
+                <label><input type="radio" name="lista" value="Lista 2"> Lista 2</label>
+                <label><input type="radio" name="lista" value="Lista 3"> Lista 3</label>
+            </div>
+            <button id="btnVotar">Confirmar Voto</button>
+        </div>
+
+        <div id="divResultados" style="display:none; margin-top: 20px;">
+            <button id="btnResult" style="background-color: #d1d1d1; color: #000000; border: 1px solid #bcbcbc; padding: 12px; width: 100%; border-radius: 6px; cursor: pointer; font-weight: bold; margin-top: 10px;">
+                Ver Resultados
+            </button>
+            <p style="font-size: 0.9em; color: #666; margin-top: 10px;">Los resultados estarán disponibles a partir de las 4pm</p>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script>
+        const supabaseClient = supabase.createClient(
+            'https://viozqipplhkcxacpryrr.supabase.co', 
+            'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZpb3pxaXBwbGhrY3hhY3ByeXJyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODE3ODMwMjUsImV4cCI6MjA5NzM1OTAyNX0.j8Qc-tVeIJH_4_UvwJtZhIqNcbSJ2zsZia6UpwPyuFA'
+        );
+
+        let capGlobal = "";
+
+        document.getElementById('btnVerificar').addEventListener('click', async () => {
+            const cap = document.getElementById('capInput').value.trim();
+            const mensaje = document.getElementById('mensaje');
+            mensaje.innerText = "Verificando...";
+
+            const { data, error } = await supabaseClient
+                .from('padron_votos')
+                .select('*')
+                .eq('cap', cap)
+                .single();
+
+            if (error) {
+                mensaje.innerText = "CAP no encontrado, consulta si estás habilitado.";
+            } else if (data.ya_voto) {
+                mensaje.innerText = "Lo siento, " + data.nombres + ", ya votaste.";
+            } else {
+                capGlobal = cap;
+                mensaje.innerText = "Hola " + data.nombres + ", puedes votar.";
+                document.getElementById('divVotacion').style.display = 'block';
+                document.getElementById('btnVerificar').style.display = 'none';
+                document.getElementById('capInput').style.display = 'none';
+            }
+        });
+
+        document.getElementById('btnVotar').addEventListener('click', async () => {
+            const seleccion = document.querySelector('input[name="lista"]:checked');
+            if (!seleccion) { alert("Selecciona una lista."); return; }
+
+            const { data, error } = await supabaseClient.rpc('registrar_voto_secreto', { 
+                p_cap: capGlobal, 
+                p_opcion: seleccion.value 
+            });
+
+            if (error) { 
+                alert("Error: " + error.message); 
+            } else {
+                document.getElementById('mensaje').innerText = data;
+                document.getElementById('divVotacion').style.display = 'none';
+                // Mostramos el botón de resultados y el texto tras confirmar voto
+                document.getElementById('divResultados').style.display = 'block';
+            }
+        });
+    </script>
+</body>
+</html>
