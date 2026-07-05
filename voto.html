@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+<body>
+    <input type="text" id="capInput" placeholder="Ingresa tu CAP">
+    <button onclick="verificarVoto()">Verificar</button>
+    <p id="mensaje"></p>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script>
+        // REEMPLAZA ESTOS VALORES CON LOS DE TU PANEL DE SUPABASE
+        const supabase = supabase.createClient('https://yojalmwhmibubowkxure.supabase.co', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZpb3pxaXBwbGhrY3hhY3ByeXJyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODE3ODMwMjUsImV4cCI6MjA5NzM1OTAyNX0.j8Qc-tVeIJH_4_UvwJtZhIqNcbSJ2zsZia6UpwPyuFA');
+
+        async function verificarVoto() {
+            alert("¡El botón funciona!");
+			const cap = document.getElementById('capInput').value;
+            const mensaje = document.getElementById('mensaje');
+            mensaje.innerText = "Verificando...";
+
+            const { data, error } = await supabase
+                .from('padron_votos')
+                .select('*')
+                .eq('cap', cap)
+                .single();
+
+            if (error) {
+                mensaje.innerText = "Error o CAP no encontrado.";
+                console.error(error);
+            } else if (data.ya_voto) {
+                mensaje.innerText = "Lo siento, " + data.nombres + ", ya registraste tu voto.";
+            } else {
+                mensaje.innerHTML = "Hola " + data.nombres + ", puedes votar. " +
+                                   "<button onclick=\"registrarVoto('" + cap + "')\">Confirmar Voto</button>";
+            }
+        }
+
+        async function registrarVoto(cap) {
+            const { error } = await supabase
+                .from('padron_votos')
+                .update({ ya_voto: true, votado_el: new Date().toISOString() })
+                .eq('cap', cap);
+
+            if (!error) {
+                document.getElementById('mensaje').innerText = "¡Voto registrado con éxito!";
+            } else {
+                alert("Error al registrar voto");
+            }
+        }
+    </script>
+</body>
+</html>
