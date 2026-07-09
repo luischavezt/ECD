@@ -2,114 +2,61 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Trivia de Rampas</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <style>
-        .screen { display: none; }
-        .screen.active { display: flex; }
-    </style>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+	<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+	<link rel="stylesheet" href="rompecabezas.css">
+    <title>Rompecabezas Rampa</title>
 </head>
-<body class="bg-slate-100 min-h-screen flex items-center justify-center p-4">
-    
-    <div id="main-container" class="bg-black p-8 rounded-xl shadow-lg w-full max-w-sm">
-        <h2 class="text-2 font-bold text-center mt-4" style="color: yellow;">Proyecto</h2>
-		<h2 class="text-2 font-bold text-center mt-4" style="color: yellow; font-size: 1.5rem;">CINTA ELECTRICA</h2>
-        <br>
-        <!-- Pantalla de Inicio -->
-        <div id="setup-screen" class="screen active flex-col text-center">
-            <h1 class="text-2xl font-bold mb-4 text-white">¿Cuánto conoces sobre Rampas?</h1>
-            <button onclick="iniciarJuego()" class="bg-blue-600 text-white py-2 rounded w-full hover:bg-blue-700">Comenzar</button>
-        </div>
-
-        <!-- Pantalla de Juego -->
-        <div id="game-screen" class="screen flex-col">
-            <p class="text-sm text-gray-500 mb-2 text-center">Pregunta <span id="q-num">1</span>/5</p>
-            <h2 id="pregunta" class="text-lg font-semibold mb-4 text-center text-white"></h2>
-            <div id="opciones" class="space-y-2"></div>
-            <div id="feedback" class="text-center font-bold text-red-600 mt-4 h-6"></div>
-        </div>
-
-        <!-- Pantalla de Resultados -->
-        <div id="results-screen" class="screen flex-col text-center">
-            <h2 class="text-xl font-bold mb-2 text-white">¡Terminado!</h2>
-            <p id="final-time" class="text-lg mb-6 text-white"></p>
-            
-            <!-- Bloque movido aquí para que aparezca al terminar -->
-            <div class="mt-4">
-                <h2 class="font-bold text-center mb-4 text-white">¿Quieres armar un rompecabezas digital?</h2>
-                <a href="https://luischavezt.github.io/ECD/rompecabezas.html" 
-                   target="_blank" 
-                   class="block w-full bg-pink-600 text-white text-center py-2 rounded hover:bg-pink-700 transition">
-                   Jugar
-                </a>
-            </div>
-        </div>
+<body>
+	<h1 style="margin-bottom: 35px; text-align: center; color: white; font-weight: bold;">
+        ¡Mueve las piezas!
+    </h1>
+	
+    <div id="leaderboard">
+        <h3>🏆 MEJORES TIEMPOS 🏆</h3>
+        <ul id="scores-list">
+            <li class="score-item">1°: <span>--:--</span></li>
+            <li class="score-item">2°: <span>--:--</span></li>
+            <li class="score-item">3°: <span>--:--</span></li>
+        </ul>
     </div>
 
-    <script>
-        const bancoPreguntas = [
-            { q: "¿Que elementos de seguridad debe haber en los lados de las rampas?", o: ["Cintas antideslizantes", "Pasamanos ergonómicos", "Cintas de seguridad"], a: 1 },
-            { q: "¿Cual es el ancho libre que debe tener una rampa?", o: ["0.90 a 1.20", "1.00", "1.20 a 1.50"], a: 2 },
-            { q: "¿Como debe ser la superficie de la Rampa?", o: ["De material antideslizante", "De Cerámico", "De Madera"], a: 0 },
-            { q: "¿Cual es la señalizacion para una rampa para discapacitados?", o: ["Una flecha verde", "Un triángulo de advertencia", "Una silla de ruedas"], a: 2 },
-            { q: "¿Cual consideras es el criterio correcto?", o: ["Mayor altura, mayor longitud de la rampa", "Menor altura, mayor longitud de rampa", "La longitud de rampa debe ser igual a la altura a subir"], a: 0 }
-        ];
+    <div id="ui-panel">
+        <div id="timer">00:00</div>
+        <button id="reset-btn">Reiniciar</button>
+    </div>
 
-        let preguntasSeleccionadas = [];
-        let state = { startTime: null, indice: 0 };
+    <div id="main-game-layout">
+        
+        <div id="game-container">
+            <div id="board-grid">
+                <div class="grid-slot"></div><div class="grid-slot"></div><div class="grid-slot"></div>
+                <div class="grid-slot"></div><div class="grid-slot"></div><div class="grid-slot"></div>
+                <div class="grid-slot"></div><div class="grid-slot"></div><div class="grid-slot"></div>
+            </div>
 
-        function iniciarJuego() {
-            state.startTime = Date.now();
-            preguntasSeleccionadas = [...bancoPreguntas].sort(() => Math.random() - 0.5).slice(0, 5);
-            
-            document.getElementById("setup-screen").classList.remove("active");
-            document.getElementById("game-screen").classList.add("active");
-            mostrarPregunta();
-        }
+            <div id="name-modal" class="modal-screen">
+                <h2>¡Lo lograste!</h2>
+                <p id="time-report">Tu tiempo fue de --:--</p>
+                <p>Ingresa tu nombre para el cuadro de honor:</p>
+                <input type="text" id="player-name" placeholder="Tu Nombre o Iniciales" maxlength="12">
+                <button id="save-score-btn">Guardar Récord</button>
+            </div>
 
-        function mostrarPregunta() {
-            document.getElementById("feedback").innerText = "";
-            if (state.indice < preguntasSeleccionadas.length) {
-                document.getElementById("q-num").innerText = state.indice + 1;
-                document.getElementById("pregunta").innerText = preguntasSeleccionadas[state.indice].q;
-                const optDiv = document.getElementById("opciones");
-                optDiv.innerHTML = "";
-                preguntasSeleccionadas[state.indice].o.forEach((txt, i) => {
-                    const btn = document.createElement("button");
-                    btn.innerText = txt;
-                    btn.className = "w-full bg-blue-500 text-white p-2 rounded hover:bg-blue-600 transition";
-                    btn.onclick = () => manejarRespuesta(i);
-                    optDiv.appendChild(btn);
-                });
-            } else {
-                terminarJuego();
-            }
-        }
+            <div id="win-screen" class="modal-screen">
+                <h2>¡Felicitaciones!</h2>
+                <p>El marcador ha sido actualizado.</p>
+                <button id="restart-btn">Siguiente Imagen</button>
+            </div>
+        </div>
 
-        function manejarRespuesta(indiceElegido) {
-            const feedback = document.getElementById("feedback");
-            const esCorrecta = (indiceElegido === preguntasSeleccionadas[state.indice].a);
+        <div id="guide-panel">
+            <span>Guía Visual</span>
+            <div id="preview-image"></div>
+        </div>
 
-            if (esCorrecta) {
-                feedback.className = "text-center font-bold text-green-600 mt-4 h-6";
-                feedback.innerText = "¡Correcto!";
-                setTimeout(() => {
-                    state.indice++;
-                    mostrarPregunta();
-                }, 800);
-            } else {
-                feedback.className = "text-center font-bold text-red-600 mt-4 h-6";
-                feedback.innerText = "¡Incorrecto! Inténtalo de nuevo.";
-            }
-        }
-
-        function terminarJuego() {
-            const tiempoTotal = ((Date.now() - state.startTime) / 1000).toFixed(2);
-            document.getElementById("game-screen").classList.remove("active");
-            document.getElementById("results-screen").classList.add("active");
-            document.getElementById("final-time").innerText = `Tu tiempo total: ${tiempoTotal} segundos`;
-        }
-    </script>
+    </div>
+	
+<script src="rompecabezas.js"></script>
 </body>
 </html>
