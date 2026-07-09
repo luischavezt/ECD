@@ -46,7 +46,7 @@
             display: flex;
             justify-content: space-around;
             flex-wrap: wrap;
-            gap: 7px;
+            gap: 6px;
             list-style: none;
             font-size: 1rem;
         }
