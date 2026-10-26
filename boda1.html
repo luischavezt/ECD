@@ -2,7 +2,7 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>Totem Vertical 55" - Nuestra Boda</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -17,11 +17,11 @@
             -webkit-user-select: none;
         }
 
-        body {
+        html, body {
             background-color: #111;
             font-family: 'Montserrat', sans-serif;
-            height: 100vh;
-            width: 100vw;
+            height: 100%;
+            width: 100%;
             overflow: hidden;
             display: flex;
             justify-content: center;
@@ -55,7 +55,7 @@
             display: flex;
             flex-direction: column;
             width: 100%;
-            height: auto; /* Corregido para permitir que crezca con las diapositivas */
+            height: auto;
             transition: transform 0.6s cubic-bezier(0.25, 1, 0.5, 1);
         }
 
@@ -69,7 +69,7 @@
             justify-content: center;
             align-items: center;
             position: relative;
-            overflow: hidden; /* Asegura que nada se desborde */
+            overflow: hidden;
         }
 
         h1, h2, h3 {
@@ -370,31 +370,31 @@
         </div>
 
         <div class="slide" style="background-image: linear-gradient(rgba(0,0,0,0.65), rgba(0,0,0,0.65)), url('https://picsum.photos/id/319/1080/1920'); background-size: cover;">
-		    <div class="bg-slide-overlay">
-		        <h2 style="font-size: 50px; margin-bottom: 30px; color: #2c2c2c;">¿Tienes fotos divertidas?</h2>
-		        <p style="font-size: 26px; margin-bottom: 40px; color: #4a4a4a;">Queremos guardar cada perspectiva de este gran día desde tus ojos. Escanea el código directamente con tu móvil y comparte tus tomas en la galería digital colectiva.</p>
-		        
-		        <div style="background: white; display: inline-block; padding: 25px; border-radius: 15px; margin-bottom: 30px; box-shadow: 0 15px 30px rgba(0,0,0,0.2);">
-		            <img src="https://luischavezt.github.io/ECD/imagenes/FotoEvento.png" alt="Código QR del evento" style="width: 180px; height: 180px; display: block; object-fit: contain;">
-		        </div>
-		
-		        <p style="font-size: 45px; font-weight: 600; color: #b08d57; font-family: 'Cormorant Garamond', serif;">#BodaCarolinaYLuis</p>
-		    </div>
-		</div>
+            <div class="bg-slide-overlay">
+                <h2 style="font-size: 50px; margin-bottom: 30px; color: #2c2c2c;">¿Tienes fotos divertidas?</h2>
+                <p style="font-size: 26px; margin-bottom: 40px; color: #4a4a4a;">Queremos guardar cada perspectiva de este gran día desde tus ojos. Escanea el código directamente con tu móvil y comparte tus tomas en la galería digital colectiva.</p>
+                
+                <div style="background: white; display: inline-block; padding: 25px; border-radius: 15px; margin-bottom: 30px; box-shadow: 0 15px 30px rgba(0,0,0,0.2);">
+                    <img src="https://luischavezt.github.io/ECD/imagenes/FotoEvento.png" alt="Código QR del evento" style="width: 180px; height: 180px; display: block; object-fit: contain;">
+                </div>
+
+                <p style="font-size: 45px; font-weight: 600; color: #b08d57; font-family: 'Cormorant Garamond', serif;">#BodaCarolinaYLuis</p>
+            </div>
+        </div>
 
         <div class="slide">
-		    <h2 class="slide-title">Galería en Vivo</h2>
-		    <p style="font-size: 24px; margin-bottom: 30px;">¡Gracias por compartir tus momentos con nosotros!</p>
-		
-		    <div style="width: 100%; height: 1100px; border-radius: 15px; overflow: hidden; background: #fff;">
-		        <iframe 
-		            src="https://experience.arcgis.com/experience/c910cf7bc855406a82047d907b1ce20a" 
-		            style="width: 100%; height: 100%; border: none;" 
-		            allow="fullscreen; camera; geolocation" 
-		            allowfullscreen>
-		        </iframe>
-		    </div>
-		</div>
+            <h2 class="slide-title">Galería en Vivo</h2>
+            <p style="font-size: 24px; margin-bottom: 30px;">¡Gracias por compartir tus momentos con nosotros!</p>
+
+            <div style="width: 100%; height: 1100px; border-radius: 15px; overflow: hidden; background: #fff;">
+                <iframe 
+                    src="https://experience.arcgis.com/experience/c910cf7bc855406a82047d907b1ce20a" 
+                    style="width: 100%; height: 100%; border: none;" 
+                    allow="fullscreen; camera; geolocation" 
+                    allowfullscreen>
+                </iframe>
+            </div>
+        </div>
 
     </div>
 </div>
@@ -414,23 +414,22 @@
         wrapper.style.transform = `translateY(${offset}px)`;
 
         menuButtons.forEach(btn => btn.classList.remove('active'));
-        
-        // Lógica correcta para mantener activo el botón presionado
-        let activeBtnIndex = currentSlideIndex;
-        if(menuButtons[activeBtnIndex]) {
-            menuButtons[activeBtnIndex].classList.add('active');
+        if(menuButtons[currentSlideIndex]) {
+            menuButtons[currentSlideIndex].classList.add('active');
         }
     }
 
     function scaleTotemApp() {
         const totem = document.getElementById('totem-app');
         
-        const windowWidth = window.innerWidth || document.documentElement.clientWidth || screen.width;
-        const windowHeight = window.innerHeight || document.documentElement.clientHeight || screen.height;
+        // Medir el área real visible evitando screen.height
+        const windowWidth = (window.visualViewport ? window.visualViewport.width : window.innerWidth) || document.documentElement.clientWidth;
+        const windowHeight = (window.visualViewport ? window.visualViewport.height : window.innerHeight) || document.documentElement.clientHeight;
         
         const scaleX = windowWidth / 1080;
         const scaleY = windowHeight / 1920;
         
+        // Se toma la menor escala para asegurar que quepa completa vertical y horizontalmente
         const scale = Math.min(scaleX, scaleY);
         
         totem.style.transform = `scale(${scale})`;
@@ -439,7 +438,10 @@
     scaleTotemApp();
     window.addEventListener('load', scaleTotemApp);
     window.addEventListener('resize', scaleTotemApp);
-    setTimeout(scaleTotemApp, 200);
+    if (window.visualViewport) {
+        window.visualViewport.addEventListener('resize', scaleTotemApp);
+    }
+    setTimeout(scaleTotemApp, 250);
 </script>
 
 </body>
