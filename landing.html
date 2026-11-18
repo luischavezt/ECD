@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Portal - Tótem Interactivo</title>
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #1a252f; /* Fondo oscuro ideal para tótems públicos */
+            color: #ffffff;
+            margin: 0;
+            padding: 40px 30px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            overflow-x: hidden; /* Evita scroll horizontal por la marquesina */
+        }
+        .brand-logo {
+            max-width: 150px;
+            height: auto;
+            margin-bottom: 20px;
+        }
+
+        /* --- ESTILOS DE LA FRANJA MÓVIL TRANSPARENTE --- */
+        .marquee-container {
+            /* Compensa el padding lateral del body para llegar de borde a borde */
+            width: calc(100% + 60px);
+            margin: 5px -30px 25px -30px;
+            background: linear-gradient(90deg, rgba(249, 115, 22, 0.35), rgba(251, 146, 60, 0.35));
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            color: #ffffff;
+            padding: 16px 0;
+            overflow: hidden;
+            white-space: nowrap;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.25);
+            border-top: 2px solid rgba(251, 146, 60, 0.5);
+            border-bottom: 2px solid rgba(251, 146, 60, 0.5);
+        }
+
+        .marquee-text {
+            display: inline-block;
+            animation: marquee 12s linear infinite;
+            font-size: clamp(1.3rem, 4vw, 2rem);
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            text-shadow: 0 2px 8px rgba(0, 0, 0, 0.5);
+        }
+
+        @keyframes marquee {
+            0% {
+                transform: translateX(100vw);
+            }
+            100% {
+                transform: translateX(-100%);
+            }
+        }
+        /* ----------------------------------------------- */
+
+        h1 {
+            font-size: 2.5rem;
+            margin-top: 0;
+            margin-bottom: 10px;
+            text-align: center;
+            color: #ecf0f1;
+        }
+        p {
+            font-size: 1.3rem;
+            color: #bdc3c7;
+            margin-bottom: 40px;
+            text-align: center;
+        }
+        .grid-botones {
+            display: flex;
+            flex-direction: column; /* Apila los botones uno debajo de otro */
+            gap: 20px; /* Espacio generoso para evitar toques accidentales */
+            width: 100%;
+            max-width: 500px; /* Ancho cómodo para pantallas verticales */
+        }
+        .btn {
+            color: white;
+            padding: 25px 20px;
+            font-size: 1.4rem;
+            font-weight: bold;
+            text-decoration: none;
+            border-radius: 12px;
+            box-shadow: 0 6px 12px rgba(0,0,0,0.3);
+            text-align: center;
+            transition: transform 0.1s, filter 0.2s;
+        }
+        /* Efecto visual al tocar la pantalla (feedback táctil) */
+        .btn:active {
+            transform: scale(0.97);
+            filter: brightness(0.85);
+        }
+
+        /* Colores independientes y personalizados para cada botón */
+        .btn-inicio {
+            background-color: #3498db; /* Azul clásico */
+        }
+        .btn-ruleta {
+            background-color: #e67e22; /* Naranja vibrante */
+        }
+        .btn-trivia {
+            background-color: #9b59b6; /* Morado elegante */
+        }
+        .btn-musica {
+            background-color: #e74c3c; /* Rojo festivo */
+        }
+    </style>
+</head>
+<body>
+
+    <img src="https://luischavezt.github.io/ECD/logo.png" alt="Logo" class="brand-logo">
+
+    <!-- Cinta Móvil antes de Bienvenido -->
+    <div class="marquee-container">
+        <div class="marquee-text">
+            ✨ ¡Bienvenido a este evento! &nbsp;•&nbsp; Disfruta de la jornada &nbsp;•&nbsp; Comparte tu experiencia &nbsp;✨
+        </div>
+    </div>
+
+    <p>Toque la aplicación a la que desea ingresar:</p>
+
+    <div class="grid-botones">
+        <a href="https://luischavezt.github.io/ECD/boda1.html" class="btn btn-inicio" target="_blank" rel="noopener noreferrer">Landing</a>
+        <a href="https://luischavezt.github.io/ECD/ruletagiratoria.html" class="btn btn-ruleta" target="_blank" rel="noopener noreferrer">Ruleta</a>
+        <a href="https://luischavezt.github.io/ECD/trivia.html" class="btn btn-trivia" target="_blank" rel="noopener noreferrer">Trivia</a>
+        <a href="https://tuapp4.com" class="btn btn-musica" target="_blank" rel="noopener noreferrer">Sube una foto en tiempo real</a>
+    </div>
+
+</body>
+</html>
