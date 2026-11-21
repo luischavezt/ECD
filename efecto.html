@@ -1,0 +1,573 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tótem Digital Neón - Letra C</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --neon-color: #00f3ff;
+            --neon-core: #ffffff;
+            --glow-intensity: 1;
+            --letter-scale: 1;
+            --hue-rotate: 0deg;
+        }
+
+        * {
+            box-sizing: border-box;
+            user-select: none;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: #040508;
+            font-family: 'Inter', sans-serif;
+            overflow: hidden;
+            width: 100vw;
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* Fondo arquitectónico oscuro y sutil para el tótem */
+        .totem-backdrop {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            background: 
+                radial-gradient(circle at 50% 50%, rgba(20, 25, 40, 0.45) 0%, rgba(4, 5, 8, 0.98) 75%),
+                linear-gradient(180deg, #06080f 0%, #020305 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+
+        /* Cuadrícula sutil de fondo tipo LED matriz / arquitectura */
+        .grid-overlay {
+            position: absolute;
+            inset: 0;
+            background-image: 
+                linear-gradient(to right, rgba(255, 255, 255, 0.025) 1px, transparent 1px),
+                linear-gradient(to bottom, rgba(255, 255, 255, 0.025) 1px, transparent 1px);
+            background-size: 4vmin 4vmin;
+            mask-image: radial-gradient(circle at center, black 30%, transparent 80%);
+            -webkit-mask-image: radial-gradient(circle at center, black 30%, transparent 80%);
+            pointer-events: none;
+        }
+
+        /* Halo ambiental detrás de la letra */
+        .ambient-halo {
+            position: absolute;
+            width: 65vmin;
+            height: 65vmin;
+            border-radius: 50%;
+            background: var(--neon-color);
+            opacity: calc(0.14 * var(--glow-intensity));
+            filter: blur(calc(12vmin * var(--glow-intensity))) hue-rotate(var(--hue-rotate));
+            transform: scale(var(--letter-scale));
+            transition: background-color 0.4s ease, opacity 0.3s ease, transform 0.2s ease;
+            pointer-events: none;
+        }
+
+        /* Contenedor principal de la letra C */
+        .neon-stage {
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transform: scale(var(--letter-scale));
+            filter: hue-rotate(var(--hue-rotate));
+            transition: transform 0.2s cubic-bezier(0.22, 1, 0.36, 1);
+            z-index: 10;
+        }
+
+        /* SVG de la letra C con capas múltiples de neón */
+        .neon-svg {
+            width: min(68vw, 48vh);
+            height: auto;
+            overflow: visible;
+        }
+
+        /* En pantallas verticales 9:16 aprovechar el ancho */
+        @media (max-aspect-ratio: 3/4) {
+            .neon-svg {
+                width: 74vw;
+            }
+        }
+
+        /* Capas de trazo para simular tubo de neón real */
+        .tube-outer-glow {
+            fill: none;
+            stroke: var(--neon-color);
+            stroke-width: 24;
+            stroke-linecap: round;
+            opacity: calc(0.35 * var(--glow-intensity));
+            filter: blur(22px);
+            transition: stroke 0.35s ease, opacity 0.3s ease;
+        }
+
+        .tube-mid-glow {
+            fill: none;
+            stroke: var(--neon-color);
+            stroke-width: 15;
+            stroke-linecap: round;
+            opacity: calc(0.75 * var(--glow-intensity));
+            filter: blur(8px);
+            transition: stroke 0.35s ease, opacity 0.3s ease;
+        }
+
+        .tube-color-body {
+            fill: none;
+            stroke: var(--neon-color);
+            stroke-width: 10;
+            stroke-linecap: round;
+            filter: drop-shadow(0 0 calc(12px * var(--glow-intensity)) var(--neon-color));
+            transition: stroke 0.35s ease;
+        }
+
+        .tube-white-core {
+            fill: none;
+            stroke: var(--neon-core);
+            stroke-width: 3.8;
+            stroke-linecap: round;
+            opacity: 0.95;
+            filter: drop-shadow(0 0 3px #ffffff);
+        }
+
+        /* Soportes / electrodos sutiles en los extremos del tubo de neón */
+        .tube-cap {
+            fill: #12151e;
+            stroke: #2a3142;
+            stroke-width: 1.5;
+        }
+
+        /* =========================================
+           ANIMACIONES DE NEÓN
+           ========================================= */
+
+        /* 1. Respiración suave */
+        @keyframes neonBreathe {
+            0%, 100% {
+                opacity: 1;
+                transform: scale(var(--letter-scale));
+            }
+            50% {
+                opacity: 0.78;
+                transform: scale(calc(var(--letter-scale) * 0.985));
+            }
+        }
+
+        .anim-breathe {
+            animation: neonBreathe 3.8s ease-in-out infinite;
+        }
+
+        /* 2. Parpadeo eléctrico realista de neón */
+        @keyframes neonFlicker {
+            0%, 19.999%, 22%, 62.999%, 64%, 64.999%, 70%, 100% {
+                opacity: 1;
+            }
+            20%, 21.999%, 63%, 63.999%, 65%, 69.999% {
+                opacity: 0.32;
+            }
+            20.5%, 63.5% {
+                opacity: 0.85;
+            }
+        }
+
+        .anim-flicker .tube-white-core,
+        .anim-flicker .tube-color-body,
+        .anim-flicker .tube-mid-glow {
+            animation: neonFlicker 5.5s linear infinite;
+        }
+
+        /* 3. Rotación RGB fluida */
+        @keyframes rgbCycle {
+            0% { filter: hue-rotate(0deg); }
+            100% { filter: hue-rotate(360deg); }
+        }
+
+        .anim-rgb {
+            animation: rgbCycle 8s linear infinite;
+        }
+
+        /* =========================================
+           PANEL DE CONTROL FLOTANTE (GLASSMORPHISM)
+           ========================================= */
+        .glass-panel {
+            background: rgba(13, 17, 26, 0.78);
+            backdrop-filter: blur(18px);
+            -webkit-backdrop-filter: blur(18px);
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.75);
+            transition: opacity 0.35s ease, transform 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .panel-hidden {
+            opacity: 0;
+            pointer-events: none;
+            transform: translateY(20px) scale(0.97);
+        }
+
+        /* Estilizado de sliders */
+        input[type="range"] {
+            -webkit-appearance: none;
+            appearance: none;
+            background: rgba(255, 255, 255, 0.12);
+            height: 6px;
+            border-radius: 999px;
+            outline: none;
+        }
+
+        input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            background: #ffffff;
+            cursor: pointer;
+            box-shadow: 0 0 10px var(--neon-color);
+            border: 2px solid var(--neon-color);
+            transition: transform 0.15s ease;
+        }
+
+        input[type="range"]::-webkit-slider-thumb:hover {
+            transform: scale(1.15);
+        }
+
+        /* Botón flotante discreto para volver a mostrar el panel */
+        .toggle-fab {
+            opacity: 0.25;
+            transition: opacity 0.3s ease, transform 0.2s ease, background-color 0.3s ease;
+        }
+
+        .toggle-fab:hover, .toggle-fab.active {
+            opacity: 1;
+        }
+    </style>
+</head>
+<body>
+
+    <main class="totem-backdrop" id="totemCanvas">
+        <!-- Textura sutil de fondo -->
+        <div class="grid-overlay"></div>
+
+        <!-- Halo ambiental -->
+        <div class="ambient-halo" id="ambientHalo"></div>
+
+        <!-- Escenario central de la letra 'C' -->
+        <div class="neon-stage anim-breathe" id="neonStage">
+            <!-- SVG Geométrico de Alta Precisión para la Letra C -->
+            <svg class="neon-svg" viewBox="0 0 240 280" xmlns="http://www.w3.org/2000/svg" aria-label="Letra C luminosa en neón">
+                <defs>
+                    <!-- Filtro SVG de resplandor intenso multicapa -->
+                    <filter id="neon-bloom" x="-50%" y="-50%" width="200%" height="200%">
+                        <feGaussianBlur in="SourceGraphic" stdDeviation="3" result="blur1" />
+                        <feGaussianBlur in="SourceGraphic" stdDeviation="10" result="blur2" />
+                        <feGaussianBlur in="SourceGraphic" stdDeviation="22" result="blur3" />
+                        <feMerge>
+                            <feMergeNode in="blur3" />
+                            <feMergeNode in="blur2" />
+                            <feMergeNode in="blur1" />
+                            <feMergeNode in="SourceGraphic" />
+                        </feMerge>
+                    </filter>
+                </defs>
+
+                <!-- Grupo con filtro aplicado -->
+                <g filter="url(#neon-bloom)">
+                    <!-- Capa 1: Resplandor exterior difuso -->
+                    <path class="tube-outer-glow"
+                          d="M 186 76 A 92 104 0 1 0 186 204" />
+
+                    <!-- Capa 2: Resplandor medio saturado -->
+                    <path class="tube-mid-glow"
+                          d="M 186 76 A 92 104 0 1 0 186 204" />
+
+                    <!-- Capa 3: Cuerpo principal del tubo de neón -->
+                    <path class="tube-color-body"
+                          d="M 186 76 A 92 104 0 1 0 186 204" />
+
+                    <!-- Capa 4: Núcleo incandescente blanco -->
+                    <path class="tube-white-core"
+                          d="M 186 76 A 92 104 0 1 0 186 204" />
+                </g>
+
+                <!-- Capuchones de electrodos en las puntas de la C para realismo industrial -->
+                <circle class="tube-cap" cx="186" cy="76" r="5.5" />
+                <circle class="tube-cap" cx="186" cy="204" r="5.5" />
+            </svg>
+        </div>
+
+        <!-- Botón flotante discreto (esquina superior derecha) para ocultar/mostrar controles -->
+        <button id="toggleControlsBtn"
+                title="Mostrar / Ocultar controles (Tecla H)"
+                class="toggle-fab active fixed top-4 right-4 z-50 p-3 rounded-2xl bg-slate-900/70 border border-white/15 text-white backdrop-blur-md shadow-lg flex items-center gap-2 text-xs font-medium cursor-pointer">
+            <svg id="eyeIcon" xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 text-cyan-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4" />
+            </svg>
+            <span class="hidden sm:inline">Controles (H)</span>
+        </button>
+
+        <!-- Panel de Control Flotante -->
+        <aside id="controlPanel"
+               class="glass-panel fixed bottom-5 left-1/2 -translate-x-1/2 z-40 w-[92%] max-w-md rounded-3xl p-5 text-slate-100">
+            
+            <!-- Encabezado del panel -->
+            <div class="flex items-center justify-between mb-4 pb-3 border-b border-white/10">
+                <div>
+                    <h1 class="text-sm font-bold tracking-wider uppercase text-white flex items-center gap-2">
+                        <span class="w-2 h-2 rounded-full animate-pulse" id="statusDot" style="background-color: #00f3ff;"></span>
+                        Control Tótem LED
+                    </h1>
+                    <p class="text-[11px] text-slate-400">Pulsa <kbd class="px-1.5 py-0.5 bg-white/10 rounded text-slate-200">H</kbd> para modo limpio</p>
+                </div>
+
+                <!-- Botón Pantalla Completa -->
+                <button id="fullscreenBtn"
+                        class="px-3 py-2 rounded-xl bg-white/10 hover:bg-white/20 active:scale-95 transition text-xs font-semibold flex items-center gap-1.5 text-white border border-white/10 cursor-pointer">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M4 8V4m0 0h4M4 4l5 5m11-1V4m0 0h-4m4 0l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5l-5-5m5 5v-4m0 4h-4" />
+                    </svg>
+                    <span id="fullscreenLabel">Pantalla Completa</span>
+                </button>
+            </div>
+
+            <!-- Selector de Colores Neón -->
+            <div class="mb-4">
+                <div class="flex justify-between items-center mb-2">
+                    <label class="text-xs font-semibold text-slate-300 uppercase tracking-wider">Color del Neón</label>
+                    <span id="colorNameLabel" class="text-xs font-medium text-cyan-300">Cian Eléctrico</span>
+                </div>
+                <div class="flex items-center justify-between gap-2">
+                    <!-- Presets de color -->
+                    <button data-color="#00f3ff" data-name="Cian Eléctrico"
+                            class="color-preset w-9 h-9 rounded-full border-2 border-white scale-110 transition cursor-pointer shadow-md"
+                            style="background-color: #00f3ff; box-shadow: 0 0 12px #00f3ff;" title="Cian"></button>
+                    
+                    <button data-color="#ff00aa" data-name="Magenta Neón"
+                            class="color-preset w-9 h-9 rounded-full border-2 border-transparent hover:scale-105 transition cursor-pointer"
+                            style="background-color: #ff00aa;" title="Magenta"></button>
+                    
+                    <button data-color="#fff4d6" data-name="Blanco Cálido"
+                            class="color-preset w-9 h-9 rounded-full border-2 border-transparent hover:scale-105 transition cursor-pointer"
+                            style="background-color: #fff4d6;" title="Blanco Cálido"></button>
+                    
+                    <button data-color="#ffae00" data-name="Dorado Ámbar"
+                            class="color-preset w-9 h-9 rounded-full border-2 border-transparent hover:scale-105 transition cursor-pointer"
+                            style="background-color: #ffae00;" title="Dorado"></button>
+                    
+                    <button data-color="#00ff66" data-name="Verde Neón"
+                            class="color-preset w-9 h-9 rounded-full border-2 border-transparent hover:scale-105 transition cursor-pointer"
+                            style="background-color: #00ff66;" title="Verde Neón"></button>
+
+                    <!-- Selector personalizado -->
+                    <label class="relative w-9 h-9 rounded-full overflow-hidden border-2 border-white/30 hover:border-white cursor-pointer flex items-center justify-center bg-gradient-to-tr from-pink-500 via-yellow-400 to-cyan-400"
+                           title="Color Personalizado">
+                        <input type="color" id="customColorPicker" value="#00f3ff" class="opacity-0 absolute inset-0 w-full h-full cursor-pointer">
+                        <span class="text-[10px] font-bold text-black bg-white/80 rounded-full w-4 h-4 flex items-center justify-center">+</span>
+                    </label>
+                </div>
+            </div>
+
+            <!-- Sliders: Intensidad de Brillo y Tamaño -->
+            <div class="grid grid-cols-2 gap-4 mb-4">
+                <div>
+                    <div class="flex justify-between text-xs mb-1.5">
+                        <span class="text-slate-300 font-medium">Brillo</span>
+                        <span id="glowValueText" class="text-slate-400 font-mono">100%</span>
+                    </div>
+                    <input type="range" id="glowSlider" min="0.3" max="1.6" step="0.05" value="1" class="w-full">
+                </div>
+
+                <div>
+                    <div class="flex justify-between text-xs mb-1.5">
+                        <span class="text-slate-300 font-medium">Tamaño</span>
+                        <span id="sizeValueText" class="text-slate-400 font-mono">100%</span>
+                    </div>
+                    <input type="range" id="sizeSlider" min="0.5" max="1.35" step="0.05" value="1" class="w-full">
+                </div>
+            </div>
+
+            <!-- Modos de Animación -->
+            <div>
+                <label class="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-2">Efecto de Animación</label>
+                <div class="grid grid-cols-2 sm:grid-cols-4 gap-2">
+                    <button data-anim="anim-breathe"
+                            class="anim-btn active py-2 px-2 rounded-xl text-xs font-medium bg-white/20 text-white border border-white/30 transition cursor-pointer">
+                        Respiración
+                    </button>
+                    <button data-anim="anim-flicker"
+                            class="anim-btn py-2 px-2 rounded-xl text-xs font-medium bg-white/5 text-slate-300 hover:bg-white/10 border border-transparent transition cursor-pointer">
+                        Parpadeo
+                    </button>
+                    <button data-anim="anim-rgb"
+                            class="anim-btn py-2 px-2 rounded-xl text-xs font-medium bg-white/5 text-slate-300 hover:bg-white/10 border border-transparent transition cursor-pointer">
+                        Ciclo RGB
+                    </button>
+                    <button data-anim="none"
+                            class="anim-btn py-2 px-2 rounded-xl text-xs font-medium bg-white/5 text-slate-300 hover:bg-white/10 border border-transparent transition cursor-pointer">
+                        Estático
+                    </button>
+                </div>
+            </div>
+        </aside>
+    </main>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const root = document.documentElement;
+            const neonStage = document.getElementById('neonStage');
+            const ambientHalo = document.getElementById('ambientHalo');
+            const controlPanel = document.getElementById('controlPanel');
+            const toggleControlsBtn = document.getElementById('toggleControlsBtn');
+            const fullscreenBtn = document.getElementById('fullscreenBtn');
+            const fullscreenLabel = document.getElementById('fullscreenLabel');
+            const statusDot = document.getElementById('statusDot');
+
+            // Controles de color
+            const colorPresets = document.querySelectorAll('.color-preset');
+            const customColorPicker = document.getElementById('customColorPicker');
+            const colorNameLabel = document.getElementById('colorNameLabel');
+
+            // Sliders
+            const glowSlider = document.getElementById('glowSlider');
+            const glowValueText = document.getElementById('glowValueText');
+            const sizeSlider = document.getElementById('sizeSlider');
+            const sizeValueText = document.getElementById('sizeValueText');
+
+            // Botones de animación
+            const animBtns = document.querySelectorAll('.anim-btn');
+
+            let isPanelVisible = true;
+
+            // Función para actualizar el color neón global
+            function setNeonColor(hexColor, name = 'Personalizado') {
+                root.style.setProperty('--neon-color', hexColor);
+                statusDot.style.backgroundColor = hexColor;
+                colorNameLabel.textContent = name;
+                colorNameLabel.style.color = hexColor;
+
+                // Actualizar estado visual de los botones preset
+                colorPresets.forEach(btn => {
+                    if (btn.dataset.color.toLowerCase() === hexColor.toLowerCase()) {
+                        btn.classList.add('border-white', 'scale-110');
+                        btn.classList.remove('border-transparent');
+                        btn.style.boxShadow = `0 0 14px ${hexColor}`;
+                    } else {
+                        btn.classList.remove('border-white', 'scale-110');
+                        btn.classList.add('border-transparent');
+                        btn.style.boxShadow = 'none';
+                    }
+                });
+            }
+
+            // Listeners para colores predefinidos
+            colorPresets.forEach(btn => {
+                btn.addEventListener('click', () => {
+                    const color = btn.dataset.color;
+                    const name = btn.dataset.name;
+                    customColorPicker.value = color;
+                    setNeonColor(color, name);
+                });
+            });
+
+            // Listener para selector de color libre
+            customColorPicker.addEventListener('input', (e) => {
+                setNeonColor(e.target.value, 'Personalizado');
+            });
+
+            // Control de intensidad de brillo
+            glowSlider.addEventListener('input', (e) => {
+                const val = parseFloat(e.target.value);
+                root.style.setProperty('--glow-intensity', val);
+                glowValueText.textContent = `${Math.round(val * 100)}%`;
+            });
+
+            // Control de tamaño de la letra C
+            sizeSlider.addEventListener('input', (e) => {
+                const val = parseFloat(e.target.value);
+                root.style.setProperty('--letter-scale', val);
+                sizeValueText.textContent = `${Math.round(val * 100)}%`;
+            });
+
+            // Cambio de modo de animación
+            animBtns.forEach(btn => {
+                btn.addEventListener('click', () => {
+                    const animClass = btn.dataset.anim;
+
+                    // Limpiar clases de animación previas
+                    neonStage.classList.remove('anim-breathe', 'anim-flicker', 'anim-rgb');
+                    ambientHalo.classList.remove('anim-rgb');
+
+                    if (animClass !== 'none') {
+                        neonStage.classList.add(animClass);
+                        if (animClass === 'anim-rgb') {
+                            ambientHalo.classList.add('anim-rgb');
+                        }
+                    }
+
+                    // Actualizar estilos de botones activos
+                    animBtns.forEach(b => {
+                        b.classList.remove('bg-white/20', 'text-white', 'border-white/30');
+                        b.classList.add('bg-white/5', 'text-slate-300', 'border-transparent');
+                    });
+                    btn.classList.remove('bg-white/5', 'text-slate-300', 'border-transparent');
+                    btn.classList.add('bg-white/20', 'text-white', 'border-white/30');
+                });
+            });
+
+            // Mostrar / Ocultar panel de control (Modo Tótem Limpio)
+            function togglePanel() {
+                isPanelVisible = !isPanelVisible;
+                if (isPanelVisible) {
+                    controlPanel.classList.remove('panel-hidden');
+                    toggleControlsBtn.classList.add('active');
+                } else {
+                    controlPanel.classList.add('panel-hidden');
+                    toggleControlsBtn.classList.remove('active');
+                }
+            }
+
+            toggleControlsBtn.addEventListener('click', togglePanel);
+
+            // Atajo de teclado 'H' para ocultar/mostrar interfaz
+            document.addEventListener('keydown', (e) => {
+                if (e.key.toLowerCase() === 'h') {
+                    togglePanel();
+                }
+            });
+
+            // Gestión de Pantalla Completa (Fullscreen API)
+            fullscreenBtn.addEventListener('click', async () => {
+                try {
+                    if (!document.fullscreenElement) {
+                        await document.documentElement.requestFullscreen();
+                    } else {
+                        if (document.exitFullscreen) {
+                            await document.exitFullscreen();
+                        }
+                    }
+                } catch (err) {
+                    console.warn('No se pudo cambiar el modo pantalla completa:', err);
+                }
+            });
+
+            // Actualizar etiqueta del botón cuando cambia el estado de pantalla completa
+            document.addEventListener('fullscreenchange', () => {
+                if (document.fullscreenElement) {
+                    fullscreenLabel.textContent = 'Salir';
+                } else {
+                    fullscreenLabel.textContent = 'Pantalla Completa';
+                }
+            });
+        });
+    </script>
+</body>
+</html>
