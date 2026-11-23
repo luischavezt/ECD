@@ -18,7 +18,7 @@
       --err: #f87171;
     }
 
-    * {
+    *, *::before, *::after {
       box-sizing: border-box;
       -webkit-tap-highlight-color: transparent;
       user-select: none;
@@ -315,7 +315,9 @@
         tipo: "tipo_alerta",
         precision: "precision_m",
         fecha: "fecha_hora",
-        telefono: "telefono" // Crea este campo String en tu Feature Layer
+        telefono: "telefono",
+        lat: "lat",
+        lon: "lon"
       },
       valorTipo: "ALERTA_RAPIDA",
       sinTelefonoValor: "NO_REGISTRADO"
@@ -460,11 +462,15 @@
 
     async function postToArcGIS(coords) {
       const phoneValue = getSavedPhone() || CONFIG.sinTelefonoValor;
+      const latNum = Number(coords.lat.toFixed(6));
+      const lonNum = Number(coords.lng.toFixed(6));
 
       const attributes = {
         [CONFIG.fields.tipo]: CONFIG.valorTipo,
         [CONFIG.fields.precision]: Math.round(coords.acc),
-        [CONFIG.fields.fecha]: Date.now()
+        [CONFIG.fields.fecha]: Date.now(),
+        [CONFIG.fields.lat]: latNum,
+        [CONFIG.fields.lon]: lonNum
       };
 
       if (CONFIG.fields.telefono) {
@@ -473,8 +479,8 @@
 
       const feature = {
         geometry: {
-          x: coords.lng,
-          y: coords.lat,
+          x: lonNum,
+          y: latNum,
           spatialReference: { wkid: 4326 }
         },
         attributes
