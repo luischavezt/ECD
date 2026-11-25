@@ -1,0 +1,665 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Reporte Ciudadano</title>
+    <style>
+        :root {
+            --bg-page: #d8ece2;
+            --card-bg: #ffffff;
+            --text-main: #1e293b;
+            --text-muted: #475569;
+            --banner-green: #2e7d32;
+            --accent-blue: #1d4ed8;
+            --border-light: #cbd5e1;
+        }
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+        }
+        body {
+            background-color: var(--bg-page);
+            color: var(--text-main);
+            min-height: 100vh;
+            padding: 16px 12px 32px;
+        }
+
+        .contenedor-app {
+            max-width: 680px;
+            margin: 0 auto;
+            background-color: var(--card-bg);
+            border-radius: 14px;
+            overflow: hidden;
+            box-shadow: 0 10px 25px rgba(15, 23, 42, 0.12);
+        }
+
+        .banner-superior {
+            background: linear-gradient(135deg, #2e7d32, #1b5e20);
+            color: #ffffff;
+            padding: 20px 22px;
+        }
+        .banner-superior h1 {
+            font-size: 1.45rem;
+            font-weight: 700;
+            letter-spacing: -0.01em;
+        }
+
+        .cuerpo-form {
+            padding: 20px 20px 26px;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .mensaje-intro {
+            color: var(--accent-blue);
+            font-weight: 700;
+            font-size: 0.98rem;
+            line-height: 1.4;
+        }
+
+        .titulo-campo {
+            font-size: 1.05rem;
+            font-weight: 700;
+            color: var(--text-main);
+        }
+        .asterisco {
+            color: #dc2626;
+        }
+        .subtitulo-campo {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            margin-top: 2px;
+        }
+
+        /* Cuadrícula de 2 columnas estilo tarjetas */
+        .grid-categorias {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+            margin-top: 4px;
+        }
+
+        .tarjeta-cat {
+            --color-cat: #2563eb;
+            --bg-suave: #eff6ff;
+            position: relative;
+            background-color: #ffffff;
+            border: 1.5px solid #cbd5e1;
+            border-top: 4px solid var(--color-cat);
+            border-radius: 12px;
+            padding: 12px 14px 16px;
+            min-height: 124px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            cursor: pointer;
+            text-align: left;
+            transition: transform 0.14s ease, box-shadow 0.14s ease, border-color 0.14s ease, background-color 0.14s ease;
+            box-shadow: 0 2px 6px rgba(15, 23, 42, 0.05);
+        }
+
+        .tarjeta-cat:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 14px rgba(15, 23, 42, 0.1);
+        }
+
+        .tarjeta-cat:active {
+            transform: scale(0.98);
+        }
+
+        .tarjeta-cat:disabled {
+            opacity: 0.65;
+            cursor: not-allowed;
+        }
+
+        .tarjeta-cat.seleccionada {
+            background-color: var(--bg-suave);
+            border-color: var(--color-cat);
+            box-shadow: 0 0 0 3px color-mix(in srgb, var(--color-cat) 25%, transparent), 0 8px 16px rgba(15, 23, 42, 0.12);
+        }
+
+        /* Colores llamativos por categoría */
+        .cat-baches { --color-cat: #dc2626; --bg-suave: #fef2f2; }
+        .cat-basura { --color-cat: #d97706; --bg-suave: #fffbeb; }
+        .cat-areas  { --color-cat: #16a34a; --bg-suave: #f0fdf4; }
+        .cat-autos  { --color-cat: #2563eb; --bg-suave: #eff6ff; }
+        .cat-cables { --color-cat: #7c3aed; --bg-suave: #f5f3ff; }
+
+        .cabecera-tarjeta {
+            display: flex;
+            align-items: flex-start;
+            gap: 9px;
+            width: 100%;
+        }
+
+        .circulo-check {
+            width: 19px;
+            height: 19px;
+            border-radius: 50%;
+            border: 2px solid #94a3b8;
+            background-color: #ffffff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            margin-top: 1px;
+            font-size: 0.72rem;
+            font-weight: 800;
+            color: #ffffff;
+            transition: all 0.14s ease;
+        }
+
+        .tarjeta-cat.seleccionada .circulo-check {
+            border-color: var(--color-cat);
+            background-color: var(--color-cat);
+        }
+        .tarjeta-cat.seleccionada .circulo-check::after {
+            content: "✓";
+        }
+
+        .etiqueta-cat {
+            font-size: 0.92rem;
+            font-weight: 700;
+            color: var(--text-main);
+            line-height: 1.25;
+        }
+
+        .ilustracion-cat {
+            align-self: center;
+            margin-top: 10px;
+            width: 54px;
+            height: 54px;
+            border-radius: 14px;
+            background-color: var(--bg-suave);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .ilustracion-cat svg {
+            width: 32px;
+            height: 32px;
+            stroke: var(--color-cat);
+            fill: none;
+            stroke-width: 2;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+        }
+
+        .panel-bloque {
+            background-color: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 12px;
+            padding: 14px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .fila-foto {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .btn-foto {
+            background-color: #ffffff;
+            color: var(--text-main);
+            border: 1.5px solid #94a3b8;
+            padding: 10px 14px;
+            border-radius: 9px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .btn-foto:hover {
+            background-color: #f1f5f9;
+        }
+
+        .nombre-archivo {
+            font-size: 0.82rem;
+            color: var(--text-muted);
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            flex: 1;
+            min-width: 120px;
+        }
+
+        #preview-foto {
+            display: none;
+            width: 100%;
+            max-height: 190px;
+            object-fit: cover;
+            border-radius: 10px;
+            border: 1px solid #cbd5e1;
+        }
+
+        .texto-contacto {
+            font-size: 0.9rem;
+            font-weight: 700;
+            color: var(--text-main);
+            line-height: 1.35;
+        }
+
+        .campo-input {
+            width: 100%;
+            padding: 11px 13px;
+            border: 1.5px solid #cbd5e1;
+            border-radius: 9px;
+            font-size: 0.96rem;
+            color: var(--text-main);
+            background-color: #ffffff;
+            outline: none;
+        }
+        .campo-input:focus {
+            border-color: var(--banner-green);
+        }
+
+        .btn-reportar {
+            background: linear-gradient(135deg, #2e7d32, #1b5e20);
+            color: #ffffff;
+            border: none;
+            padding: 15px 20px;
+            border-radius: 12px;
+            font-size: 1.05rem;
+            font-weight: 700;
+            cursor: pointer;
+            box-shadow: 0 5px 12px rgba(27, 94, 32, 0.28);
+            transition: transform 0.12s, opacity 0.2s;
+        }
+        .btn-reportar:hover {
+            filter: brightness(1.04);
+        }
+        .btn-reportar:active {
+            transform: scale(0.98);
+        }
+        .btn-reportar:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        .resumen-seleccion {
+            font-size: 0.84rem;
+            color: var(--text-muted);
+            text-align: center;
+        }
+
+        #estado {
+            text-align: center;
+            font-size: 0.9rem;
+            padding: 11px 14px;
+            border-radius: 10px;
+            display: none;
+            font-weight: 600;
+            word-break: break-word;
+        }
+        .estado-cargando { background-color: #e0f2fe; color: #0369a1; display: block !important; }
+        .estado-exito { background-color: #dcfce7; color: #15803d; display: block !important; }
+        .estado-error { background-color: #fee2e2; color: #b91c1c; display: block !important; }
+
+        @media (max-width: 420px) {
+            .grid-categorias {
+                gap: 10px;
+            }
+            .tarjeta-cat {
+                padding: 10px 10px 14px;
+                min-height: 114px;
+            }
+            .etiqueta-cat {
+                font-size: 0.85rem;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="contenedor-app">
+        <div class="banner-superior">
+            <h1>Reporte Ciudadano</h1>
+        </div>
+
+        <main class="cuerpo-form">
+            <div id="estado"></div>
+
+            <p class="mensaje-intro">
+                Con tu participación nos ayudas a identificar los diversos problemas que se presentan en nuestro distrito.
+            </p>
+
+            <div>
+                <p class="titulo-campo">Categoria<span class="asterisco">*</span></p>
+                <p class="subtitulo-campo">Selecciona el tipo de reporte que desea realizar</p>
+
+                <div class="grid-categorias">
+                    <!-- 1. Baches en la via -->
+                    <button type="button" class="tarjeta-cat cat-baches" onclick="seleccionarCategoria(this, 'Baches en Vias')">
+                        <div class="cabecera-tarjeta">
+                            <span class="circulo-check"></span>
+                            <span class="etiqueta-cat">Baches en la via</span>
+                        </div>
+                        <div class="ilustracion-cat">
+                            <svg viewBox="0 0 24 24">
+                                <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path>
+                                <line x1="12" y1="9" x2="12" y2="13"></line>
+                                <line x1="12" y1="17" x2="12.01" y2="17"></line>
+                            </svg>
+                        </div>
+                    </button>
+
+                    <!-- 2. Acumulacion de Basura -->
+                    <button type="button" class="tarjeta-cat cat-basura" onclick="seleccionarCategoria(this, 'Acumulacion de Basura')">
+                        <div class="cabecera-tarjeta">
+                            <span class="circulo-check"></span>
+                            <span class="etiqueta-cat">Acumulacion de Basura</span>
+                        </div>
+                        <div class="ilustracion-cat">
+                            <svg viewBox="0 0 24 24">
+                                <polyline points="3 6 5 6 21 6"></polyline>
+                                <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+                                <line x1="10" y1="11" x2="10" y2="17"></line>
+                                <line x1="14" y1="11" x2="14" y2="17"></line>
+                            </svg>
+                        </div>
+                    </button>
+
+                    <!-- 3. Areas Verdes descuidadas -->
+                    <button type="button" class="tarjeta-cat cat-areas" onclick="seleccionarCategoria(this, 'Areas verdes descuidadas')">
+                        <div class="cabecera-tarjeta">
+                            <span class="circulo-check"></span>
+                            <span class="etiqueta-cat">Areas Verdes descuidadas</span>
+                        </div>
+                        <div class="ilustracion-cat">
+                            <svg viewBox="0 0 24 24">
+                                <path d="M12 22v-7"></path>
+                                <path d="M9 15h6l-3-5-3 5z"></path>
+                                <path d="M7 11h10l-5-7-5 7z"></path>
+                                <line x1="4" y1="22" x2="20" y2="22"></line>
+                            </svg>
+                        </div>
+                    </button>
+
+                    <!-- 4. Autos estacionados -->
+                    <button type="button" class="tarjeta-cat cat-autos" onclick="seleccionarCategoria(this, 'Vehiculos estacionados')">
+                        <div class="cabecera-tarjeta">
+                            <span class="circulo-check"></span>
+                            <span class="etiqueta-cat">Autos estacionados</span>
+                        </div>
+                        <div class="ilustracion-cat">
+                            <svg viewBox="0 0 24 24">
+                                <path d="M5 17H3v-5l2-5h14l2 5v5h-2"></path>
+                                <circle cx="7.5" cy="17.5" r="2.5"></circle>
+                                <circle cx="16.5" cy="17.5" r="2.5"></circle>
+                                <line x1="5" y1="12" x2="19" y2="12"></line>
+                            </svg>
+                        </div>
+                    </button>
+
+                    <!-- 5. Cables en desuso -->
+                    <button type="button" class="tarjeta-cat cat-cables" onclick="seleccionarCategoria(this, 'Cables en desuso')">
+                        <div class="cabecera-tarjeta">
+                            <span class="circulo-check"></span>
+                            <span class="etiqueta-cat">Cables en desuso</span>
+                        </div>
+                        <div class="ilustracion-cat">
+                            <svg viewBox="0 0 24 24">
+                                <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"></path>
+                            </svg>
+                        </div>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Fotografía -->
+            <div class="panel-bloque">
+                <p class="texto-contacto">Fotografía del incidente (opcional)</p>
+                <div class="fila-foto">
+                    <input type="file" id="input-foto" accept="image/*" capture="environment" style="display: none;" onchange="alSeleccionarFoto(event)">
+                    <button type="button" class="btn-foto" onclick="document.getElementById('input-foto').click()">
+                        📷 Tomar / Elegir foto
+                    </button>
+                    <span id="nombre-archivo" class="nombre-archivo">Sin foto adjunta</span>
+                </div>
+                <img id="preview-foto" alt="Vista previa de la foto">
+            </div>
+
+            <!-- Referencia de ubicación + Datos de contacto -->
+            <div class="panel-bloque">
+                <p class="texto-contacto">Si quieres que te informemos del estado de tu reporte dejanos tus datos</p>
+                <input type="text" id="input-nombre" class="campo-input" placeholder="Nombres">
+                <input type="tel" id="input-celular" class="campo-input" placeholder="Número de celular" inputmode="numeric">
+                <input type="text" id="input-referencia" class="campo-input" placeholder="Referencia o ubicación del lugar (opcional)">
+            </div>
+
+            <button type="button" id="btn-reportar" class="btn-reportar" onclick="enviarReporteFinal()">
+                Reportar
+            </button>
+            <p id="resumen-seleccion" class="resumen-seleccion">Aún no has elegido categoría</p>
+        </main>
+    </div>
+
+    <script>
+        const FEATURE_LAYER_URL = "https://services8.arcgis.com/2qDHoDLqu6VOlf1y/arcgis/rest/services/survey123_381b9fc6705841a29349bf1b56254f11_form/FeatureServer/0";
+        const CAMPO_CATEGORIA = "categoria";
+        const CAMPO_FECHA = "fecha_registro";
+        const CAMPO_NOMBRE = "nombres";
+        const CAMPO_CELULAR = "celular";
+        const CAMPO_REFERENCIA = "referencia_ubicacion"; // Crea este campo en tu capa si quieres guardarlo
+
+        let categoriaSeleccionada = null;
+        let latCapturada = null;
+        let lonCapturada = null;
+        let precisionCapturada = null;
+        let archivoFotoSeleccionado = null;
+
+        function alSeleccionarFoto(event) {
+            const archivo = event.target.files[0];
+            const spanNombre = document.getElementById("nombre-archivo");
+            const imgPreview = document.getElementById("preview-foto");
+
+            if (archivo) {
+                archivoFotoSeleccionado = archivo;
+                spanNombre.textContent = archivo.name;
+                imgPreview.src = URL.createObjectURL(archivo);
+                imgPreview.style.display = "block";
+            } else {
+                archivoFotoSeleccionado = null;
+                spanNombre.textContent = "Sin foto adjunta";
+                imgPreview.style.display = "none";
+            }
+        }
+
+        function limpiarFormulario() {
+            categoriaSeleccionada = null;
+            latCapturada = null;
+            lonCapturada = null;
+            precisionCapturada = null;
+
+            document.querySelectorAll(".tarjeta-cat").forEach(btn => btn.classList.remove("seleccionada"));
+            document.getElementById("resumen-seleccion").textContent = "Aún no has elegido categoría";
+
+            document.getElementById("input-nombre").value = "";
+            document.getElementById("input-celular").value = "";
+            document.getElementById("input-referencia").value = "";
+
+            archivoFotoSeleccionado = null;
+            document.getElementById("input-foto").value = "";
+            document.getElementById("nombre-archivo").textContent = "Sin foto adjunta";
+            const imgPreview = document.getElementById("preview-foto");
+            imgPreview.src = "";
+            imgPreview.style.display = "none";
+        }
+
+        function mostrarMensaje(texto, tipo) {
+            const divEstado = document.getElementById("estado");
+            divEstado.textContent = texto;
+            divEstado.className = "";
+            divEstado.classList.add(tipo);
+        }
+
+        function bloquearControles(bloquear) {
+            document.querySelectorAll(".tarjeta-cat, .btn-reportar, .btn-foto").forEach(btn => btn.disabled = bloquear);
+        }
+
+        function obtenerPosicionGPS() {
+            return new Promise((resolve, reject) => {
+                if (!navigator.geolocation) {
+                    reject(new Error("Tu navegador no soporta geolocalización."));
+                    return;
+                }
+                navigator.geolocation.getCurrentPosition(
+                    (posicion) => resolve(posicion),
+                    (error) => {
+                        let msg = "No se pudo obtener la ubicación.";
+                        if (error.code === 1) msg = "⚠️ Debes permitir el acceso al GPS en tu celular.";
+                        if (error.code === 2) msg = "⚠️ Señal GPS no disponible.";
+                        if (error.code === 3) msg = "⚠️ Tiempo de espera agotado buscando GPS.";
+                        reject(new Error(msg));
+                    },
+                    {
+                        enableHighAccuracy: true,
+                        timeout: 12000,
+                        maximumAge: 0
+                    }
+                );
+            });
+        }
+
+        async function seleccionarCategoria(botonElemento, categoria) {
+            categoriaSeleccionada = categoria;
+            document.querySelectorAll(".tarjeta-cat").forEach(btn => btn.classList.remove("seleccionada"));
+            botonElemento.classList.add("seleccionada");
+
+            bloquearControles(true);
+            mostrarMensaje(`📡 Capturando coordenadas para "${categoria}"...`, "estado-cargando");
+
+            try {
+                const pos = await obtenerPosicionGPS();
+                latCapturada = pos.coords.latitude;
+                lonCapturada = pos.coords.longitude;
+                precisionCapturada = Math.round(pos.coords.accuracy);
+
+                document.getElementById("resumen-seleccion").textContent =
+                    `Categoría: ${categoria} • GPS listo (±${precisionCapturada}m)`;
+                mostrarMensaje(`📍 Ubicación capturada (±${precisionCapturada}m). Completa los datos y pulsa "Reportar".`, "estado-cargando");
+            } catch (err) {
+                latCapturada = null;
+                lonCapturada = null;
+                document.getElementById("resumen-seleccion").textContent =
+                    `Categoría: ${categoria} • GPS pendiente`;
+                mostrarMensaje(err.message, "estado-error");
+            } finally {
+                bloquearControles(false);
+            }
+        }
+
+        async function subirAdjunto(objectId, archivo) {
+            const formDataAdjunto = new FormData();
+            formDataAdjunto.append("f", "json");
+            formDataAdjunto.append("attachment", archivo, archivo.name);
+
+            const respAdjunto = await fetch(`${FEATURE_LAYER_URL}/${objectId}/addAttachment`, {
+                method: "POST",
+                body: formDataAdjunto
+            });
+
+            return await respAdjunto.json();
+        }
+
+        async function enviarReporteFinal() {
+            if (!categoriaSeleccionada) {
+                mostrarMensaje("⚠️ Primero elige una categoría arriba.", "estado-error");
+                return;
+            }
+
+            bloquearControles(true);
+
+            try {
+                if (latCapturada === null || lonCapturada === null) {
+                    mostrarMensaje("📡 Obteniendo ubicación GPS...", "estado-cargando");
+                    const pos = await obtenerPosicionGPS();
+                    latCapturada = pos.coords.latitude;
+                    lonCapturada = pos.coords.longitude;
+                    precisionCapturada = Math.round(pos.coords.accuracy);
+                }
+
+                const nombreIngresado = document.getElementById("input-nombre").value.trim();
+                const celularIngresado = document.getElementById("input-celular").value.trim();
+                const referenciaIngresada = document.getElementById("input-referencia").value.trim();
+
+                mostrarMensaje("📤 Enviando reporte a ArcGIS Online...", "estado-cargando");
+
+                const atributos = {
+                    [CAMPO_CATEGORIA]: categoriaSeleccionada,
+                    [CAMPO_FECHA]: Date.now()
+                };
+                if (nombreIngresado) atributos[CAMPO_NOMBRE] = nombreIngresado;
+                if (celularIngresado) atributos[CAMPO_CELULAR] = celularIngresado;
+                if (referenciaIngresada) atributos[CAMPO_REFERENCIA] = referenciaIngresada;
+
+                const nuevaEntidad = [{
+                    geometry: {
+                        x: lonCapturada,
+                        y: latCapturada,
+                        spatialReference: { wkid: 4326 }
+                    },
+                    attributes: atributos
+                }];
+
+                const formData = new URLSearchParams();
+                formData.append("f", "json");
+                formData.append("features", JSON.stringify(nuevaEntidad));
+
+                const respuesta = await fetch(`${FEATURE_LAYER_URL}/addFeatures`, {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/x-www-form-urlencoded"
+                    },
+                    body: formData.toString()
+                });
+
+                const resultado = await respuesta.json();
+
+                if (resultado.addResults && resultado.addResults[0].success) {
+                    const objectId = resultado.addResults[0].objectId;
+
+                    if (archivoFotoSeleccionado) {
+                        mostrarMensaje(`🖼️ Adjuntando foto al reporte #${objectId}...`, "estado-cargando");
+                        const resFoto = await subirAdjunto(objectId, archivoFotoSeleccionado);
+
+                        if (resFoto.addAttachmentResult && resFoto.addAttachmentResult.success) {
+                            mostrarMensaje(`✅ Reporte #${objectId} enviado con ubicación, datos y foto.`, "estado-exito");
+                            limpiarFormulario();
+                        } else {
+                            const detalleErr =
+                                (resFoto.addAttachmentResult && resFoto.addAttachmentResult.error && (resFoto.addAttachmentResult.error.description || resFoto.addAttachmentResult.error.message)) ||
+                                (resFoto.error && (resFoto.error.description || resFoto.error.message)) ||
+                                "No se pudo adjuntar la foto.";
+                            mostrarMensaje(`⚠️ Reporte #${objectId} creado, pero falló la foto: ${detalleErr}`, "estado-error");
+                        }
+                    } else {
+                        mostrarMensaje(`✅ Reporte #${objectId} enviado (${categoriaSeleccionada}).`, "estado-exito");
+                        limpiarFormulario();
+                    }
+                } else {
+                    const errorMsg = resultado.error ? resultado.error.message : "Revisa los permisos de la capa.";
+                    mostrarMensaje(`❌ Error al guardar el reporte: ${errorMsg}`, "estado-error");
+                }
+            } catch (error) {
+                mostrarMensaje(error.message || "❌ Error de conexión con ArcGIS Online.", "estado-error");
+                console.error(error);
+            } finally {
+                bloquearControles(false);
+            }
+        }
+    </script>
+</body>
+</html>
